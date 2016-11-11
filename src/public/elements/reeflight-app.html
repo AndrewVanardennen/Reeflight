@@ -1,31 +1,43 @@
-<!-- import html here (hi) -->
-<!-- <head>
-  <link rel="import" href="reeflight-header.html">
-</head> -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 
-<template id="reeflight-app">
-  <style>
-    :host {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-  </style>
-  <reeflight-header></reeflight-header>
+<dom-module id="reeflight-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+        font-family: 'Roboto', sans-serif;
+      }
+      header {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 128px;
+        background-color: rgba(0,0,0,0.72);
+      }
+      .appname {
+        font-size: 40px;
+        text-transform: uppercase;
+        text-align: left;
+        color: #FFF;
+      }
+    </style>
+    <header>
+      <span class="appname">Reef Light</span>
+    </header>
+  </template>
 
-</template>
-
+</dom-module>
 <script>
-  class ReeflightApp extends HTMLElement {//classname needs to be uppercase
+  class ReeflightApp extends Polymer.Element {//classname needs to be uppercase
+    static get is() { return 'reeflight-app'; }
+    static get config() {
+     return { /* properties, observers meta data */ }
+    }
     constructor() {
       super();
-      const doc = document.currentScript.ownerDocument; //reeflight-app
-      const tmpl = doc.querySelector('#reeflight-app'); //stamp tmpl to html
-      this._root = this.attachShadow({mode: 'open'});
-      this._root.appendChild(tmpl.content.cloneNode(true));
     }
   }
-  customElements.define('reeflight-app', ReeflightApp);
+  customElements.define(ReeflightApp.is, ReeflightApp);
 </script>
