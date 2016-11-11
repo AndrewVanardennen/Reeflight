@@ -1,6 +1,7 @@
 <template id="reeflight-header">
+  <!-- host = reeflight-header -->
   <style>
-    :host { //style of reeflight-header
+    :host {
       display: flex;
       flex-direction: row;
       width: 100%;
@@ -14,16 +15,15 @@
       color: #DDD;
     }
   </style>
-    <span class="appname">Reef Light</span>
+  <span class="appname">Reef Light</span>
 </template>
 
 <script>
-  class ReeflightHeader extends HTMLElement {//classname needs to be uppercase
+  class ReeflightHeader extends HTMLElement {
     constructor() {
       super();
-      const doc = document.querySelector('reeflight-header') //reeflight-app
-      console.log(doc);
-      const tmpl = doc.querySelector('#reeflight-header'); //stamp tmpl to html
+      const doc = document.currentScript.ownerDocument;
+      const tmpl = doc.querySelector('#reeflight-header');
       this._root = this.attachShadow({mode: 'open'});
       this._root.appendChild(tmpl.content.cloneNode(true));
     }
