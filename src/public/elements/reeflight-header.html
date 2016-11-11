@@ -1,0 +1,32 @@
+<template id="reeflight-header">
+  <style>
+    :host { //style of reeflight-header
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 128px;
+      background-color: rgba(0,0,0,0.72);
+    }
+    .appname {
+      font-size: 40px;
+      text-transform: uppercase;
+      text-align: left;
+      color: #DDD;
+    }
+  </style>
+    <span class="appname">Reef Light</span>
+</template>
+
+<script>
+  class ReeflightHeader extends HTMLElement {//classname needs to be uppercase
+    constructor() {
+      super();
+      const doc = document.querySelector('reeflight-header') //reeflight-app
+      console.log(doc);
+      const tmpl = doc.querySelector('#reeflight-header'); //stamp tmpl to html
+      this._root = this.attachShadow({mode: 'open'});
+      this._root.appendChild(tmpl.content.cloneNode(true));
+    }
+  }
+  customElements.define('reeflight-header', ReeflightHeader);
+</script>

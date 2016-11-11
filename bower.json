@@ -1,0 +1,21 @@
+{
+  "name": "reeflight",
+  "description": "Remote controlled aquarium led light",
+  "main": "index.js",
+  "authors": [
+    "Andrew Vanardennen"
+  ],
+  "license": "CC-BY-NC-ND-4.0",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "^0.7.23"
+  }
+}

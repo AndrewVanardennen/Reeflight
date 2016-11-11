@@ -1,0 +1,29 @@
+//import html here (hi)
+<link rel="import" href="reeflight-header.html">
+
+<template id="reeflight-app">
+  <style>
+    :host { //style of reeflight-app
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+  <reeflight-header></reeflight-header>
+
+</template>
+
+<script>
+  class ReeflightApp extends HTMLElement {//classname needs to be uppercase
+    constructor() {
+      super();
+      const doc = document.currentScript.ownerDocument; //reeflight-app
+      const tmpl = doc.querySelector('#reeflight-app'); //stamp tmpl to html
+      this._root = this.attachShadow({mode: 'open'});
+      this._root.appendChild(tmpl.content.cloneNode(true));
+    }
+  }
+  customElements.define('reeflight-app', ReeflightApp);
+</script>
