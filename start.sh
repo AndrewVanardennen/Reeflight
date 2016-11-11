@@ -1,5 +1,3 @@
 
-npm run build
-rm -rf dist/public
-cp src/public dist/public -R
+sh build.sh
 node dist/
