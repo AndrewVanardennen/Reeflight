@@ -24,28 +24,32 @@
       var webComponentsSupported = ('registerElement' in document
           && 'import' in document.createElement('link')
           && 'content' in document.createElement('template'));
+      var customElementsV1Supported = 'customElements' in window;
 
-      if (!webComponentsSupported) {
+      function importScript(src) {
         var script = document.createElement('script');
-        script.src = 'bower_components/webcomponentsjs/webcomponents-lite.js';
+        script.src = src;
         document.head.appendChild(script);
       }
+      if (!webComponentsSupported) {
+        importScript('bower_components/webcomponentsjs/webcomponents-lite.js');
+      }
+      if (!customElementsV1Supported) {
+        importScript('bower_components/custom-elements/custom-elements.min.js')
+      }
+
     </script>
 
     <style>
       body, html {
         margin: 0;
-        display: flex;
-        flex-direction: column;
         width: 100%;
         height: 100%;
         overflow: hidden;
       }
-
     </style>
-    <!-- html imports -->
-    <link rel="import" href="elements/reeflight-app.html">
-    <link rel="import" href="elements/reeflight-header.html">
+
+    <link rel="import" href="elements/reeflight-app.html" async>
   </head>
   <body>
     <reeflight-app></reeflight-app>
