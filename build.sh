@@ -1,3 +1,4 @@
+npm run build
 rm -rf dist/public
 cp src/public dist/public -R
 echo navigating to dist/public
