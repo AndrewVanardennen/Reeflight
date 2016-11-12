@@ -1,10 +1,10 @@
 module.exports = {
   staticFileGlobs: [
-    'public/**.html',
-    'public/**/*.html',
-    'public/images/**.*'
+    '**.html',
+    '**/*.html',
+    'images/**.*'
   ],
-  
+
   skipWaiting: true,
   handleFetch: true,
   runtimeCaching: [{
