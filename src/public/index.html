@@ -60,6 +60,10 @@
       }
 
     </script>
+
+    <!--src firebaseapp -->
+    <script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>
+    <!-- Styling-->
     <style>
       body, html {
         margin: 0;
@@ -68,10 +72,43 @@
         overflow: hidden;
       }
     </style>
+    <!--style login - signUp - Logout -->
+    <link hrf="https://fonts.googleapis.com/css?family=Robotot:300,500" rel="stylesheet">
 
+    <!-- link reeflight-app.html -->
     <link rel="import" href="elements/reeflight-app.html" async>
   </head>
   <body>
+
+    <!-- js tests -->
+    <!--value-->
+    <pre id="object"></pre>
+
+    <!--child-->
+    <ul id="list"></ul>
+
+    <div class="container">
+      <input id="txtEmail" type="email" placeholder="Email">
+
+      <input id="txtPassword" type="password" placeholder="Password">
+
+      <button id="btnLogin" class="btn btn-action">
+        Log in
+      </button>
+
+      <button id="btnSignUp" class="btn btn-secondary">
+        Sign Up
+      </button>
+
+      <button id="btnLogout" class="btn btn-action hide">
+        Log out
+      </button>
+    </div>
+
+    <script src="elements/firebase-test.js"></script>
+
+    <!--would be header -->
     <reeflight-app></reeflight-app>
+
   </body>
 </html>

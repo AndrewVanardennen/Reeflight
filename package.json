@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "express": "^4.14.0",
+    "firebase": "^3.6.0",
     "opn": "^4.0.2"
   }
 }

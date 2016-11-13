@@ -7,3 +7,5 @@ echo Runing sw-precache
 sw-precache --config=../../sw-precache-config.js
 echo navigating back
 cd ../
+echo running firebase
+firebase serve
