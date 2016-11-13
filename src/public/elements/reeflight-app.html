@@ -1,10 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/made-with/made-with.html">
+<link rel="import" href="../bower_components/copyright-notice/copyright-notice.html">
+
+<link rel="import" href="icons.html">
 
 <dom-module id="reeflight-app">
   <template>
     <style>
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100%;
         font-family: 'Roboto', sans-serif;
@@ -14,7 +19,7 @@
         flex-direction: row;
         width: 100%;
         height: 128px;
-        background-color: rgba(0,0,0,0.72);
+        background-color: #202020;
       }
       .appname {
         font-size: 40px;
@@ -22,10 +27,33 @@
         text-align: left;
         color: #FFF;
       }
+      section.views {
+        flex: 1;
+      }
+      footer section.made-with {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 40px;
+        width: 100%;
+        background-color: #616161;
+        color: #FFF;
+      }
     </style>
     <header>
       <span class="appname">Reef Light</span>
     </header>
+    <section class="views">
+
+    </section>
+    <footer>
+      <section class="made-with">
+        <made-with author="the Reeflight team" url="https://reeflight.github.io/#contributors"></made-with>
+      </section>
+      <section>
+        <copyright-notice name="Reeflight" license="CC-BY-NC-SA-4.0" documentation-license="CC-BY-4.0"></copyright-notice>
+      </section>
+    </footer>
   </template>
 
 </dom-module>
