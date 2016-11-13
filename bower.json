@@ -17,6 +17,13 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#2.0-preview",
-    "custom-elements": "^1.0.3"
+    "custom-elements": "^1.0.3",
+    "made-with": "vandeurenglenn/made-with",
+    "iron-iconset-svg": "Polymerelements/iron-iconset-svg#2.0-preview",
+    "copyright-notice": "VandeurenGlenn/copyright-notice"
+  },
+  "resolutions": {
+    "iron-icon": "2.0-preview",
+    "iron-flex-layout": "2.0-preview"
   }
 }
