@@ -66,10 +66,19 @@
     <!-- Styling-->
     <style>
       body, html {
+        display: flex;
+        flex-direction: column;
         margin: 0;
         width: 100%;
         height: 100%;
         overflow: hidden;
+      }
+
+      #uploader {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 50%;
+        margin-bottom: 10px;
       }
     </style>
     <!--style login - signUp - Logout -->
@@ -105,8 +114,12 @@
       </button>
     </div>
 
-    <script src="elements/firebase-test.js"></script>
+    <progress value="0" max="100" id="uploader">0%</progress>
+    <input type="file" value="upload" id="fileButton" />
 
+
+    <script src="elements/firebase-test.js"></script>
+    <script src="elements/storage-test.js"></script>
     <!--would be header -->
     <reeflight-app></reeflight-app>
 
