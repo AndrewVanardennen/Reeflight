@@ -24,7 +24,40 @@
     //get email and pass
     const email = txtEmail.value;
     const pass = txtPassword.value;
+    const auth = firebase.auth();
+    //Sign in
+    const promise = auth.signInWithEmailAndPassword(email, pass);
+    promise.catch(e => console.log(e.message));
   });
+
+  // Add signup event
+  btnSignUp.addEventListener('click', e => {
+  // create email and pass
+  // Check for real emails
+  const email = txtEmail.value;
+  const pass = txtPassword.value;
+  const auth = firebase.auth();
+  //Sign in
+  const promise = auth.createUserWithEmailAndPassword(email, pass);
+  promise.catch(e => console.log(e.message));
+  });
+
+  // Add a realtime listener
+  firebase.auth().onAuthStateChanged(firebaseUser => {
+    if(firebaseUser) {
+      console.log(firebaseUser);
+      btnLogout.classList.remove('hide');
+    } else {
+      console.log('not logged in');
+      btnLogout.classList.add('hide');
+    }
+  });
+
+  // btnLogout
+  btnLogout.addEventListener('click', e => {
+    firebase.auth().signOut();
+  });
+
   //create references
   const dbRefObject = firebase.database().ref().child('object');
   const dbRefList = dbRefObject.child('purpose');
