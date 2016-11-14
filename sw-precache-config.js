@@ -1,8 +1,8 @@
 module.exports = {
   staticFileGlobs: [
     '**.html',
-    '**/*.html',
-    'images/**.*'
+    '**/*.{html,js}',
+    'sources/**.*'
   ],
 
   skipWaiting: true,
