@@ -1,11 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <script>
 'use strict';
-class BaseController extends Polymer.Element {
+class BaseController extends HTMLElement {
   constructor() {
     super();
   }
-  
+
   dispatchEvent(type=String, detail=Object, target=document) {
     target.dispatchEvent(new CustomEvent(type, {detail: detail || null}));
   }
