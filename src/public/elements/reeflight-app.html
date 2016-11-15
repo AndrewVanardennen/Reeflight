@@ -1,7 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/made-with/made-with.html">
 <link rel="import" href="../bower_components/copyright-notice/copyright-notice.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 
+<link rel="import" href="../controllers/user-controller.html">
 <link rel="import" href="icons.html">
 
 <dom-module id="reeflight-app">
@@ -16,7 +21,7 @@
       }
       header {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         width: 100%;
         height: 128px;
         background-color: #202020;
@@ -39,9 +44,70 @@
         background-color: #616161;
         color: #FFF;
       }
+      .main-toolbar, .nav-toolbar {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
+      }
+      .main-toolbar {
+        align-items: center;
+        justify-content: center;
+      }
+      .avatar {
+        width: 48px;
+        height: 48px;
+        padding: 0;
+      }
+      .dropdown-content {
+        display: flex;
+        flex-direction: column;
+        border: rgba(0,0,0,0.12) 1px solid;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
+      .user-menu-item {
+        width: 100%;
+        padding: 8px 16px;
+        min-width: 100px;
+        box-sizing: border-box;
+      }
+      .flex {
+        flex: 1;
+      }
+      /* try to keep everything in mouse/finger range when on big screens */
+      @media (min-width: 1400px) {
+        .nav-toolbar {
+          padding: 0 calc(100% / 5);
+        }
+      }
+
+      @media (max-width: 321px) {
+        .dropdown-content {
+          width: 100%,
+        }
+      }
     </style>
     <header>
-      <span class="appname">Reef Light</span>
+      <div class="main-toolbar flex">
+        <span class="appname">Reef Light</span>
+      </div>
+      <div class="nav-toolbar">
+        <span class="flex"></span>
+        <paper-menu-button vertical-align="bottom" horizontal-align="right" vertical-offset="-48">
+          <paper-icon-button
+            class="avatar"
+            slot="dropdown-trigger"
+            src="[[profile_picture]]">
+          </paper-icon-button>
+          <paper-listbox class="dropdown-content">
+            <p class="user-menu-item">Settings</p>
+            <p class="user-menu-item">Help</p>
+          </paper-listbox>
+        </paper-menu-button>
+      </div>
     </header>
     <section class="views">
 
@@ -54,17 +120,49 @@
         <copyright-notice name="Reeflight" license="CC-BY-NC-SA-4.0" documentation-license="CC-BY-4.0"></copyright-notice>
       </section>
     </footer>
+    <user-controller></user-controller>
   </template>
 
 </dom-module>
 <script>
-  class ReeflightApp extends Polymer.Element {//classname needs to be uppercase
+  class ReeflightApp extends Polymer.Element { //classname needs to be uppercase
     static get is() { return 'reeflight-app'; }
     static get config() {
-     return { /* properties, observers meta data */ }
+     return {
+       properties: {
+         user: {
+           type: Object,
+           value: null
+         }
+       },
+       observers: [
+         '_userChanged(user)'
+       ]
+     }
     }
     constructor() {
       super();
+      // bind methods
+      this._onUserLogin = this._onUserLogin.bind(this);
+      document.addEventListener('user-login', this._onUserLogin);
+    }
+
+    ready() {
+      super.ready();
+    }
+
+    _onUserLogin(event) {
+      firebase.database().ref('users/' + event.detail).once('value', snapshot => {
+        this.user = snapshot.val();
+      });
+    }
+
+    _userChanged(user) {
+      for (var prop in user) {
+        if (user.hasOwnProperty(prop)) {
+          this[prop] = user[prop];
+        }
+      }
     }
   }
   customElements.define(ReeflightApp.is, ReeflightApp);
