@@ -23,7 +23,10 @@
     "copyright-notice": "VandeurenGlenn/copyright-notice",
     "firebase": "^3.6.0",
     "paper-item": "PolymerElements/paper-item#2.0-preview",
-    "paper-material": "PolymerElements/paper-material#2.0-preview"
+    "paper-material": "PolymerElements/paper-material#2.0-preview",
+    "paper-icon-button": "2.0-preview",
+    "paper-menu-button": "2.0-preview",
+    "paper-listbox": "2.0-preview"
   },
   "resolutions": {
     "iron-icon": "2.0-preview",
