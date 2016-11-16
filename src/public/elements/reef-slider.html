@@ -1,0 +1,124 @@
+<dom-module id="reef-slider">
+  <template>
+    <style>
+      input[type=range]{
+        -webkit-appearance: none;
+      }
+
+      input[type=range]::-webkit-slider-runnable-track{
+        width: 300px;
+        height: 5px;
+        background:  #0097A7;
+        border: none;
+        border-radius: 3px;
+      }
+
+      input[type='range']::-webkit-slider-thumb {
+      	-webkit-appearance: none;
+      	background-color: #f57c00;
+      	border: none;
+      	width: 16px;
+      	height: 16px;
+      	border-radius: 50%;
+        margin-top: -6px;
+        margin-left: -1px;
+
+  }
+
+      input[type=range]:focus {
+        outline: : none;
+      }
+
+      input[type=range]:focus::-webkit-slider-runnable-track{
+        background: #b2ebf2;
+      }
+
+      /*firefox*/
+      input[type=range]{
+        /* fix for FF unable to apply focus style bug  */
+        border: 1px solid white;
+
+        /*required for proper track sizing in FF*/
+        width: 300px;
+      }
+
+      input[type=range]::-moz-range-track {
+          width: 300px;
+          height: 5px;
+          background: #0097A7;
+          border: none;
+          border-radius: 3px;
+      }
+
+      input[type=range]::-moz-range-thumb {
+          border: none;
+          height: 16px;
+          width: 16px;
+          border-radius: 50%;
+          background: #f57c00;
+      }
+
+      /*hide the outline behind the border*/
+      input[type=range]:-moz-focusring{
+          outline: 1px solid white;
+          outline-offset: -1px;
+      }
+
+      input[type=range]:focus::-moz-range-track {
+          background: #b2ebf2;
+      }
+
+      /*IE10+*/
+      input[type=range]::-ms-track {
+          width: 300px;
+          height: 5px;
+
+          /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+          background: transparent;
+
+          /*leave room for the larger thumb to overflow with a transparent border */
+          border-color: transparent;
+          border-width: 6px 0;
+
+          /*remove default tick marks*/
+          color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+          background: #777;
+          border-radius: 10px;
+      }
+      input[type=range]::-ms-fill-upper {
+          background: #0097A7;
+          border-radius: 10px;
+      }
+      input[type=range]::-ms-thumb {
+          border: none;
+          height: 16px;
+          width: 16px;
+          border-radius: 50%;
+          background: #f57c00;
+      }
+      input[type=range]:focus::-ms-fill-lower {
+          background: #888;
+      }
+      input[type=range]:focus::-ms-fill-upper {
+          background: #b2ebf2;
+      }
+    </style>
+
+    <input type="range" min="0" max="100" value="0"/>
+
+  </template>
+  <script>
+  class ReefSlider extends Polymer.Element { //classname needs to be uppercase
+    static get is() { return 'reef-slider'; }
+    static get config() {
+     return {}
+    }
+    constructor() {
+      super();
+    }
+  }
+  customElements.define(ReefSlider.is, ReefSlider);
+  </script>
+</dom-module>

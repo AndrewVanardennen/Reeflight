@@ -1,0 +1,120 @@
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="">
+<link rel="import" href="reef-slider.html">
+
+<dom-module id="profiles-light">
+  <template>
+    <style>
+      paper-button{
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-weight: normal;
+        font-size: 11px;
+        text-transform: uppercase;
+        -webkit-font-smoothing: antialiased;
+        width: 50px;
+      }
+      paper-icon-button{
+        color: var(--paper-blue-grey-900);
+        --paper-icon-button-ink-color: var(--paper-cyan-a700);
+      }
+
+    </style>
+    <div>--PROFILES--</div>
+
+    <div>
+      <paper-icon-button icon="icons:add"></paper-icon-button>
+      <paper-icon-button icon="icons:create"></paper-icon-button>
+      <paper-icon-button icon="icons:list"></paper-icon-button>
+    </div>
+    <section>
+      <h1>Star 1</h1>
+      <div>
+        <span>
+          Channel 1
+          <reef-slider></reef-slider>
+        </span>
+        <span>
+          Channel 2
+          <reef-slider></reef-slider>
+        </span>
+      </div>
+      <div>
+        <span>
+          Channel 3
+          <reef-slider></reef-slider>
+        </span>
+        <span>
+          Channel 4
+          <reef-slider></reef-slider>
+        </span>
+      </div>
+    </section>
+    <section>
+      <h1>Star 2</h1>
+      <div>
+        <span>
+          Channel 1
+          <reef-slider></reef-slider>
+        </span>
+        <span>
+          Channel 2
+          <reef-slider></reef-slider>
+        </span>
+      </div>
+      <div>
+        <span>
+          Channel 3
+          <reef-slider></reef-slider>
+        </span>
+        <span>
+          Channel 4
+          <reef-slider></reef-slider>
+        </span>
+      </div>
+    </section>
+    <section>
+      <h1>Star 3</h1>
+      <div>
+        <span>
+          Channel 1
+          <reef-slider></reef-slider>
+        </span>
+        <span>
+          Channel 2
+          <reef-slider></reef-slider>
+        </span>
+      </div>
+      <div>
+        <span>
+          Channel 3
+          <reef-slider></reef-slider>
+        </span>
+        <span>
+          Channel 4
+          <reef-slider></reef-slider>
+        </span>
+      </div>
+    </section>
+    <section>
+
+    </section>
+
+    </select>
+  </template>
+  <script>
+  class ProfilesLight extends Polymer.Element { //classname needs to be uppercase
+    static get is() { return 'profiles-light'; }
+    static get config() {
+     return {}
+    }
+    constructor() {
+      super();
+    }
+  }
+  customElements.define(ProfilesLight.is, ProfilesLight);
+  </script>
+</dom-module>
