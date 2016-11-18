@@ -1,0 +1,27 @@
+<link rel="import" href="firebase-controller.html">
+
+<script>
+  (function() {
+    class DataController extends FirebaseController {
+      static get is() { return 'data-controller' }
+      constructor() {
+        super();
+      }
+      var database = firebase.database();
+
+      function writeUserData( lampId) {
+        firebase.database().ref(this.settingsLocation + lampId).set({
+          
+        });
+      }
+      get userLocation() {
+        return 'users/' + firebase.currentUser.uid;
+      }
+
+      get settingsLocation() {
+        return this.userLocation + '/settings/';
+      }
+    }
+    customElements.define(DataController.is, DataController);
+  })()
+</script>

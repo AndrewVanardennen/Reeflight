@@ -1,5 +1,4 @@
-<dom-module id="reef-slider">
-  <template>
+  <template id="reef-slider">
     <style>
       input[type=range]{
         -webkit-appearance: none;
@@ -110,15 +109,21 @@
 
   </template>
   <script>
-  class ReefSlider extends Polymer.Element { //classname needs to be uppercase
+  class ReefSlider extends HTMLElement { //classname needs to be uppercase
     static get is() { return 'reef-slider'; }
     static get config() {
      return {}
     }
     constructor() {
       super();
+      console.log(this.parentNode);
+       let shadowRoot = this.attachShadow({mode: 'open'});
+       shadowRoot.innerHTML = `
+       <style>:host { ... }</style> <!-- look ma, scoped styles -->
+      <b>I'm in shadow dom!</b>
+      <slot></slot>
+    `;
     }
   }
   customElements.define(ReefSlider.is, ReefSlider);
   </script>
-</dom-module>

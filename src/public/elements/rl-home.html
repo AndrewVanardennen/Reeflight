@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="clock-face.css">
+<script src="clock-face.js"></script>
+
+<dom-module id="rl-home">
+  <template>
+    <style>
+
+    </style>
+    <div class="test">
+
+    </div>
+  </template>
+  <script>
+    class rlHome extends Polymer.Element {
+      static get is() { return 'rl-home';}
+      static get config(){
+        return{}
+      }
+    }
+    customElements.define(rlHome.is, rlHome);
+  </script>
+</dom-module>

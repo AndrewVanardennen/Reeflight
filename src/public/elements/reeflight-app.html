@@ -7,8 +7,11 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 
 <link rel="import" href="../controllers/user-controller.html">
+<link rel="import" href="../controllers/data-controller.html">
+
 <link rel="import" href="icons.html">
 <link rel="import" href="profiles-light.html" async>
+<link rel="import" href="rl-home.html" async>
 <dom-module id="reeflight-app">
   <template>
     <style>
@@ -112,6 +115,7 @@
     </header>
     <section class="views">
       <profiles-light></profiles-light>
+      <!-- <rl-home></rl-home> -->
     </section>
     <footer>
       <section class="made-with">
@@ -122,6 +126,7 @@
       </section>
     </footer>
     <user-controller></user-controller>
+    <data-controller></data-controller>
   </template>
 
 </dom-module>
@@ -145,12 +150,21 @@
       super();
       // bind methods
       this._onUserLogin = this._onUserLogin.bind(this);
+      // firebase add
+      this._addProfile = this._addProfile.bind(this);
       document.addEventListener('user-login', this._onUserLogin);
+    }
+      // firebase
+    get fbDataElement() {
+      return this.root.querySelector('data-controller');
     }
 
     ready() {
       super.ready();
+      // firebase test
+      document.addEventListener('add-profile', this._addProfile);
     }
+
 
     _onUserLogin(event) {
       firebase.database().ref('users/' + event.detail).once('value', snapshot => {
@@ -165,6 +179,11 @@
         }
       }
     }
+      // firebase
+    _addProfile(event) {
+      this.fbDataElement.addProfile(event.detail);
+    }
   }
+
   customElements.define(ReeflightApp.is, ReeflightApp);
 </script>

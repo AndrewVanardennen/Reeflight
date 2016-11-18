@@ -3,7 +3,8 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="">
+<link rel="import" href="../bower_components/paper-input/paper-input.html
+">
 <link rel="import" href="reef-slider.html">
 
 <dom-module id="profiles-light">
@@ -25,8 +26,9 @@
     </style>
     <div>--PROFILES--</div>
 
+    <p id="demo"></p>
     <div>
-      <paper-icon-button icon="icons:add"></paper-icon-button>
+      <paper-icon-button icon="icons:add" class="add-profile"></paper-icon-button>
       <paper-icon-button icon="icons:create"></paper-icon-button>
       <paper-icon-button icon="icons:list"></paper-icon-button>
     </div>
@@ -52,7 +54,6 @@
           <reef-slider></reef-slider>
         </span>
       </div>
-    </section>
     <section>
       <h1>Star 2</h1>
       <div>
@@ -76,7 +77,6 @@
         </span>
       </div>
     </section>
-    <section>
       <h1>Star 3</h1>
       <div>
         <span>
@@ -99,12 +99,9 @@
         </span>
       </div>
     </section>
-    <section>
-
-    </section>
-
-    </select>
   </template>
+
+
   <script>
   class ProfilesLight extends Polymer.Element { //classname needs to be uppercase
     static get is() { return 'profiles-light'; }
@@ -113,6 +110,64 @@
     }
     constructor() {
       super();
+      this._addProfile = this._addProfile.bind(this);
+    }
+
+    connectedCallback () {
+      super.connectedCallback();
+      this.root.querySelector('#demo').innerHTML = 'Demo ingeven!!';
+      this.root.querySelector('.add-profile').addEventListener('click', this._addProfile);
+    }
+    _addProfile(){
+      document.dispatchEvent(new CustomEvent('add-profile', {detail:{
+        name:'Clouds',
+        stars: [{
+          name: 'star1',
+          channels: [{
+            name: 'channel1',
+            value: 10
+          }, {
+            name: 'channel2',
+            value: 20
+          }, {
+            name: 'channel3',
+            value: 40
+          },{
+            name: 'channel4',
+            value: 10
+          }]
+        }, {
+          name: 'star2',
+          channels: [{
+            name: 'channel1',
+            value: 33
+          }, {
+            name: 'channel2',
+            value: 22
+          }, {
+            name: 'channel3',
+            value: 11
+          },{
+            name: 'channel4',
+            value: 55
+          }]
+        },{
+          name: 'star3',
+          channels: [{
+            name: 'channel1',
+            value: 72
+          }, {
+            name: 'channel2',
+            value: 21
+          }, {
+            name: 'channel3',
+            value: 09
+          },{
+            name: 'channel4',
+            value: 18
+          }]
+        }]
+      }}))
     }
   }
   customElements.define(ProfilesLight.is, ProfilesLight);
