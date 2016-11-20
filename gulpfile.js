@@ -21,7 +21,7 @@ const browserSyncInit = (baseDir, env='dev') => {
 
   if (env === 'dist') {
     browserSync.watch(['src/public/index.html', 'src/public/**/*.html'])
-      .on('change', series('vulcanize', reload()));
+      .on('change', series('elements', 'vulcanize', reload()));
     browserSync.watch('**/*.{png,jpg}')
       .on('change', series('images', reload()));
   } else {
@@ -34,6 +34,16 @@ task('images', () => {
   return src('src/public/sources/**/*.{jpg,png}')
     .pipe(lwip.resize(256))
     .pipe(dest('dist/public/sources'));
+});
+
+task('icons', () => {
+  return src('src/public/sources/**/*.svg')
+    .pipe(dest('dist/public/sources'));
+});
+
+task('elements', () => {
+  return src('src/public/**/{reeflight-header,reeflight-footer,home-view,icons}.html')
+    .pipe(dest('dist/public'));
 });
 
 task('vulcanize', () => {
@@ -56,7 +66,7 @@ task('browser-sync', () => {
 });
 
 // Main Tasks
-task('default', series('images', 'vulcanize'))
+task('default', series('images', 'icons', 'elements', 'vulcanize'))
 
 task('serve', series('browser-sync'));
 
