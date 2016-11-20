@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="reeflight-footer">
+  <template>
+    <style>
+      :host {
+        display: block;
+        min-height: 64px;
+      }
+    </style>
+    <section class="made-with">
+      <slot name="made-with"></slot>
+    </section>
+    <slot></slot>
+    <slot name="copyright"></slot>
+  </template>
+  <script>
+    class ReeflightFooter extends Polymer.Element {
+      static get is() {
+        return 'reeflight-footer';
+      }
+      constructor() {
+        super();
+      }
+    }
+    customElements.define(ReeflightFooter.is, ReeflightFooter);
+  </script>
+</dom-module>

@@ -8,8 +8,7 @@
         super();
         // bind methods
         this._onAuthStateChanged = this._onAuthStateChanged.bind(this);
-
-        firebase.auth().onAuthStateChanged(this._onAuthStateChanged);
+        this.style.display = 'none';
       }
 
       set _user(user) {
@@ -26,6 +25,10 @@
 
       get user() {
         return this._user || JSON.parse(localStorage.getItem(`firebase:authUser:${this.config.apiKey}:[DEFAULT]`));
+      }
+
+      connectedCallback() {
+        firebase.auth().onAuthStateChanged(this._onAuthStateChanged);
       }
 
       /**
@@ -81,7 +84,7 @@
 
       randomAvatar() {
         let num = Math.floor((Math.random() * 10) + 1); // Get a number between 1 & 10
-        return `sources/avatar-${num}.png`;
+        return `sources/avatars/avatar-${num}.png`;
       }
 
       writeUserData(uid, name, email, imageUrl) {
