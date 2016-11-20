@@ -123,7 +123,7 @@
     constructor() {
       super();
       // bind methods
-      const doc = document.currentScript.ownerDocument;
+      const doc = document.currentScript ? document.currentScript.ownerDocument : document;
       const tmpl = doc.querySelector('#reeflight-app');
       this._root = this.attachShadow({mode:'open'});
       this._root.appendChild(tmpl.content.cloneNode(true));
