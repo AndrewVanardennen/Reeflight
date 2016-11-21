@@ -102,24 +102,11 @@
     <user-controller></user-controller>
   </template>
 <script async>
-  class ReeflightApp extends HTMLElement { //classname needs to be uppercase
+  /**
+   * ReeflightApp
+   */
+  class ReeflightApp extends HTMLElement {
     static get is() { return 'reeflight-app'; }
-    static get observedAttributes() {
-      return ['user'];
-    }
-    static get config() {
-     return {
-       properties: {
-         user: {
-           type: Object,
-           value: null
-         }
-       },
-       observers: [
-         '_userChanged(user)'
-       ]
-     }
-    }
     constructor() {
       super();
       // bind methods
@@ -129,13 +116,20 @@
       this._root.appendChild(tmpl.content.cloneNode(true));
       this._onUserLogin = this._onUserLogin.bind(this);
     }
-
+    /**
+     * Runs everytime the user changes
+     */
     set user(value) {
       this._user = value;
+      this.header.setAttribute('avatar', value.profile_picture);
     }
 
     get user() {
       return this._user || {};
+    }
+
+    get header() {
+      return this._root.querySelector('reeflight-header');
     }
 
     connectedCallback() {
@@ -153,25 +147,13 @@
         });
       });
 
-      // TODO: stream local devices
+      // TODO: stream lamps
       // fetch('api/devices').then(response => {
       //   //stream
       // }).then(response => {
       //
       // })
 
-    }
-
-    /**
-     * @return change.type, change.name, change.oldValue
-     */
-    observeObject(model, cb) {
-      return Object.observe(model, changes => {
-        // async callback
-        changes.forEach(change => {
-          return cb(change);
-        });
-      });
     }
 
     _lazyImport(href) {
@@ -182,22 +164,10 @@
     }
 
     _onUserLogin(event) {
-      const header = this._root.querySelector('reeflight-header');
       firebase.database().ref('users/' + event.detail).once('value', snapshot => {
+        // update the user prop with snapshot value
         this.user = snapshot.val();
-        header.setAttribute('avatar', this.user.profile_picture);
       });
-    }
-
-    _userChanged(user) {
-      for (var prop in user) {
-        if (user.hasOwnProperty(prop)) {
-          this[prop] = user[prop];
-        }
-      }
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-      console.log(name);
     }
   }
   customElements.define(ReeflightApp.is, ReeflightApp);
