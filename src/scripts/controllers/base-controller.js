@@ -1,7 +1,5 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<script>
 'use strict';
-class BaseController extends HTMLElement {
+export default class BaseController extends HTMLElement {
   constructor() {
     super();
   }
@@ -16,4 +14,3 @@ class BaseController extends HTMLElement {
     console.log(`error-${errorCode}::${errorMessage}`);
   }
 }
-</script>

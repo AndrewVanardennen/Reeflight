@@ -1,0 +1,15 @@
+{
+  "entrypoint": "src/index.html",
+  "shell": "src/reeflight-app.html",
+  "fragments": [
+    "src/elements/home-view.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "src/sources/**/*",
+    "bower.json"
+  ],
+  "includeDependencies": [
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}

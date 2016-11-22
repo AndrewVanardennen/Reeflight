@@ -1,13 +1,16 @@
 'use strict';
 const { task, src, series, dest } = require('gulp');
 const lwip = require('gulp-lwip');
+const { rollup } = require( 'rollup' );
+const babel = require('rollup-plugin-babel');
+const { writeFileSync } = require('fs');
 const vulcanize = require('gulp-vulcanize');
+const swPrecache = require('sw-precache');
 const browserSync = require('browser-sync').create();
-
 const reload = () => {
   return browserSync.reload;
 }
-const browserSyncInit = (baseDir, env='dev') => {
+const browserSyncInit = baseDir => {
   browserSync.init({
     port: 5000,
     ui: {
@@ -20,8 +23,8 @@ const browserSyncInit = (baseDir, env='dev') => {
   });
 
   if (env === 'dist') {
-    browserSync.watch(['src/public/index.html', 'src/public/**/*.html'])
-      .on('change', series('elements', 'vulcanize', reload()));
+    browserSync.watch(['src/index.html', 'src/**/*.html'])
+      .on('change', series('copy', 'vulcanize', reload()));
     browserSync.watch('**/*.{png,jpg}')
       .on('change', series('images', reload()));
   } else {
@@ -30,44 +33,120 @@ const browserSyncInit = (baseDir, env='dev') => {
   }
 }
 
+let config = {};
+let lazyResources = ['paper-menu-button', 'paper-icon-button', 'iron-iconset-svg'];
+
+const env = (env, source, elements, bowerComponents, destination=null) => {
+  return new Promise((resolve, reject) => {
+    try {
+      config = {
+        env: env,
+        source: source,
+        elements: elements,
+        bowerComponents: bowerComponents,
+        destination: destination || env
+      }
+    } catch (error) {
+      reject(error);
+    }
+    resolve();
+  });
+}
+
+task('env', () => {
+  return env('dev', 'src', '*', '**');
+});
+
+task('env:dist', cb => {
+  return env('dist', 'dev', '{reeflight-header,reeflight-footer,home-view,icons}',
+    '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,paper-behaviors,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
+});
+
 task('images', () => {
-  return src('src/public/sources/**/*.{jpg,png}')
+  return src(`${config.source}/sources/**/*.{jpg,png}`)
     .pipe(lwip.resize(256))
-    .pipe(dest('dist/public/sources'));
+    .pipe(dest(`${config.destination}/sources`));
 });
 
 task('icons', () => {
-  return src('src/public/sources/**/*.svg')
-    .pipe(dest('dist/public/sources'));
+  return src(`${config.source}/sources/**/*.svg`)
+    .pipe(dest(`${config.destination}/sources`));
 });
 
-task('elements', () => {
-  return src('src/public/**/{reeflight-header,reeflight-footer,home-view,icons}.html')
-    .pipe(dest('dist/public'));
+task('copy:app', () => {
+  return src([`${config.source}/index.html`])
+    .pipe(dest(config.destination));
+});
+
+task('copy:elements', () => {
+  return src(`${config.source}/elements/${config.elements}.html`)
+    .pipe(dest(`${config.destination}/elements`));
+});
+
+task('copy:bower', () => {
+  return src(`bower_components/${config.bowerComponents}/**/*.{html,js}`)
+    .pipe(dest(`${config.destination}/bower_components`));
+});
+
+task('copy', series('copy:app', 'copy:elements', 'copy:bower'));
+
+task('rollup', () => {
+  // used to track the cache for subsequent bundles
+  var cache;
+
+  return rollup({
+    entry: 'src/scripts/reeflight-app.js',
+    // Use the previous bundle as starting point.
+    cache: cache
+  }).then(bundle => {
+    // Cache our bundle for later use (optional)
+    cache = bundle;
+
+    bundle.write({
+      format: 'cjs',
+      plugins: [ babel() ],
+      dest: 'dev/scripts/reeflight-app.js'
+    });
+  });
 });
 
 task('vulcanize', () => {
-  return src('src/public/index.html')
+  return src('dev/index.html')
     .pipe(vulcanize({
-        excludes: [],
-        stripExcludes: false,
         inlineScripts: true,
         inlineCss: true
     }))
-    .pipe(dest('dist/public'));
-});
-
-task('browser-sync:dist', () => {
-  return browserSyncInit('./dist/public', 'dist');
+    .pipe(dest(config.destination));
 });
 
 task('browser-sync', () => {
-  return browserSyncInit('./src/public');
+  return browserSyncInit(config.destination);
 });
 
+task('precache', () => {
+  return swPrecache.write(__dirname + '/dist/service-worker.js', {
+    staticFileGlobs: [
+      'dist/**.html',
+      'dist/**/*.{html,js}',
+      'dist/sources/**.*'
+    ],
+    stripPrefix: 'dist',
+
+    skipWaiting: true,
+    handleFetch: true,
+    runtimeCaching: [{
+      urlPattern: /\//,
+      handler: 'cacheFirst'
+    }]
+  });
+});
 // Main Tasks
-task('default', series('images', 'icons', 'elements', 'vulcanize'))
+task('default', series('rollup', 'images', 'icons', 'copy'))
 
-task('serve', series('browser-sync'));
+task('build-dev', series('env', 'default'));
 
-task('serve:dist', series('default', 'browser-sync:dist'))
+task('build', series('build-dev', 'env:dist', 'default', 'vulcanize', 'precache'))
+
+task('serve', series('env', 'default', 'browser-sync'));
+
+task('serve:dist', series('build', 'browser-sync'))
