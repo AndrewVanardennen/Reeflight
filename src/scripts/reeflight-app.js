@@ -10,13 +10,14 @@ class ReeflightApp extends AppController {
     super('reeflight-app');
     // bind methods
     this._onUserLogin = this._onUserLogin.bind(this);
+    this._onUserChange = this._onUserChange.bind(this);
+    this.pubsub.subscribe('user.change', this._onUserChange);
   }
   /**
    * Runs everytime the user changes
    */
   set user(value) {
     this._user = value;
-    this.header.setAttribute('avatar', value.profile_picture);
   }
 
   get user() {
@@ -61,12 +62,14 @@ class ReeflightApp extends AppController {
   _onUserLogin(event) {
     firebase.database().ref('users/' + event.detail).once('value', snapshot => {
       // update the user prop with snapshot value
-      this.user = snapshot.val();
+      let user = snapshot.val();
+      this.user = user;
+      this.pubsub.publish('user.change', user);
     });
   }
 
-  _onUserChange(change) {
-    console.log(change);
+  _onUserChange(user) {
+    this.header.setAttribute('avatar', user.profile_picture);
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);

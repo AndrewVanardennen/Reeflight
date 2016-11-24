@@ -1,8 +1,8 @@
 'use strict';
 import UserController from './user-controller';
-import PubSub from './../internals/pubsub';
+import BaseController from './base-controller';
 
-export default class AppController extends HTMLElement {
+export default class AppController extends BaseController {
   constructor(name) {
     super();
     // TODO: create CustomHTMLElement
@@ -13,7 +13,6 @@ export default class AppController extends HTMLElement {
         this._root.appendChild(tmpl.content.cloneNode(true));
       });
     }
-    this.pubsub = new PubSub();
     new UserController();
   }
 

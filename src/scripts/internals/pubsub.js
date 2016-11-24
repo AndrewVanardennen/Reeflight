@@ -11,10 +11,10 @@ export default class PubSub {
     this.handlers.push({event: event, handler: handler.bind(context)});
   }
 
-  publish(event) {
+  publish(event, value) {
     for (let i = 0; i < this.handlers.length; i++) {
       if (this.handlers[i].event === event) {
-        this.handlers[i].handler.call();
+        this.handlers[i].handler(value);
       }
     }
   }
