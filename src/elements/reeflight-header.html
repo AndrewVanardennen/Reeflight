@@ -11,6 +11,7 @@
         width: 100%;
         height: 128px;
         background-color: #0097A7;
+        color: #fff;
       }
       .nav-toolbar {
         display: flex;
@@ -19,27 +20,12 @@
         height: 64px;
         padding: 0 16px;
         box-sizing: border-box;
+        align-items: center;
       }
       .avatar {
         width: 48px;
         height: 48px;
         padding: 0;
-      }
-      .dropdown-content {
-        display: flex;
-        flex-direction: column;
-        border: rgba(0,0,0,0.12) 1px solid;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-                0 1px 5px 0 rgba(0, 0, 0, 0.12),
-                0 3px 1px -2px rgba(0, 0, 0, 0.2);
-      }
-      .user-menu-item {
-        width: 100%;
-        padding: 8px 16px;
-        min-width: 120px;
-        box-sizing: border-box;
-        text-transform: uppercase;
-        cursor: pointer;
       }
       .flex {
         flex: 1;
@@ -59,22 +45,9 @@
     </style>
     <slot name="main-toolbar"></slot>
     <div class="nav-toolbar">
+      <paper-icon-button icon="menu" class="drawer-toggle"></paper-icon-button>
       <span class="flex"></span>
-      <paper-menu-button
-        vertical-align="bottom"
-        horizontal-align="right"
-        vertical-offset="-70">
-
-        <paper-icon-button
-          class="avatar"
-          slot="dropdown-trigger"
-          src="[[avatar]]">
-        </paper-icon-button>
-        <div class="dropdown-content">
-          <span class="user-menu-item">Settings</span>
-          <span class="user-menu-item">Help</span>
-        </div>
-      </paper-menu-button>
+      <slot></slot>
     </div>
   </template>
   <script>
@@ -91,6 +64,15 @@
       }
       constructor() {
         super();
+      }
+      connectedCallback() {
+        super.connectedCallback();
+
+        this.root.querySelector('.drawer-toggle').addEventListener('click', this.toggleDrawer);
+      }
+      toggleDrawer() {
+        console.log(event);
+        document.dispatchEvent(new CustomEvent('toggle-drawer'));
       }
     }
     customElements.define(ReeflightHeader.is, ReeflightHeader);

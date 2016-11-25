@@ -9,8 +9,14 @@ class ReeflightApp extends AppController {
   constructor() {
     super('reeflight-app');
     // bind methods
+    this.style.position = 'absolute';
+    this.style.top = 0;
+    this.style.bottom = 0;
+    this.style.left = 0;
+    this.style.right = 0;
     this._onUserLogin = this._onUserLogin.bind(this);
     this._onUserChange = this._onUserChange.bind(this);
+    this._onToggleDrawer = this._onToggleDrawer.bind(this);
     this.pubsub.subscribe('user.change', this._onUserChange);
   }
   /**
@@ -28,9 +34,18 @@ class ReeflightApp extends AppController {
     return this._root.querySelector('reeflight-header');
   }
 
+  get drawer() {
+    return this._root.querySelector('reeflight-drawer');
+  }
+
+  get drawerHeading() {
+    return this._root.querySelector('reeflight-drawer-heading');
+  }
+
   connectedCallback() {
     this.pubsub.subscribe('user', this._onUserChange, this);
     document.addEventListener('user-login', this._onUserLogin);
+    document.addEventListener('toggle-drawer', this._onToggleDrawer);
 
     setTimeout(() => {
       const sources = [
@@ -69,7 +84,37 @@ class ReeflightApp extends AppController {
   }
 
   _onUserChange(user) {
-    this.header.setAttribute('avatar', user.profile_picture);
+    this.drawerHeading.setAttribute('avatar', user.profile_picture);
+  }
+
+  _onToggleDrawer() {
+    if (this.drawer.shown) {
+      this.drawer.hide();
+      this._applyAppStateStyles(
+        'width ease-out 0.18s',
+        '100%'
+      );
+    } else {
+      this.drawer.show();
+      this._applyAppStateStyles(
+        'width ease-in 0.18s',
+        'calc(100% - ' + this.drawer.width + ')'
+      );
+    }
+  }
+
+  _applyAppStateStyles(transition, width) {
+    requestAnimationFrame(() => {
+      this.style.transition = transition;
+      this.style.width = width;
+      if (this.drawer.drawerRight) {
+        this.style.left = 0;
+        this.style.right = null;
+      } else {
+        this.style.left = null;
+        this.style.right = 0;
+      }
+    });
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);

@@ -1,0 +1,92 @@
+<script>
+'use strict';
+class ReeflightDrawer extends HTMLElement {
+  static get is() { return 'reeflight-drawer' };
+  static get ObservedAttributes() {
+    return ['show'];
+  }
+  constructor() {
+    super();
+    this.firstRender = true;
+    this._root = this.attachShadow({mode: 'open'});
+    this.style.display = 'flex';
+    this.style.flexDirection = 'column';
+    this.style.height = '100%';
+    this.style.width = '286px';
+    this.style.position = 'fixed';
+    this.style.top = '0';
+    this.style.bottom = '0';
+    if (this.drawerRight) {
+      this.style.right = '0';
+    } else {
+      this.style.left = '0';
+    }
+    if (this.forcedShow) {
+      this.show();
+    } else {
+      this.hide();
+    }
+    this._root.innerHTML = '<slot name="heading"><\/slot><slot><\/slot><slot name="actions"></slot>';
+  }
+
+  get forcedShow() {
+    return this.hasAttribute('force-show');
+  }
+
+  get drawerRight() {
+    return this.hasAttribute('drawer-right');
+  }
+
+  set shown(value) {
+    this._shown = value;
+    this.setAttribute('shown', '');
+    if (value) {
+      this._applyDrawerStateStyles(
+        'transform ease-in 0.18s',
+        'translateX(0)',
+        1
+      );
+    } else {
+      this._applyDrawerStateStyles(
+        'transform ease-out 0.1s',
+        'translateX(-105%)',
+        0
+      );
+    }
+  }
+
+  get shown() {
+    return this._shown;
+  }
+
+  get width() {
+    return this.style.width;
+  }
+
+  _applyDrawerStateStyles(transition, transform, opacity) {
+    requestAnimationFrame(() => {
+      if (this.firstRender) {
+        this.firstRender = false;
+      } else {
+        this.style.transition = transition;
+      }
+      this.style.transform = transform;
+      this.style.opacity = opacity;
+    });
+  }
+
+  show() {
+    this.shown = true;
+  }
+
+  hide() {
+    this.shown = false;
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log(name, oldValue);
+
+  }
+}
+customElements.define(ReeflightDrawer.is, ReeflightDrawer);
+</script>

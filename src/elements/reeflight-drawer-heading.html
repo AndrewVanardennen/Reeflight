@@ -1,0 +1,70 @@
+<script>
+  class ReeflightDrawerHeading extends HTMLElement {
+    static get is() {
+      return 'reeflight-drawer-heading';
+    }
+    static get observedAttributes() {
+      return ['avatar', 'name'];
+    }
+    constructor() {
+      super();
+      this._root = this.attachShadow({mode: 'open'});
+      this.style.height = '128px';
+      this.style.display = 'flex';
+      this.style.flexDirection = 'column';
+    }
+    connectedCallback() {
+      this.container = document.createElement('span');
+      this.container.style.padding = '8px 16px';
+      this.container.style.display = 'flex';
+      this.container.style.flexDirection = 'row';
+      this.container.style.alignItems = 'center';
+      this.avatarElement = document.createElement('img');
+      this.avatarElement.style.height = '48px';
+      this.avatarElement.style.width = '48px';
+      this.avatarElement.style.borderRadius = '50%';
+      this.avatarElement.style.outline = 'none';
+      this.avatarElement.userSelect = 'none';
+      this.avatarElement.pointerEvents = 'none';
+
+      this.nameElement = document.createElement('span');
+      this.nameElement.style.paddingLeft = '8px';
+      this.nameElement.style.height = '100%';
+      this.name = 'Menu';
+
+      let border = document.createElement('span');
+      border.style.display = 'flex';
+      border.style.borderBottom = '1px solid rgba(0,0,0,0.12)';
+      border.style.marginTop = '-1';
+      border.style.width = '100%';
+      border.style.height = '1px';
+
+      this.container.appendChild(this.avatarElement);
+      this.container.appendChild(this.nameElement);
+      this._root.appendChild(this.container);
+      this._root.appendChild(border);
+    }
+    set avatar(value) {
+      this.setAttribute('avatar', value);
+      if (value) {
+        this.avatarElement.src = value;
+      } else {
+        this.avatarElement.src = null;
+      }
+    }
+    set name(value) {
+      this.setAttribute('name', value);
+      if (value) {
+        this.nameElement.innerHTML = value;
+      } else {
+        this.nameElement.innerHTML = 'Welcome';
+      }
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (oldValue === null || oldValue !== newValue) {
+        this[name] = newValue;
+      }
+    }
+  }
+  customElements.define(ReeflightDrawerHeading.is, ReeflightDrawerHeading);
+</script>
