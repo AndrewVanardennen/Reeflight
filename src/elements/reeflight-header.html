@@ -2,6 +2,9 @@
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
+<link rel="import" href="reef-button.html">
+
+
 <dom-module id="reeflight-header">
   <template>
     <style>
@@ -13,7 +16,7 @@
         background-color: #0097A7;
         color: #fff;
       }
-      .nav-toolbar {
+      .container {
         display: flex;
         flex-direction: row;
         width: 100%;
@@ -22,6 +25,10 @@
         box-sizing: border-box;
         align-items: center;
       }
+      .nav-toolbar {
+        display: block;
+        position: relative;
+      }
       .avatar {
         width: 48px;
         height: 48px;
@@ -29,6 +36,17 @@
       }
       .flex {
         flex: 1;
+      }
+
+      reef-button {
+        outline: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: 'roboto' sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: white;
       }
       /* try to keep everything in mouse/finger range when on big screens */
       @media (min-width: 1400px) {

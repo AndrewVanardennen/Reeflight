@@ -1,0 +1,40 @@
+<script>
+  class ReefButton extends HTMLElement  {
+    constructor() {
+      super();
+      this.onMouseDown = this.onMouseDown.bind(this); // Bind method
+      this.onMouseUp = this.onMouseUp.bind(this); // Bind method
+      this.onMouseClick = this.onMouseClick.bind(this); // Bind method
+      this.style.display = 'inline-flex';
+      this.style.padding = '8px';
+      this.style.alignItems = 'center';
+      this.style.maxHeight =  '48px';
+      this.style.boxSizing = 'border-box'
+      this.style.borderRadius = '3px';
+
+      this.addEventListener('mousedown', this.onMouseDown);
+      this.addEventListener('mouseup', this.onMouseUp);
+      this.addEventListener('click', this.onMouseClick);
+    }
+    get name() {
+      return this.getAttribute('name') + '-button-click' || 'reef-button-click';
+    }
+
+    onMouseDown() {
+      this.style.boxShadow = '0 2px 2px 0 rgba(0, 0, 0, 0.14), \
+                              0 1px 5px 0 rgba(0, 0, 0, 0.12), \
+                              0 3px 1px -2px rgba(0, 0, 0, 0.2)' ;
+      this.style.backgroundColor = '#006064';
+    }
+    onMouseUp() {
+      this.style.boxShadow = 'none';
+      this.style.backgroundColor = 'transparent';
+    }
+    onMouseClick() {
+      document.dispatchEvent(new CustomEvent(this.name)); // Fire event
+
+    }
+
+  }
+  customElements.define('reef-button', ReefButton);
+</script>
