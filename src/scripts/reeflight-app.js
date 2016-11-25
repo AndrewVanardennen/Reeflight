@@ -17,6 +17,9 @@ class ReeflightApp extends AppController {
     this._onUserLogin = this._onUserLogin.bind(this);
     this._onUserChange = this._onUserChange.bind(this);
     this._onToggleDrawer = this._onToggleDrawer.bind(this);
+    this._onHomeClick = this._onHomeClick.bind(this);
+    this._onSettingsClick = this._onSettingsClick.bind(this);
+    this._onProfilesClick = this._onProfilesClick.bind(this);
     this.pubsub.subscribe('user.change', this._onUserChange);
   }
   /**
@@ -42,10 +45,17 @@ class ReeflightApp extends AppController {
     return this._root.querySelector('reeflight-drawer-heading');
   }
 
+  get pages() {
+    return this._root.querySelector('reef-pages');
+  }
+
   connectedCallback() {
     this.pubsub.subscribe('user', this._onUserChange, this);
     document.addEventListener('user-login', this._onUserLogin);
     document.addEventListener('toggle-drawer', this._onToggleDrawer);
+    document.addEventListener('home-button-click', this._onHomeClick);
+    document.addEventListener('settings-button-click', this._onSettingsClick);
+    document.addEventListener('profiles-button-click', this._onProfilesClick);
 
     setTimeout(() => {
       const sources = [
@@ -115,6 +125,21 @@ class ReeflightApp extends AppController {
         this.style.right = 0;
       }
     });
+  }
+
+  _onHomeClick(){
+    this.pages.select('home');
+    this._lazyImport('elements/home-view.html');
+  }
+
+  _onSettingsClick() {
+    this.pages.select('settings');
+    this._lazyImport('elements/settings-view.html');
+  }
+
+  _onProfilesClick(){
+    this.pages.select('profiles');
+    this._lazyImport('elements/profiles-view.html');
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);

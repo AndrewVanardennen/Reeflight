@@ -31,6 +31,7 @@
       this.style.backgroundColor = 'transparent';
     }
     onMouseClick() {
+      console.log('even');
       document.dispatchEvent(new CustomEvent(this.name)); // Fire event
 
     }

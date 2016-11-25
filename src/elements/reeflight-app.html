@@ -1,3 +1,5 @@
+<link rel="import" href="reef-pages.html">
+<link rel="import" href="reef-button.html">
 <link rel="import" href="reeflight-drawer.html">
 <link rel="import" href="reeflight-drawer-heading.html">
 
@@ -36,7 +38,7 @@
     a {
       text-decoration: none;
     }
-    section.views {
+    reef-pages {
       flex: 1;
     }
     span[slot="made-with"] {
@@ -80,18 +82,28 @@
     reeflight-drawer {
       border-right: solid 1px rgba(0, 0, 0, 0.12);
     }
+    [hidden] {
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+    }
   </style>
   <reeflight-drawer>
     <reeflight-drawer-heading slot="heading"></reeflight-drawer-heading>
+    <reef-button name="home">home</reef-button>
+    <reef-button name="profiles">profiles</reef-button>
+    <reef-button name="settings">settings</reef-button>
   </reeflight-drawer>
   <reeflight-header>
     <div class="main-toolbar" slot="main-toolbar">
       <span class="appname">Reef Light</span>
     </div>
   </reeflight-header>
-  <section class="views">
-    <home-view></home-view>
-  </section>
+  <reef-pages>
+    <home-view name="home"></home-view>
+    <settings-view name="settings"></settings-view>
+    <profiles-view name="profiles"></profiles-view>
+  </reef-pages>
   <reeflight-footer>
     <span slot="made-with">
       Made With
