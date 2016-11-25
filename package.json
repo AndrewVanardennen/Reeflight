@@ -4,8 +4,6 @@
   "description": "Remote controlled aquarium led light",
   "main": "index.js",
   "scripts": {
-    "install": "npm run build",
-    "build": "rollup --config rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Andrew Vanardennen",
