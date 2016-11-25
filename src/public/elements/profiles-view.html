@@ -2,7 +2,7 @@
 <link rel="import" href="reef-view.html">
 
 
-<dom-module id="home-view">
+<dom-module id="profiles-view">
   <template>
     <style>
       :host {
@@ -14,20 +14,21 @@
 
     <reef-view class="container">
         <span class="shadow">
-          Hello reef-view this is jif or gif?
+          Hello this is profile-view
         </span>
+
 
     </reef-view>
   </template>
   <script>
-    class HomeView extends Polymer.Element {
+    class ProfilesView extends Polymer.Element {
       static get is() {
-        return 'home-view';
+        return 'profiles-view';
       };
       constructor() {
         super();
       }
     }
-    customElements.define(HomeView.is, HomeView);
+    customElements.define(ProfilesView.is, ProfilesView);
   </script>
 </dom-module>

@@ -1,0 +1,26 @@
+<script>
+  class ReefPages extends HTMLElement {
+    static get is(){
+      return 'reef-pages';
+    };
+    constructor() {
+      super();
+      // Create shadow Dom
+      this._root = this.attachShadow( {mode:'open'} )
+      // Create Dom innerHTML
+      this._root.innerHTML = '<slot></slot>';
+    }
+    select(page) {
+      for (var i = 0; i < this.children.length; i++) {
+        let child = this.children[i];
+        if (child.getAttribute('name') === page) {
+          child.removeAttribute('hidden');
+        } else {
+          child.setAttribute('hidden', '');
+        };
+        console.log(this.children[i]);
+      }
+    }
+  }
+  customElements.define(ReefPages.is, ReefPages);
+</script>

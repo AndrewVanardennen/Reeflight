@@ -1,4 +1,7 @@
-  <template id="reeflight-app">
+<link rel="import" href="reef-pages.html">
+
+
+<template id="reeflight-app">
     <style>
       :host {
         display: flex;
@@ -33,7 +36,7 @@
       a {
         text-decoration: none;
       }
-      section.views {
+      reef-pages {
         flex: 1;
       }
       span[slot="made-with"] {
@@ -74,15 +77,20 @@
         width: 12px;
         height: 12px;
       }
+      [hidden] {
+        display: none;
+      }
     </style>
     <reeflight-header>
       <div class="main-toolbar" slot="main-toolbar">
         <span class="appname">Reef Light</span>
       </div>
     </reeflight-header>
-    <section class="views">
-      <home-view></home-view>
-    </section>
+    <reef-pages>
+      <home-view name="home"></home-view>
+      <settings-view name="settings"></settings-view>
+      <profiles-view name="profiles"></profiles-view>
+    </reef-pages>
     <reeflight-footer>
       <span slot="made-with">
         Made With
@@ -128,6 +136,8 @@
       this._root = this.attachShadow({mode:'open'});
       this._root.appendChild(tmpl.content.cloneNode(true));
       this._onUserLogin = this._onUserLogin.bind(this);
+      this.onSettingsClick = this.onSettingsClick.bind(this); // Bind here for Garbagecollector
+      this.onProfilesClick = this.onProfilesClick.bind(this);
     }
 
     set user(value) {
@@ -138,8 +148,16 @@
       return this._user || {};
     }
 
+    get pages() {
+      return this._root.querySelector('reef-pages');
+    }
     connectedCallback() {
       document.addEventListener('user-login', this._onUserLogin);
+
+      document.addEventListener('settings-button-click', this.onSettingsClick);
+      document.addEventListener('profiles-button-click', this.onProfilesClick);
+      this.pages.select('home');
+      // this.pages.select('settings');
 
       setTimeout(() => {
         const sources = [
@@ -196,6 +214,16 @@
         }
       }
     }
+    onSettingsClick() {
+      this.pages.select('settings');
+      this._lazyImport('elements/settings-view.html');
+    }
+
+    onProfilesClick(){
+      this.pages.select('profiles');
+      this._lazyImport('elements/profiles-view.html');
+    }
+
     attributeChangedCallback(name, oldValue, newValue) {
       console.log(name);
     }

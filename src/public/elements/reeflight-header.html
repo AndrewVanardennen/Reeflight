@@ -2,6 +2,9 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
+<link rel="import" href="reef-button.html">
+
+
 <dom-module id="reeflight-header">
   <template>
     <style>
@@ -12,13 +15,17 @@
         height: 128px;
         background-color: #0097A7;
       }
-      .nav-toolbar {
+      .container {
         display: flex;
         flex-direction: row;
         width: 100%;
         height: 64px;
         padding: 0 16px;
         box-sizing: border-box;
+      }
+      .nav-toolbar {
+        display: block;
+        position: relative;
       }
       .avatar {
         width: 48px;
@@ -44,6 +51,17 @@
       .flex {
         flex: 1;
       }
+
+      reef-button {
+        outline: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: 'roboto' sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: white;
+      }
       /* try to keep everything in mouse/finger range when on big screens */
       @media (min-width: 1400px) {
         .nav-toolbar {
@@ -59,22 +77,26 @@
     </style>
     <slot name="main-toolbar"></slot>
     <div class="nav-toolbar">
-      <span class="flex"></span>
-      <paper-menu-button
-        vertical-align="bottom"
-        horizontal-align="right"
-        vertical-offset="-70">
+      <div class="container">
+        <reef-button name="settings">Settings</reef-button>
+        <reef-button name="profiles">Profiles</reef-button>
+        <span class="flex"></span>
+        <paper-menu-button
+          vertical-align="bottom"
+          horizontal-align="right"
+          vertical-offset="-70">
 
-        <paper-icon-button
-          class="avatar"
-          slot="dropdown-trigger"
-          src="[[avatar]]">
-        </paper-icon-button>
-        <div class="dropdown-content">
-          <span class="user-menu-item">Settings</span>
-          <span class="user-menu-item">Help</span>
-        </div>
-      </paper-menu-button>
+          <paper-icon-button
+            class="avatar"
+            slot="dropdown-trigger"
+            src="[[avatar]]">
+          </paper-icon-button>
+          <div class="dropdown-content">
+            <span class="user-menu-item">Settings</span>
+            <span class="user-menu-item">Help</span>
+          </div>
+        </paper-menu-button>
+      </div>
     </div>
   </template>
   <script>
@@ -91,6 +113,9 @@
       }
       constructor() {
         super();
+      }
+      connectedCallback() {
+        super.connectedCallback();
       }
     }
     customElements.define(ReeflightHeader.is, ReeflightHeader);

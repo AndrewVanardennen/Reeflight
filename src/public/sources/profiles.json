@@ -1,0 +1,22 @@
+{
+  "profile1": {
+    "daylight": {},
+    "atmospheric": {},
+    "moonlight": {}
+  },
+  "profile2": {
+    "daylight": {},
+    "atmospheric": {},
+    "moonlight": {}
+  },
+  "profile3": {
+    "daylight": {},
+    "atmospheric": {},
+    "moonlight": {}
+  },
+  "profile4": {
+    "daylight": {},
+    "atmospheric": {},
+    "moonlight": {}
+  }
+}
