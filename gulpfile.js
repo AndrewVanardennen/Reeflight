@@ -22,14 +22,15 @@ const browserSyncInit = baseDir => {
     }
   });
 
-  if (env === 'dist') {
+  if (config.env === 'dist') {
     browserSync.watch(['src/index.html', 'src/**/*.html'])
       .on('change', series('copy', 'vulcanize', reload()));
     browserSync.watch('**/*.{png,jpg}')
       .on('change', series('images', reload()));
   } else {
-    browserSync.watch('**/*.html').on('change', reload());
-    browserSync.watch('**/*.{png,jpg}').on('change', reload());
+    browserSync.watch('src/**/*.html').on('change', series('copy:elements', reload()));
+    browserSync.watch('src/**/*.js').on('change', series('rollup', reload()));
+    browserSync.watch('src/**/*.{png,jpg}').on('change', reload());
   }
 }
 
