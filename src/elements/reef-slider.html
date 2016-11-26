@@ -1,0 +1,161 @@
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<script>
+  class ReefSlider extends HTMLElement {
+    static get is() {
+      return 'reef-slider';
+    }
+    static get observedAttributes() {
+      return ['value']
+    }
+    constructor() {
+      super();
+      // create ShadowRoot
+      this.root = this.attachShadow({mode: 'open'});
+      this.root.innerHTML = `<style>
+      :host {
+        --reef-slider-container-color: var(--paper-grey-300);
+        --reef-slider-color: var(--paper-cyan-700);
+        --reef-slider-knob-color: var(--paper-amber-a700);
+      }
+      paper-progress {
+        --paper-progress-container-color: var(--reef-slider-container-color);
+        --paper-progress-active-color: var(--reef-slider-color);
+      }
+      .slider-knob {
+        background: var(--reef-slider-knob-color);
+      }
+      </style>`
+      // bind methods
+      this._mousedown = this._mousedown.bind(this);
+      this._mouseup = this._mouseup.bind(this);
+      this._click = this._click.bind(this);
+      // create paperProgress
+      this.paperProgress = document.createElement('paper-progress');
+      this.sliderKnob = document.createElement('div');
+      // setup event listeners
+      this.addEventListener('mousedown', this._mousedown);
+      this.addEventListener('mouseup', this._mouseup);
+      this.addEventListener('click', this._click);
+      // Needed for tabbing
+      this.tabIndex = 0;
+    }
+    set value(value) {
+      if (typeof value !== 'number') {
+        return console.log('typeError::value: number required');
+      }
+      this.setAttribute('value', value);
+    }
+    set min(value) {
+      this.setAttribute('min', value);
+    }
+    set max(value) {
+      this.setAttribute('max', value);
+    }
+    set lastValue(value) {
+      this._lastValue = value;
+    }
+    get value() {
+      return this.getAttribute('value');
+    }
+    get min() {
+      return this.getAttribute('min') || 0;
+    }
+    get max() {
+      return this.getAttribute('max') || 100;
+    }
+    get lastValue() {
+      return this._lastValue || 0;
+    }
+    get square() {
+      return this.hasAttribute('square');
+    }
+    attributeChangedCallback(name, oldVal, newVal) {
+      if (oldVal !== newVal) {
+        this[name] = newVal;
+        this._updatePaperProgressAttribute(name, newVal);
+        if (name === 'value') {
+          newVal *= 2;
+          newVal += 8;
+          requestAnimationFrame(() => {
+            this.sliderKnob.style.transform = 'translateX(' + newVal + 'px)';
+          });
+        }
+      }
+    }
+    connectedCallback() {
+      // host styles
+      this.style.display = 'flex';
+      this.style.flexDirection = 'row';
+      this.style.alignItems = 'center';
+      this.style.height = '16px';
+      this.style.padding = '12px';
+      this.style.cursor = 'pointer';
+      this.style.touchAction = 'none';
+
+      // sliderKnob styles
+      this.sliderKnob.style.height = '16px';
+      this.sliderKnob.style.width = '16px';
+      this.sliderKnob.style.pointerEvents = 'none';
+      this.sliderKnob.style.touchAction = 'none';
+      if (this.square) {
+        this.sliderKnob.style.borderRadius = '3px';
+      } else {
+        this.sliderKnob.style.borderRadius = '50%';
+      }
+      this.sliderKnob.style.transform = 'translateX(8px)';
+      this.sliderKnob.style.zIndex = 10;
+      this.sliderKnob.classList.add('slider-knob');
+      // paper-progress styles
+      this.paperProgress.pointerEvents = 'none';
+      this.paperProgress.style.touchAction = 'none';
+      // set paper-progress attributes
+      this.paperProgress.max = this.max;
+      this.paperProgress.min = this.min;
+      // append to shadow
+      this.root.appendChild(this.sliderKnob);
+      this.root.appendChild(this.paperProgress);
+    }
+    _updatePaperProgressAttribute(name, value) {
+      requestAnimationFrame(() => {
+        this.paperProgress[name] = value;
+      });
+    }
+    _calculateChange(x, _x) {
+      let result = new Number();
+      if (_x < x) {
+        x -= _x;
+        result = x;
+      } else if (_x > x){
+        _x -= x;
+        result = _x;
+      }
+      return result;
+    }
+    _mouseup() {
+      event.preventDefault();
+      let value = this._calculateChange(event.clientX, this.startX);
+      let progressValue = this.root.querySelector('paper-progress').value;
+
+      if (event.clientX < this.startX) {
+        this.value = this._between((progressValue - (value / 2)), 0, 100);
+      } else if(event.clientX > this.startX) {
+        this.value = this._between((progressValue + (value / 2)), 0, 100);
+      }
+      this.lastValue = this.value;
+    }
+    _mousedown(event) {
+      event.preventDefault();
+      this.startX = event.clientX;
+    }
+    _click(event) {
+      event.preventDefault();
+      let clientLeft = this.getBoundingClientRect().left;
+      this.value = this._between(((event.clientX - clientLeft - 28) / 2), 0, 100);
+    }
+    _between(value, min, max) {
+      return (Math.min(max, Math.max(min, value)));
+    }
+  }
+  customElements.define(ReefSlider.is, ReefSlider);
+</script>
