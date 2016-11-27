@@ -9,18 +9,12 @@ class ReeflightApp extends AppController {
   constructor() {
     super('reeflight-app');
     // bind methods
-    this.style.position = 'absolute';
-    this.style.top = 0;
-    this.style.bottom = 0;
-    this.style.left = 0;
-    this.style.right = 0;
     this._onUserLogin = this._onUserLogin.bind(this);
     this._onUserChange = this._onUserChange.bind(this);
     this._onToggleDrawer = this._onToggleDrawer.bind(this);
     this._onHomeClick = this._onHomeClick.bind(this);
     this._onSettingsClick = this._onSettingsClick.bind(this);
     this._onProfilesClick = this._onProfilesClick.bind(this);
-    this.pubsub.subscribe('user.change', this._onUserChange);
   }
   /**
    * Runs everytime the user changes
@@ -41,8 +35,8 @@ class ReeflightApp extends AppController {
     return this._root.querySelector('reeflight-drawer');
   }
 
-  get drawerHeading() {
-    return this._root.querySelector('reeflight-drawer-heading');
+  get drawerFooter() {
+    return this._root.querySelector('reeflight-drawer-footer');
   }
 
   get pages() {
@@ -50,24 +44,15 @@ class ReeflightApp extends AppController {
   }
 
   connectedCallback() {
-    this.pubsub.subscribe('user', this._onUserChange, this);
+    super.connectedCallback();
+    this.pubsub.subscribe('user.change', this._onUserChange);
     document.addEventListener('user-login', this._onUserLogin);
     document.addEventListener('toggle-drawer', this._onToggleDrawer);
     document.addEventListener('home-button-click', this._onHomeClick);
     document.addEventListener('settings-button-click', this._onSettingsClick);
     document.addEventListener('profiles-button-click', this._onProfilesClick);
 
-    setTimeout(() => {
-      const sources = [
-        'elements/reeflight-header.html',
-        'elements/icons.html',
-        'elements/reeflight-footer.html',
-        'elements/home-view.html'];
-      sources.forEach(source => {
-        this._lazyImport(source);
-      });
-    });
-
+    this._handleLazyimports();
     // TODO: stream lamps
     // fetch('api/devices').then(response => {
     //   //stream
@@ -77,24 +62,47 @@ class ReeflightApp extends AppController {
 
   }
 
-  _lazyImport(href) {
-    let link = document.createElement('link');
-    link.rel = 'import';
-    link.href = href;
-    this.appendChild(link);
-  }
+  _handleLazyimports() {
+    setTimeout(() => {
+      this._lazyImport('elements/reef-pages.html').then(() => {
+        // import loaded
+        this._onHomeClick();
+      });
+      const asyncImports = [
+        'elements/reeflight-header.html',
+        'elements/reeflight-footer.html',
+        'elements/reef-selector.html',
+        'elements/reef-button.html',
+        'elements/reeflight-drawer.html',
+        'elements/reeflight-drawer-heading.html',
+        'elements/reeflight-drawer-footer.html'
+      ];
 
-  _onUserLogin(event) {
-    firebase.database().ref('users/' + event.detail).once('value', snapshot => {
-      // update the user prop with snapshot value
-      let user = snapshot.val();
-      this.user = user;
-      this.pubsub.publish('user.change', user);
+      const imports = [
+        'elements/icons.html'
+      ];
+
+      imports.forEach(href => {
+        this._lazyImport(href);
+      });
+
+      asyncImports.forEach(href => {
+        this._lazyImport(href, true);
+      });
     });
   }
 
+  _onUserLogin(event) {
+    let user = event.detail;
+    this.pubsub.publish('user.change', user);
+  }
+
   _onUserChange(user) {
-    this.drawerHeading.setAttribute('avatar', user.profile_picture);
+    console.log(user);
+    if (user !== null) {
+      this.drawerFooter.setAttribute('avatar', user.profile_picture);
+      this.drawerFooter.setAttribute('username', user.username);
+    }
   }
 
   _onToggleDrawer() {
@@ -117,13 +125,6 @@ class ReeflightApp extends AppController {
     requestAnimationFrame(() => {
       this.style.transition = transition;
       this.style.width = width;
-      if (this.drawer.drawerRight) {
-        this.style.left = 0;
-        this.style.right = null;
-      } else {
-        this.style.left = null;
-        this.style.right = 0;
-      }
     });
   }
 

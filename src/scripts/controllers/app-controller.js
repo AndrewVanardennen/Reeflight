@@ -8,8 +8,8 @@ export default class AppController extends BaseController {
     // TODO: create CustomHTMLElement
     // when name given, try to find template
     if (name) {
+      this._root = this.attachShadow({mode:'open'});
       this._tryFindTemplate(name).then(tmpl => {
-        this._root = this.attachShadow({mode:'open'});
         this._root.appendChild(tmpl.content.cloneNode(true));
       });
     }
@@ -26,6 +26,21 @@ export default class AppController extends BaseController {
       } catch (error) {
         reject(error);
       }
+    });
+  }
+
+  _lazyImport(href, _async_) {
+    return new Promise((resolve, reject) => {
+      let link = document.createElement('link');
+      link.rel = 'import';
+      link.href = href;
+      if (_async_) {
+        link.setAttribute('async', '');
+      }
+      link.onload = result => {
+        resolve(result);
+      };
+      this.appendChild(link);
     });
   }
 }

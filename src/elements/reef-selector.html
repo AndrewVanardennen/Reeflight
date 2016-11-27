@@ -1,0 +1,55 @@
+<script>
+  class ReefSelector extends HTMLElement {
+     static get is() { return 'reef-selector'; }
+     static get observedAttributes() { return ['selected'] }
+     constructor() {
+       super();
+       this.root = this.attachShadow({mode: 'open'});
+       this.root.innerHTML = '<slot></slot>';
+       this._onClick = this._onClick.bind(this);
+     }
+     connectedCallback() {
+       this.addEventListener('click', this._onClick);
+     }
+     attributeChangedCallback(name, oldVal, newVal) {
+       if (oldVal !== newVal) {
+         this[name] = newVal;
+       }
+     }
+     get attrForSelected() {
+       return this.getAttribute('attr-for-selected');
+     }
+     get hasAttrForSelected() {
+       return this.hasAttribute('attr-for-selected');
+     }
+     get selected() {
+       return this.getAttribute('selected') || 0;
+     }
+     set selected(value) {
+       this.setAttribute('selected', value);
+       this._updateSelected(value);
+     }
+     _onClick(event) {
+       this.selected = event.target;
+     }
+     _updateSelected(selected) {
+       if (typeof selected === 'object') {
+         if (this.previousSelected !== undefined) {
+           this.previousSelected.classList.remove('reef-selected');
+         }
+         this.previousSelected = selected;
+         selected.classList.add('reef-selected');
+       } else {
+         for (var i = 0; i < this.children.length; i++) {
+           let child = this.children[i];
+             if (child.getAttribute(this.attrForSelected) === selected) {
+               child.classList.add('reef-selected');
+             } else {
+               child.classList.remove('reef-selected');
+             };
+           }
+         }
+       }
+  }
+  customElements.define(ReefSelector.is, ReefSelector);
+</script>

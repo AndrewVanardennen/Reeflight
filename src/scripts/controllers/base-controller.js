@@ -4,11 +4,10 @@ import PubSub from './../internals/pubsub';
 export default class BaseController extends HTMLElement {
   constructor() {
     super();
-    this.pubsub = new PubSub();
   }
 
-  dispatchEvent(type=String, detail=Object, target=document) {
-    target.dispatchEvent(new CustomEvent(type, {detail: detail || null}));
+  connectedCallback() {
+    this.pubsub = new PubSub();
   }
 
   error(error=Object) {
