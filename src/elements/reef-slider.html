@@ -14,16 +14,34 @@
       this.root = this.attachShadow({mode: 'open'});
       this.root.innerHTML = `<style>
       :host {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 16px;
+        padding: 12px;
+        cursor: pointer;
+        touch-action: none;
+        pointer-events: none;
         --reef-slider-container-color: var(--paper-grey-300);
         --reef-slider-color: var(--paper-cyan-700);
         --reef-slider-knob-color: var(--paper-amber-a700);
       }
       paper-progress {
+        pointer-events: 'none';
+        touch-action: 'none';
         --paper-progress-container-color: var(--reef-slider-container-color);
         --paper-progress-active-color: var(--reef-slider-color);
       }
       .slider-knob {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
         background: var(--reef-slider-knob-color);
+        transform: translateX(8px);
+        z-index: 10;
+      }
+      :host[square] .slider-knob {
+        border-radius: 3px;
       }
       </style>`
       // bind methods
@@ -33,6 +51,7 @@
       // create paperProgress
       this.paperProgress = document.createElement('paper-progress');
       this.sliderKnob = document.createElement('div');
+      this.sliderKnob.classList.add('slider-knob');
       // setup event listeners
       this.addEventListener('mousedown', this._mousedown);
       this.addEventListener('mouseup', this._mouseup);
@@ -84,31 +103,6 @@
       }
     }
     connectedCallback() {
-      // host styles
-      this.style.display = 'flex';
-      this.style.flexDirection = 'row';
-      this.style.alignItems = 'center';
-      this.style.height = '16px';
-      this.style.padding = '12px';
-      this.style.cursor = 'pointer';
-      this.style.touchAction = 'none';
-
-      // sliderKnob styles
-      this.sliderKnob.style.height = '16px';
-      this.sliderKnob.style.width = '16px';
-      this.sliderKnob.style.pointerEvents = 'none';
-      this.sliderKnob.style.touchAction = 'none';
-      if (this.square) {
-        this.sliderKnob.style.borderRadius = '3px';
-      } else {
-        this.sliderKnob.style.borderRadius = '50%';
-      }
-      this.sliderKnob.style.transform = 'translateX(8px)';
-      this.sliderKnob.style.zIndex = 10;
-      this.sliderKnob.classList.add('slider-knob');
-      // paper-progress styles
-      this.paperProgress.pointerEvents = 'none';
-      this.paperProgress.style.touchAction = 'none';
       // set paper-progress attributes
       this.paperProgress.max = this.max;
       this.paperProgress.min = this.min;
