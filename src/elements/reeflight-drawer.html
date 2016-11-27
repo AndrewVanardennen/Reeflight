@@ -9,37 +9,28 @@ class ReeflightDrawer extends HTMLElement {
     super();
     this.firstRender = true;
     this._root = this.attachShadow({mode: 'open'});
-    this.style.display = 'flex';
-    this.style.flexDirection = 'column';
-    this.style.height = '100%';
-    this.style.width = '286px';
-    this.style.position = 'fixed';
-    this.style.top = '0';
-    this.style.bottom = '0';
-    if (this.drawerRight) {
-      this.style.right = '0';
-    } else {
-      this.style.left = '0';
-    }
-    if (this.forcedShow) {
-      this.show();
-    } else {
-      this.hide();
-    }
-    this._root.innerHTML = '<slot name="heading"><\/slot><slot><\/slot><slot name="actions"></slot>';
+    this._root.innerHTML = `
+      <style>
+        :host {
+          user-select: none;
+          cursor: default;
+        }
+      </style>
+      <slot name="heading"></slot>
+      <div style="flex: 1">
+        <slot></slot>
+      </div>
+      <slot name="footer"></slot>
+    `;
   }
 
   get forcedShow() {
     return this.hasAttribute('force-show');
   }
-
-  get drawerRight() {
-    return this.hasAttribute('drawer-right');
-  }
-
+  
   set shown(value) {
     this._shown = value;
-    this.setAttribute('shown', '');
+    this.setAttribute('shown', value);
     if (value) {
       this._applyDrawerStateStyles(
         'transform ease-in 0.18s',
@@ -61,6 +52,27 @@ class ReeflightDrawer extends HTMLElement {
 
   get width() {
     return this.style.width;
+  }
+
+  connectedCallback() {
+    this.style.display = 'flex';
+    this.style.flexDirection = 'column';
+    this.style.height = '100%';
+    this.style.width = '256px';
+    this.style.position = 'fixed';
+    this.style.top = '0';
+    this.style.bottom = '0';
+    this.style.opacity = '0';
+    if (this.drawerRight) {
+      this.style.right = '0';
+    } else {
+      this.style.left = '0';
+    }
+    if (this.forcedShow) {
+      this.show();
+    } else {
+      this.hide();
+    }
   }
 
   _applyDrawerStateStyles(transition, transform, opacity) {
