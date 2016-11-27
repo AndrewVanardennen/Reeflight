@@ -4,7 +4,7 @@
       return 'reeflight-drawer-heading';
     }
     static get observedAttributes() {
-      return ['avatar', 'name'];
+      return ['logo'];
     }
     constructor() {
       super();
@@ -12,25 +12,56 @@
       this.style.height = '128px';
       this.style.display = 'flex';
       this.style.flexDirection = 'column';
+      this._root.innerHTML = `<style>
+        :host {
+
+        }
+        .username, .greeting {
+          display: block;
+        }
+        .greeting {
+          color: var(--paper-grey-700);
+          font-weight: 700;
+          padding-bottom: 8px;
+        }
+        .username {
+          font-weight: 500;
+          color: var(--paper-grey-700);
+        }
+        .container {
+          display: flex;
+          flex-direction: column;
+          padding: 12px;
+          box-sizing: border-box;
+        }
+      </style>`
     }
     connectedCallback() {
       this.container = document.createElement('span');
-      this.container.style.padding = '8px 16px';
-      this.container.style.display = 'flex';
-      this.container.style.flexDirection = 'row';
-      this.container.style.alignItems = 'center';
-      this.avatarElement = document.createElement('img');
-      this.avatarElement.style.height = '48px';
-      this.avatarElement.style.width = '48px';
-      this.avatarElement.style.borderRadius = '50%';
-      this.avatarElement.style.outline = 'none';
-      this.avatarElement.userSelect = 'none';
-      this.avatarElement.pointerEvents = 'none';
+      this.container.classList.add('container');
 
-      this.nameElement = document.createElement('span');
-      this.nameElement.style.paddingLeft = '8px';
-      this.nameElement.style.height = '100%';
-      this.name = 'Menu';
+      this.logoContainer = document.createElement('span');
+      this.logoContainer.style.display = 'flex';
+      this.logoContainer.style.flexDirection = 'row';
+      this.logoContainer.style.alignItems = 'center';
+      this.logoContainer.style.justifyContent = 'center';
+
+      this.logoElement = document.createElement('img');
+      this.logoElement.style.height = '48px';
+      this.logoElement.style.width = '48px';
+      this.logoElement.style.borderRadius = '50%';
+      this.logoElement.style.outline = 'none';
+      this.logoElement.style.userSelect = 'none';
+      this.logoElement.style.pointerEvents = 'none';
+
+      this.menuTitleContainer = document.createElement('span');
+      this.menuTitleContainer.style.display = 'flex';
+      this.menuTitleContainer.style.alignItems = 'flex-end';
+      this.menuTitleContainer.style.height = '64px';
+      this.menuTitleContainer.style.paddingLeft = '8px';
+      this.menuTitleContainer.style.fontWeight = '700';
+      this.menuTitleContainer.style.color = 'var(--paper-grey-700)';
+      this.menuTitleContainer.innerHTML = 'Menu';
 
       let border = document.createElement('span');
       border.style.display = 'flex';
@@ -39,29 +70,22 @@
       border.style.width = '100%';
       border.style.height = '1px';
 
-      this.container.appendChild(this.avatarElement);
-      this.container.appendChild(this.nameElement);
+      this.logoContainer.appendChild(this.logoElement);
+      this.container.appendChild(this.logoContainer);
+      this.container.appendChild(this.menuTitleContainer);
       this._root.appendChild(this.container);
       this._root.appendChild(border);
     }
-    set avatar(value) {
-      this.setAttribute('avatar', value);
+    set logo(value) {
+      this.setAttribute('logo', value);
       if (value) {
-        this.avatarElement.src = value;
+        this.logoElement.src = value;
       } else {
-        this.avatarElement.src = null;
-      }
-    }
-    set name(value) {
-      this.setAttribute('name', value);
-      if (value) {
-        this.nameElement.innerHTML = value;
-      } else {
-        this.nameElement.innerHTML = 'Welcome';
+        this.logoElement.src = null;
       }
     }
     attributeChangedCallback(name, oldValue, newValue) {
-      if (oldValue === null || oldValue !== newValue) {
+      if (oldValue !== newValue) {
         this[name] = newValue;
       }
     }
