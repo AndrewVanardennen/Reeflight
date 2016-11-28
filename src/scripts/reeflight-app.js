@@ -130,17 +130,17 @@ class ReeflightApp extends AppController {
 
   _onHomeClick(){
     this.pages.select('home');
-    this._lazyImport('elements/home-view.html');
+    this._lazyImport('elements/views/home-view.html');
   }
 
   _onSettingsClick() {
     this.pages.select('settings');
-    this._lazyImport('elements/settings-view.html');
+    this._lazyImport('elements/views/settings-view.html');
   }
 
   _onProfilesClick(){
     this.pages.select('profiles');
-    this._lazyImport('elements/profiles-view.html');
+    this._lazyImport('elements/views/profiles-view.html');
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);

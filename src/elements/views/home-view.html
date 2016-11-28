@@ -1,5 +1,5 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="reef-view.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../reef-view.html">
 
 <dom-module id="home-view">
   <template>
@@ -13,7 +13,7 @@
 
     <reef-view class="container">
         <span class="shadow">
-          <h1>Welcome %insertName% to Reeflight.</h1>
+          <h1>Welcome [[username]] to Reeflight.</h1>
           <h2>Future plans:</h2>
           <p>-- Icon Clock with color indicating active/not active --</p>
           <p>-- Time past and/or Time until new activation --</p>
@@ -29,6 +29,13 @@
       static get is() {
         return 'home-view';
       };
+      static get config() {
+        return {
+          properties: {
+            username: String
+          }
+        }
+      }
       constructor() {
         super();
       }

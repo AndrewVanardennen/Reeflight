@@ -55,7 +55,7 @@ const env = (env, source, elements, bowerComponents, destination=null) => {
 }
 
 task('env', () => {
-  return env('dev', 'src', '*', '**');
+  return env('dev', 'src', '**/*', '**');
 });
 
 task('env:dist', cb => {
