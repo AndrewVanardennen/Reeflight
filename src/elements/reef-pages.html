@@ -6,7 +6,7 @@
     constructor() {
       super();
       // Create shadow Dom
-      this._root = this.attachShadow( {mode:'open'} )
+      this._root = this.attachShadow( {mode:'open'} );
       // Create Dom innerHTML
       this._root.innerHTML = '<slot></slot>';
     }
