@@ -25,8 +25,6 @@
         --reef-slider-knob-color: var(--paper-amber-a700);
       }
       paper-progress {
-        pointer-events: none;
-        touch-action: auto;
         --paper-progress-container-color: var(--reef-slider-container-color);
         --paper-progress-active-color: var(--reef-slider-color);
       }
@@ -101,12 +99,17 @@
       }
     }
     connectedCallback() {
+      this._qs(this.paperProgress, '#primaryProgress').style.height = '4px';
+
       // set paper-progress attributes
       this.paperProgress.max = this.max;
       this.paperProgress.min = this.min;
       // append to shadow
       this.root.appendChild(this.sliderKnob);
       this.root.appendChild(this.paperProgress);
+    }
+    _qs(target, query) {
+      return target.root.querySelector(query);
     }
     _updatePaperProgressAttribute(name, value) {
       requestAnimationFrame(() => {
@@ -127,7 +130,7 @@
     _mouseup() {
       event.preventDefault();
       let value = this._calculateChange(event.clientX, this.startX);
-      let progressValue = this.root.querySelector('paper-progress').value;
+      let progressValue = this._qs(this, 'paper-progress').value;
 
       if (event.clientX < this.startX) {
         this.value = this._between((progressValue - (value / 2)), 0, 100);
