@@ -2,38 +2,53 @@
   class ReefButton extends HTMLElement  {
     constructor() {
       super();
+      this.root = this.attachShadow({mode:'open'});
+      this.root.innerHTML = '<slot></slot>';
+
       this.onMouseDown = this.onMouseDown.bind(this); // Bind method
       this.onMouseUp = this.onMouseUp.bind(this); // Bind method
       this.onMouseClick = this.onMouseClick.bind(this); // Bind method
-      this.style.display = 'inline-flex';
-      this.style.padding = '8px';
-      this.style.alignItems = 'center';
-      this.style.maxHeight =  '48px';
-      this.style.boxSizing = 'border-box'
-      this.style.borderRadius = '3px';
 
       this.addEventListener('mousedown', this.onMouseDown);
       this.addEventListener('mouseup', this.onMouseUp);
       this.addEventListener('click', this.onMouseClick);
     }
+    connectedCallback() {
+      let style = document.createElement('style');
+      style.innerHTML = `
+        :host {
+          display: inline-flex;
+          padding: 12px;
+          align-items: center;
+          max-height:  56px;
+          box-sizing: border-box;
+          border-radius: 3px;
+          text-transform: uppercase;
+          cursor: pointer;
+          background-color: transparent;
+          user-select: none;
+        }
+      `
+      this.root.appendChild(style);
+    }
     get name() {
       return this.getAttribute('name') + '-button-click' || 'reef-button-click';
     }
-
+    get hasNoShadow() {
+      return this.hasAttribute('no-shadow');
+    }
     onMouseDown() {
-      this.style.boxShadow = '0 2px 2px 0 rgba(0, 0, 0, 0.14), \
-                              0 1px 5px 0 rgba(0, 0, 0, 0.12), \
-                              0 3px 1px -2px rgba(0, 0, 0, 0.2)' ;
-      this.style.backgroundColor = '#006064';
+      if (this.hasNoShadow === false) {
+        this.style.boxShadow = '0 2px 2px 0 rgba(0, 0, 0, 0.14), \
+                                0 1px 5px 0 rgba(0, 0, 0, 0.12), \
+                                0 3px 1px -2px rgba(0, 0, 0, 0.2)' ;
+      }
     }
     onMouseUp() {
       this.style.boxShadow = 'none';
-      this.style.backgroundColor = 'transparent';
     }
     onMouseClick() {
-      console.log('even');
       document.dispatchEvent(new CustomEvent(this.name)); // Fire event
-
     }
 
   }
