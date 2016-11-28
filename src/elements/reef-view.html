@@ -1,60 +1,90 @@
 <script>
   class ReefView extends HTMLElement {
+    static get observedAttributes() {
+      return ['no-shadow'];
+    }
     constructor() {
       super();
       // Create shadow Dom
       this._root = this.attachShadow({mode:'open'});
 
-      this.onResize = this.onResize.bind(this);
+      this._onResize = this._onResize.bind(this);
       this.maxWidthChange = this.maxWidthChange.bind(this);
       this.widthChange = this.widthChange.bind(this);
+      this._root.innerHTML = `
+        <style>
+          :host {
+            flex-direction: column;
+            align-items: center;
+            background-color: #ECEFF1;
+          }
+          .container {
+            padding: var(--reef-view-padding, 24px);
+            display: flex;
+            flex-direction: var(--reef-view-container-direction, column);
+          }
+          .shadow {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            background-color: var(--reef-view-background, #FFF);
+          }
+          .no-shadow {
+            box-shadow: none;
+          }
+          :host, .container {
+            width: 100%;
+            box-sizing: border-box;
+          }
+          :host, .shadow {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            Box-sizing: border-box;
+          }
+        </style>
+        <span class="shadow">
+          <div class="container"><slot></slot></div>
+        </span>
+      `
+      window.addEventListener('resize', this._onResize);
+    }
 
+    get _shadow() {
+      return this._root.querySelector('.shadow');
+    }
 
-      this.style.display = 'flex';
-      this.style.flexDirection = 'column';
-      this.style.alignItems = 'center';
-      this.style.height = '100%';
-      this.style.width = '100%';
-      this.style.padding = '12px 0';
-      this.style.BoxSizing = 'border-box';
-      this.style.backgroundColor = '#ECEFF1';
+    set noShadow(value) {
+      if (this.hasNoShadow) {
+        this._shadow.classList.add('no-shadow');
+      } else {
+        this._shadow.classList.remove('no-shadow');
+      }
+    }
 
-      this.container = document.createElement('div');
-      this.container.style.padding = '12px';
-      this.container.style.boxSizing = 'border-box';
-      this.container.innerHTML = '<slot></slot>';
+    get hasNoShadow() {
+      return this.hasAttribute('no-shadow');
+    }
 
-      this.shadow = document.createElement('div');
-      this.shadow.style.boxShadow = '0 2px 2px 0 rgba(0, 0, 0, 0.14), \
-                                     0 1px 5px 0 rgba(0, 0, 0, 0.12), \
-                                     0 3px 1px -2px rgba(0, 0, 0, 0.2)';
-      this.shadow.style.display = 'flex';
-      this.shadow.style.height = '100%';
-      this.shadow.style.backgroundColor = "#FFF";
-
-      this.shadow.appendChild(this.container);
-      this._root.appendChild(this.shadow);
-
-      this.onResize();
-
-      window.addEventListener('resize', this.onResize);
+    connectedCallback() {
+      this._onResize();
     }
 
 
     widthChange(mq) {
       if (mq.matches) {
-        this.shadow.style.width = '72.2%';
-        this.shadow.style.paddingTop = '8px 16px';
+        this._shadow.style.width = '72.2%';
+        this._shadow.style.paddingTop = '8px 16px';
       }
     }
 
     maxWidthChange(mq) {
       if (mq.matches) {
-        this.shadow.style.width = '100%';
+        this._shadow.style.width = '100%';
       }
     }
 
-    onResize() {
+    _onResize() {
       if (matchMedia) {
         var mq = window.matchMedia( "(min-width: 680px)");
         var mqMax = window.matchMedia ("(max-width: 679px)");
@@ -65,6 +95,20 @@
       }
     }
 
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (oldValue !== newValue) {
+        this[this._toJsProp(name)] = newValue;
+      }
+    }
+
+    _toJsProp(string) {
+      var parts = string.split('-');
+      if (parts.length > 1) {
+        var upper = parts[1].charAt(0).toUpperCase();
+        string =  parts[0] + upper + parts[1].slice(1).toLowerCase();
+      }
+      return string;
+    }
   }
   customElements.define('reef-view', ReefView);
 </script>
