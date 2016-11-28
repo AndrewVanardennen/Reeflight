@@ -75,7 +75,11 @@ task('icons', () => {
 });
 
 task('copy:app', () => {
-  return src([`${config.source}/index.html`])
+  return src([
+    `${config.source}/index.html`,
+    `${config.source}/service-worker.js`,
+    `${config.source}/manifest.json`,
+  ])
     .pipe(dest(config.destination));
 });
 
@@ -91,7 +95,7 @@ task('copy:bower', () => {
 
 task('copy', series('copy:app', 'copy:elements', 'copy:bower'));
 
-task('rollup', () => {
+task('rollup:app', () => {
   // used to track the cache for subsequent bundles
   var cache;
 
@@ -110,6 +114,8 @@ task('rollup', () => {
     });
   });
 });
+
+task('rollup', series('rollup:app'));
 
 task('vulcanize', () => {
   return src('dev/index.html')
