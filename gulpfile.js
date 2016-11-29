@@ -1,5 +1,6 @@
 'use strict';
 const { task, src, series, dest } = require('gulp');
+const del = require('del');
 const lwip = require('gulp-lwip');
 const { rollup } = require( 'rollup' );
 const babel = require('rollup-plugin-babel');
@@ -17,7 +18,7 @@ const browserSyncInit = baseDir => {
       port: 5001
     },
     server: {
-      baseDir: baseDir,
+      baseDir: [baseDir, '.tmp'],
       index: 'index.html'
     }
   });
@@ -54,6 +55,10 @@ const env = (env, source, elements, bowerComponents, destination=null) => {
   });
 }
 
+task('clean', cb => {
+   del(config.env).then(cb());
+ });
+
 task('env', () => {
   return env('dev', 'src', '**/*', '**');
 });
@@ -63,11 +68,18 @@ task('env:dist', cb => {
     '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,paper-behaviors,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
 });
 
-task('images', () => {
-  return src(`${config.source}/sources/**/*.{jpg,png}`)
+task('images:resize', () => {
+  return src([`${config.source}/sources/**/*.{jpg,png}`])
     .pipe(lwip.resize(256))
+    .pipe(dest('.tmp/sources'));
+});
+
+task('images:copy', () => {
+  return src(['.tmp/sources/**/*.{jpg,png}'])
     .pipe(dest(`${config.destination}/sources`));
 });
+
+task('images', series('images:resize'));
 
 task('icons', () => {
   return src(`${config.source}/sources/**/*.svg`)
@@ -122,6 +134,8 @@ task('rollup:app', () => {
 
 task('rollup', series('rollup:app'));
 
+task('sources', series('images:copy'));
+
 task('vulcanize:prepare', cb => {
   let index = readFileSync('dev/index.html');
   let file = readFileSync('dev/elements/app-imports.html');
@@ -168,11 +182,11 @@ task('precache', () => {
   });
 });
 // Main Tasks
-task('default', series('rollup', 'images', 'icons', 'copy'))
+task('default', series('clean', 'images', 'icons', 'copy', 'rollup'))
 
 task('build-dev', series('env', 'default'));
 
-task('build', series('build-dev', 'env:dist', 'default', 'vulcanize', 'precache'))
+task('build', series('build-dev', 'env:dist', 'default', 'sources', 'vulcanize', 'precache'))
 
 task('serve', series('env', 'default', 'browser-sync'));
 
