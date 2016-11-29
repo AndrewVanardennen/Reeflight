@@ -1,5 +1,6 @@
 'use strict';
 import PubSub from './../internals/pubsub';
+import './../internals/request-idle-callback-shim';
 
 export default class BaseController extends HTMLElement {
   constructor() {

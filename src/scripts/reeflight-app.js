@@ -15,6 +15,8 @@ class ReeflightApp extends AppController {
     this._onHomeClick = this._onHomeClick.bind(this);
     this._onSettingsClick = this._onSettingsClick.bind(this);
     this._onProfilesClick = this._onProfilesClick.bind(this);
+    this._onResize = this._onResize.bind(this);
+    this._preloadViews = this._preloadViews.bind(this);
   }
   /**
    * Runs everytime the user changes
@@ -59,29 +61,49 @@ class ReeflightApp extends AppController {
     document.addEventListener('home-button-click', this._onHomeClick);
     document.addEventListener('settings-button-click', this._onSettingsClick);
     document.addEventListener('profiles-button-click', this._onProfilesClick);
-    this._onResize = this._onResize.bind(this);
-    this._handleLazyimports();
-
-
     window.addEventListener('resize', this._onResize);
+    this._handleLazyimports();
+    this._preloadTasks = ['profiles', 'settings'];
+    requestIdleCallback(this._preloadViews);
     // TODO: stream lamps
     // fetch('api/devices').then(response => {
     //   //stream
     // }).then(response => {
     //
     // })
+    // load lazy resources after render and set `loadComplete` when done.
+  }
 
+  _preloadViews(deadline) {
+    // Use any remaining time, or, if timed out, just run through the tasks.
+    while ((deadline.timeRemaining() > 0 || deadline.didTimeout) &&
+           this._preloadTasks.length > 0)
+      this._loadViews();
+
+    if (this._preloadTasks.length > 0)
+      requestIdleCallback(this._preloadViews);
+  }
+
+  _loadViews() {
+    for (let view of this._preloadTasks) {
+      this._lazyImport(`elements/views/${view}-view.html`).then(() => {
+        let index = this._preloadTasks.indexOf(view);
+        if (index > -1) {
+          this._preloadTasks.splice(index, 1);
+        }
+      });
+    }
   }
 
   _handleLazyimports() {
     setTimeout(() => {
+      this._onHomeClick();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+      }
       if (this.isVulcanized) {
         this._onHomeClick();
       } else {
-        this._lazyImport('elements/reef-pages.html').then(() => {
-          // import loaded
-          this._onHomeClick();
-        });
         const asyncImports = [
           'elements/reeflight-header.html',
           'elements/reeflight-footer.html',
@@ -136,7 +158,6 @@ class ReeflightApp extends AppController {
   }
 
   _onUserChange(user) {
-    console.log(user);
     if (user !== null) {
       this.drawerFooter.setAttribute('avatar', user.profile_picture);
       this.drawerFooter.setAttribute('username', user.username);
@@ -167,31 +188,16 @@ class ReeflightApp extends AppController {
     });
   }
 
-  _onHomeClick(){
+  _onHomeClick() {
     this.pages.select('home');
-    if (this.isVulcanized) {
-      return;
-    } else {
-      this._lazyImport('elements/views/home-view.html');
-    }
   }
 
   _onSettingsClick() {
     this.pages.select('settings');
-    if (this.isVulcanized) {
-      return;
-    } else {
-      this._lazyImport('elements/views/settings-view.html');
-    }
   }
 
   _onProfilesClick(){
     this.pages.select('profiles');
-    if (this.isVulcanized) {
-      return;
-    } else {
-      this._lazyImport('elements/views/profiles-view.html');
-    }
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);
