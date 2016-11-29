@@ -47,6 +47,10 @@ class ReeflightApp extends AppController {
     return this.pages.querySelector('home-view');
   }
 
+  get isVulcanized() {
+    return this.hasAttribute('is-vulcanized');
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.pubsub.subscribe('user.change', this._onUserChange);
@@ -71,31 +75,35 @@ class ReeflightApp extends AppController {
 
   _handleLazyimports() {
     setTimeout(() => {
-      this._lazyImport('elements/reef-pages.html').then(() => {
-        // import loaded
+      if (this.isVulcanized) {
         this._onHomeClick();
-      });
-      const asyncImports = [
-        'elements/reeflight-header.html',
-        'elements/reeflight-footer.html',
-        'elements/reef-selector.html',
-        'elements/reef-button.html',
-        'elements/reeflight-drawer.html',
-        'elements/reeflight-drawer-heading.html',
-        'elements/reeflight-drawer-footer.html'
-      ];
+      } else {
+        this._lazyImport('elements/reef-pages.html').then(() => {
+          // import loaded
+          this._onHomeClick();
+        });
+        const asyncImports = [
+          'elements/reeflight-header.html',
+          'elements/reeflight-footer.html',
+          'elements/reef-selector.html',
+          'elements/reef-button.html',
+          'elements/reeflight-drawer.html',
+          'elements/reeflight-drawer-heading.html',
+          'elements/reeflight-drawer-footer.html'
+        ];
 
-      const imports = [
-        'elements/icons.html'
-      ];
+        const imports = [
+          'elements/icons.html'
+        ];
 
-      imports.forEach(href => {
-        this._lazyImport(href);
-      });
+        imports.forEach(href => {
+          this._lazyImport(href);
+        });
 
-      asyncImports.forEach(href => {
-        this._lazyImport(href, true);
-      });
+        asyncImports.forEach(href => {
+          this._lazyImport(href, true);
+        });
+      }
     });
   }
 
@@ -161,17 +169,29 @@ class ReeflightApp extends AppController {
 
   _onHomeClick(){
     this.pages.select('home');
-    this._lazyImport('elements/views/home-view.html');
+    if (this.isVulcanized) {
+      return;
+    } else {
+      this._lazyImport('elements/views/home-view.html');
+    }
   }
 
   _onSettingsClick() {
     this.pages.select('settings');
-    this._lazyImport('elements/views/settings-view.html');
+    if (this.isVulcanized) {
+      return;
+    } else {
+      this._lazyImport('elements/views/settings-view.html');
+    }
   }
 
   _onProfilesClick(){
     this.pages.select('profiles');
-    this._lazyImport('elements/views/profiles-view.html');
+    if (this.isVulcanized) {
+      return;
+    } else {
+      this._lazyImport('elements/views/profiles-view.html');
+    }
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);

@@ -3,7 +3,7 @@ const { task, src, series, dest } = require('gulp');
 const lwip = require('gulp-lwip');
 const { rollup } = require( 'rollup' );
 const babel = require('rollup-plugin-babel');
-const { writeFileSync } = require('fs');
+const { readFileSync, writeFileSync, writeFile } = require('fs');
 const vulcanize = require('gulp-vulcanize');
 const swPrecache = require('sw-precache');
 const browserSync = require('browser-sync').create();
@@ -59,7 +59,7 @@ task('env', () => {
 });
 
 task('env:dist', cb => {
-  return env('dist', 'dev', '{reeflight-header,reeflight-footer,home-view,icons}',
+  return env('dist', 'dev', '{reef-view, reef-grid}',
     '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,paper-behaviors,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
 });
 
@@ -88,12 +88,17 @@ task('copy:elements', () => {
     .pipe(dest(`${config.destination}/elements`));
 });
 
+task('copy:views', () => {
+  return src(`${config.source}/elements/views/*.html`)
+    .pipe(dest(`${config.destination}/elements/views`));
+});
+
 task('copy:bower', () => {
   return src(`bower_components/${config.bowerComponents}/**/*.{html,js}`)
     .pipe(dest(`${config.destination}/bower_components`));
 });
 
-task('copy', series('copy:app', 'copy:elements', 'copy:bower'));
+task('copy', series('copy:app', 'copy:elements', 'copy:views', 'copy:bower'));
 
 task('rollup:app', () => {
   // used to track the cache for subsequent bundles
@@ -117,7 +122,20 @@ task('rollup:app', () => {
 
 task('rollup', series('rollup:app'));
 
-task('vulcanize', () => {
+task('vulcanize:prepare', cb => {
+  let index = readFileSync('dev/index.html');
+  let file = readFileSync('dev/elements/app-imports.html');
+  let app = readFileSync('dev/elements/reeflight-app.html');
+  index = index.toString();
+  file = file.toString();
+  app = app.toString();
+  index = index.replace(/reeflight-app>/g, 'reeflight-app is-vulcanized>');
+  file += app;
+  writeFileSync('dev/index.html', index);
+  writeFile('dev/elements/reeflight-app.html', file, cb());
+});
+
+task('vulcanize:run', () => {
   return src('dev/index.html')
     .pipe(vulcanize({
         inlineScripts: true,
@@ -125,6 +143,8 @@ task('vulcanize', () => {
     }))
     .pipe(dest(config.destination));
 });
+
+task('vulcanize', series('vulcanize:prepare', 'vulcanize:run'));
 
 task('browser-sync', () => {
   return browserSyncInit(config.destination);
