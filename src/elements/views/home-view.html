@@ -1,45 +1,12 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../reef-view.html">
-
-<dom-module id="home-view">
-  <template>
-    <style>
-      :host {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        --reef-view-padding: 12px;
-      }
-      h1, h2 {
-        margin: 0;
-      }
-      summary {
-        padding-top: 24px;
-      }
-
-      @media (min-width: 680px) {
-        :host {
-          --reef-view-padding: 32px;
-        }
-      }
-    </style>
-
-    <reef-view>
-      <h1>Welcome [[username]] to Reeflight.</h1>
-      <summary>
-        <h2>Future plans:</h2>
-        <p>-- Icon Clock with color indicating active/not active --</p>
-        <p>-- Time past and/or Time until new activation --</p>
-        <p>-- Bluetooth/Wifi enabled icon --</p>
-        <p>-- Connected with Rsp icon #extra --</p>
-      </summary>
-    </reef-view>
-  </template>
   <script>
-    class HomeView extends Polymer.Element {
+    class HomeView extends HTMLElement {
       static get is() {
         return 'home-view';
       };
+      static get observedAttributes() {
+        return ['username'];
+      }
       static get config() {
         return {
           properties: {
@@ -49,8 +16,54 @@
       }
       constructor() {
         super();
+
+        this.root = this.attachShadow({mode: 'open'});
+
+        this.root.innerHTML = `
+          <style>
+            :host {
+              display: flex;
+              flex-direction: column;
+              height: 100%;
+              --reef-view-padding: 12px;
+            }
+            h1, h2 {
+              margin: 0;
+            }
+            summary {
+              padding-top: 24px;
+            }
+            @media (min-width: 680px) {
+              :host {
+                --reef-view-padding: 32px;
+              }
+            }
+          </style>
+
+          <reef-view>
+            <h1>Welcome
+            <span class="username"></span>
+            to Reeflight.</h1>
+            <summary>
+              <h2>Future plans:</h2>
+              <p>-- Icon Clock with color indicating active/not active --</p>
+              <p>-- Time past and/or Time until new activation --</p>
+              <p>-- Bluetooth/Wifi enabled icon --</p>
+              <p>-- Connected with Rsp icon #extra --</p>
+            </summary>
+          </reef-view>
+        `
+      }
+      set username(value) {
+        this.setAttribute('username', value);
+        this.root.querySelector('.username').innerHTML = value;
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue !== newValue) {
+          this[name] = newValue;
+        }
       }
     }
     customElements.define(HomeView.is, HomeView);
   </script>
-</dom-module>
