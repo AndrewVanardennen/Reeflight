@@ -9,8 +9,14 @@
       position: absolute;
       cursor: default;
       font-family: 'Roboto', sans-serif;
-
+      text-rendering: optimizeSpeed;
       --reeflight-primary-color: #0097A7;
+    }
+    :host(.floating-drawer) {
+      width: 100% !important;
+    }
+    reeflight-drawer {
+      background: #FFF;
     }
     reeflight-header {
       background-color: #0097A7;

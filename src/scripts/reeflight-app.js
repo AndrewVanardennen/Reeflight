@@ -43,6 +43,10 @@ class ReeflightApp extends AppController {
     return this._root.querySelector('reef-pages');
   }
 
+  get homeView() {
+    return this.pages.querySelector('home-view');
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.pubsub.subscribe('user.change', this._onUserChange);
@@ -51,8 +55,11 @@ class ReeflightApp extends AppController {
     document.addEventListener('home-button-click', this._onHomeClick);
     document.addEventListener('settings-button-click', this._onSettingsClick);
     document.addEventListener('profiles-button-click', this._onProfilesClick);
-
+    this._onResize = this._onResize.bind(this);
     this._handleLazyimports();
+
+
+    window.addEventListener('resize', this._onResize);
     // TODO: stream lamps
     // fetch('api/devices').then(response => {
     //   //stream
@@ -92,6 +99,29 @@ class ReeflightApp extends AppController {
     });
   }
 
+  _onResize(event) {
+    let width = this.getBoundingClientRect().width;
+    if (width <= 860) {
+      this.classList.add('floating-drawer');
+      if (this.drawer !== null && this.drawer.shown) {
+        this._applyAppStateStyles(
+          'width ease-out 0.18s',
+          '100%'
+        );
+        requestAnimationFrame(() => {
+          this.drawer.hide();
+        });
+      }
+    } else if (width > 1116) { /* 860 + 256(drawer width) */
+      this.classList.remove('floating-drawer');
+      this._applyAppStateStyles(
+        'width ease-in 0.18s',
+        'calc(100% - ' + this.drawer.width + ')'
+      );
+      this.drawer.show();
+    }
+  }
+
   _onUserLogin(event) {
     let user = event.detail;
     this.pubsub.publish('user.change', user);
@@ -102,22 +132,23 @@ class ReeflightApp extends AppController {
     if (user !== null) {
       this.drawerFooter.setAttribute('avatar', user.profile_picture);
       this.drawerFooter.setAttribute('username', user.username);
+      this.homeView.setAttribute('username', user.username);
     }
   }
 
   _onToggleDrawer() {
     if (this.drawer.shown) {
-      this.drawer.hide();
       this._applyAppStateStyles(
         'width ease-out 0.18s',
         '100%'
       );
+      this.drawer.hide();
     } else {
-      this.drawer.show();
       this._applyAppStateStyles(
         'width ease-in 0.18s',
         'calc(100% - ' + this.drawer.width + ')'
       );
+      this.drawer.show();
     }
   }
 
