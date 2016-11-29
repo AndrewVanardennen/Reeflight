@@ -8,6 +8,7 @@ export default class FirebaseController extends BaseController {
     super.connectedCallback();
     const script = document.createElement('script');
     script.src = 'bower_components/firebase/firebase.js';
+    script.setAttribute('async', '');
     script.onload = () => {
       // Initialize Firebase onload
       firebase.initializeApp(this.config);
