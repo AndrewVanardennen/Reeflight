@@ -1,0 +1,50 @@
+<link rel="import" href="reef-button.html">
+
+<script>
+  class ReefIconButton extends ReefButton {
+     static get is() { return 'reef-icon-button'; }
+     static get observedAttributes() { return ['icon'] }
+     constructor() {
+       super();
+       this.root.innerHTML = `
+        <style>
+          :host {
+            width: 40px;
+            height: 40px;
+            fill: var(--reef-icon-button-color, #FFF);
+            stroke: var(--reef-icon-button-stroke-color, none);
+            --reef-button-radius: 50%;
+          }
+        </style>
+       `
+       this.noShadow = true;
+     }
+
+     get iconset() {
+       return window.svgIconSet;
+     }
+
+     set icon(value) {
+       if (value) {
+         let parts = value.split('::');
+         if (parts.length === 1) {
+           this.iconset['icons'].host.applyIcon(this, value);
+         } else {
+           this.iconset[parts[0]].host.applyIcon(this, parts[1]);
+         }
+       } else {
+         let parts = this._icon.split('::');
+         if (parts.length === 1) {
+           this.iconset['icons'].host.removeIcon(this);
+         } else {
+           this.iconset[parts[0]].host.removeIcon(this);
+         }
+       }
+       this._icon = value;
+     }
+     attributeChangedCallback(name, oldVal, newVal) {
+       if (oldVal !== newVal) this[name] = newVal;
+     }
+  }
+  customElements.define(ReefIconButton.is, ReefIconButton)
+</script>
