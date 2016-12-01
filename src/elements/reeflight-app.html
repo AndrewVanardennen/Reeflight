@@ -19,6 +19,7 @@
       width: 100% !important;
     }
     reeflight-drawer {
+      display: none;  /* dont display till loaded */
       background: #FFF;
     }
     reeflight-header {
@@ -88,19 +89,19 @@
       width: 12px;
       height: 12px;
     }
-    reeflight-drawer {
-      display: none;  /* dont display till loaded */
-      border-right: solid 1px rgba(0, 0, 0, 0.12);
-    }
     reef-selector.drawer-menu {
       display: flex;
       flex-direction: column;
       padding: 8px 0;
+      height: 100%;
+      box-sizing: border-box;
+      background: #FFF;
     }
     reef-selector.drawer-menu reef-button {
       height: 56px;
       align-items: center;
-      border-radius: 0 !important;
+      --reef-button-radius: none;
+      --reef-button-ripple-radius: none;
     }
     reef-selector.drawer-menu reef-button.reef-selected {
       background: var(--reeflight-primary-color) !important;
