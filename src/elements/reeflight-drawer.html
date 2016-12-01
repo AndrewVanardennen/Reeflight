@@ -8,12 +8,15 @@ class ReeflightDrawer extends HTMLElement {
   constructor() {
     super();
     this.firstRender = true;
+    this._onClick = this._onClick.bind(this);
     this._root = this.attachShadow({mode: 'open'});
     this._root.innerHTML = `
       <style>
         :host {
           user-select: none;
           cursor: default;
+          box-shadow: 3px 0 6px -3px rgba(0,0,0,0.21);
+          z-index: 100;
         }
       </style>
       <slot name="heading"></slot>
@@ -27,20 +30,20 @@ class ReeflightDrawer extends HTMLElement {
   get forcedShow() {
     return this.hasAttribute('force-show');
   }
-  
+
   set shown(value) {
     this._shown = value;
     this.setAttribute('shown', value);
     if (value) {
       this._applyDrawerStateStyles(
-        'transform ease-in 0.18s',
+        'transform ease-in 0.16s, opacity ease-in 0.16s',
         'translateX(0)',
         1
       );
     } else {
       this._applyDrawerStateStyles(
-        'transform ease-out 0.1s',
-        'translateX(-105%)',
+        'transform ease-out 0.16s, opacity ease-out 0.16s',
+        'translateX(-102%)',
         0
       );
     }
@@ -55,6 +58,7 @@ class ReeflightDrawer extends HTMLElement {
   }
 
   connectedCallback() {
+    this.addEventListener('click', this._onClick);
     this.style.display = 'flex';
     this.style.flexDirection = 'column';
     this.style.height = '100%';
@@ -93,6 +97,10 @@ class ReeflightDrawer extends HTMLElement {
 
   hide() {
     this.shown = false;
+  }
+
+  _onClick() {
+    event.stopPropagation();
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
