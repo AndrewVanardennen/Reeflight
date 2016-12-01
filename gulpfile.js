@@ -56,7 +56,11 @@ const env = (env, source, elements, bowerComponents, destination=null) => {
 }
 
 task('clean', cb => {
-   del(config.env).then(cb());
+  let glob = config.env;
+  if (config.env === 'dev') {
+    glob = ['dev', '.tmp'];
+  }
+   del([glob]).then(cb());
  });
 
 task('env', () => {
@@ -65,7 +69,7 @@ task('env', () => {
 
 task('env:dist', cb => {
   return env('dist', 'dev', '{reef-view, reef-grid}',
-    '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,paper-behaviors,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
+    '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,iron-range-behavior,paper-progress,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
 });
 
 task('images:resize', () => {
@@ -83,6 +87,11 @@ task('images', series('images:resize'));
 
 task('icons', () => {
   return src(`${config.source}/sources/**/*.svg`)
+    .pipe(dest(`.tmp/sources`));
+});
+
+task('icons:copy', () => {
+  return src(`.tmp/sources/**/*.svg`)
     .pipe(dest(`${config.destination}/sources`));
 });
 
@@ -96,7 +105,7 @@ task('copy:app', () => {
 });
 
 task('copy:elements', () => {
-  return src(`${config.source}/elements/${config.elements}.html`)
+  return src([`${config.source}/elements/${config.elements}.html`])
     .pipe(dest(`${config.destination}/elements`));
 });
 
@@ -134,8 +143,6 @@ task('rollup:app', () => {
 
 task('rollup', series('rollup:app'));
 
-task('sources', series('images:copy'));
-
 task('vulcanize:prepare', cb => {
   let index = readFileSync('dev/index.html');
   let file = readFileSync('dev/elements/app-imports.html');
@@ -153,7 +160,8 @@ task('vulcanize:run', () => {
   return src('dev/index.html')
     .pipe(vulcanize({
         inlineScripts: true,
-        inlineCss: true
+        inlineCss: true,
+        excludes: ['dev/elements/reef-view.html', 'bower_components/webcomponentsjs/webcomponents.js']
     }))
     .pipe(dest(config.destination));
 });
@@ -182,6 +190,8 @@ task('precache', () => {
   });
 });
 // Main Tasks
+task('sources', series('images:copy', 'icons:copy'));
+
 task('default', series('clean', 'images', 'icons', 'copy', 'rollup'))
 
 task('build-dev', series('env', 'default'));
