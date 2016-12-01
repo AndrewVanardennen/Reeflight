@@ -39,25 +39,17 @@
       :host[square] .slider-knob {
         border-radius: 3px;
       }
-      </style>`
+      </style>`;
       // bind methods
       this._mousedown = this._mousedown.bind(this);
       this._mouseup = this._mouseup.bind(this);
       this._click = this._click.bind(this);
-      // create paperProgress
-      this.paperProgress = document.createElement('paper-progress');
-      this.sliderKnob = document.createElement('div');
-      this.sliderKnob.classList.add('slider-knob');
-      // setup event listeners
-      this.addEventListener('mousedown', this._mousedown);
-      this.addEventListener('mouseup', this._mouseup);
-      this.addEventListener('click', this._click);
       // Needed for tabbing
       this.tabIndex = 0;
     }
     set value(value) {
       if (typeof value !== 'number') {
-        return console.log('typeError::value: number required');
+        return console.error('typeError::value: number required');
       }
       this.setAttribute('value', value);
     }
@@ -99,7 +91,14 @@
       }
     }
     connectedCallback() {
-      this._qs(this.paperProgress, '#primaryProgress').style.height = '4px';
+      // create paperProgress
+      this.paperProgress = document.createElement('paper-progress');
+      this.sliderKnob = document.createElement('div');
+      this.sliderKnob.classList.add('slider-knob');
+      // setup event listeners
+      this.addEventListener('mousedown', this._mousedown);
+      this.addEventListener('mouseup', this._mouseup);
+      this.addEventListener('click', this._click);
 
       // set paper-progress attributes
       this.paperProgress.max = this.max;
@@ -107,6 +106,8 @@
       // append to shadow
       this.root.appendChild(this.sliderKnob);
       this.root.appendChild(this.paperProgress);
+
+      this._qs(this.paperProgress, '#primaryProgress').style.height = '4px';
     }
     _qs(target, query) {
       return target.root.querySelector(query);
