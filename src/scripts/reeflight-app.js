@@ -15,6 +15,7 @@ class ReeflightApp extends AppController {
     this._onHomeClick = this._onHomeClick.bind(this);
     this._onSettingsClick = this._onSettingsClick.bind(this);
     this._onProfilesClick = this._onProfilesClick.bind(this);
+    this._onClick = this._onClick.bind(this);
     this._onResize = this._onResize.bind(this);
     this._preloadViews = this._preloadViews.bind(this);
   }
@@ -61,10 +62,10 @@ class ReeflightApp extends AppController {
     document.addEventListener('home-button-click', this._onHomeClick);
     document.addEventListener('settings-button-click', this._onSettingsClick);
     document.addEventListener('profiles-button-click', this._onProfilesClick);
+    document.addEventListener('click', this._onClick);
     window.addEventListener('resize', this._onResize);
+    this._onResize();
     this._handleLazyimports();
-    this._preloadTasks = ['profiles', 'settings'];
-    requestIdleCallback(this._preloadViews);
     // TODO: stream lamps
     // fetch('api/devices').then(response => {
     //   //stream
@@ -77,19 +78,23 @@ class ReeflightApp extends AppController {
   _preloadViews(deadline) {
     // Use any remaining time, or, if timed out, just run through the tasks.
     while ((deadline.timeRemaining() > 0 || deadline.didTimeout) &&
-           this._preloadTasks.length > 0)
+           this._preloadTasks.length > 0 && !this.busy)
       this._loadViews();
 
-    if (this._preloadTasks.length > 0)
+    if (this._preloadTasks.length > 0 && !this.busy)
       requestIdleCallback(this._preloadViews);
   }
 
   _loadViews() {
     for (let view of this._preloadTasks) {
-      this._lazyImport(`elements/views/${view}-view.html`).then(() => {
+      this.busy = true;
+      this._lazyImport(`elements/views/${view}-view.html`, true).then(() => {
         let index = this._preloadTasks.indexOf(view);
         if (index > -1) {
           this._preloadTasks.splice(index, 1);
+          if (this._preloadTasks.length === 0) {
+            this.busy === false;
+          }
         }
       });
     }
@@ -104,6 +109,9 @@ class ReeflightApp extends AppController {
       if (this.isVulcanized) {
         this._onHomeClick();
       } else {
+        this._preloadTasks = ['profiles', 'settings'];
+        requestIdleCallback(this._preloadViews);
+
         const asyncImports = [
           'elements/reeflight-header.html',
           'elements/reeflight-footer.html',
@@ -131,16 +139,14 @@ class ReeflightApp extends AppController {
 
   _onResize(event) {
     let width = this.getBoundingClientRect().width;
-    if (width <= 860) {
+    if (width === 0) {
+      setTimeout(() => {
+        this._onResize();
+      }, 10);
+    } else if (width < 860) {
       this.classList.add('floating-drawer');
       if (this.drawer !== null && this.drawer.shown) {
-        this._applyAppStateStyles(
-          'width ease-out 0.18s',
-          '100%'
-        );
-        requestAnimationFrame(() => {
-          this.drawer.hide();
-        });
+        this._closeDrawer();
       }
     } else if (width > 1116) { /* 860 + 256(drawer width) */
       this.classList.remove('floating-drawer');
@@ -165,13 +171,19 @@ class ReeflightApp extends AppController {
     }
   }
 
-  _onToggleDrawer() {
-    if (this.drawer.shown) {
+  _closeDrawer() {
+    requestAnimationFrame(() => {
       this._applyAppStateStyles(
         'width ease-out 0.18s',
         '100%'
       );
       this.drawer.hide();
+    });
+  }
+
+  _onToggleDrawer() {
+    if (this.drawer.shown) {
+      this._closeDrawer();
     } else {
       this._applyAppStateStyles(
         'width ease-in 0.18s',
@@ -182,22 +194,33 @@ class ReeflightApp extends AppController {
   }
 
   _applyAppStateStyles(transition, width) {
-    requestAnimationFrame(() => {
-      this.style.transition = transition;
-      this.style.width = width;
-    });
+    this.style.transition = transition;
+    this.style.width = width;
+  }
+
+  _closeDrawerIfNeeded() {
+    if (this.drawer.shown) {
+      this._closeDrawer();
+    }
+  }
+
+  _onClick() {
+    this._closeDrawerIfNeeded();
   }
 
   _onHomeClick() {
     this.pages.select('home');
+    this._closeDrawerIfNeeded();
   }
 
   _onSettingsClick() {
     this.pages.select('settings');
+    this._closeDrawerIfNeeded();
   }
 
   _onProfilesClick(){
     this.pages.select('profiles');
+    this._closeDrawerIfNeeded();
   }
 }
 customElements.define(ReeflightApp.is, ReeflightApp);
