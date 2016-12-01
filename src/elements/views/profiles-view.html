@@ -1,36 +1,41 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../reef-view.html">
 <link rel="import" href="../reef-slider.html">
 
-<dom-module id="profiles-view">
-  <template>
-    <style>
-      :host {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-      .firstdata {
-        max-width: 320px;
-      }
-      .seconddata {
-        position: fixed;
-        left: 800px;
-        /*top: -310px;*/
-        top: 180px;
-      }
-      .btn{
-        border: 1px solid #0097A7;
-        border-radius: 3px;
-        background-color: transparent;
-      }
-      .container{
-        overflow: auto;
-      }
-    </style>
+<script>
+  class ProfilesView extends HTMLElement {
+    static get is() {
+      return 'profiles-view';
+    };
+    constructor() {
+      super();
+      this.root = this.attachShadow({mode: 'open'});
+      this.root.innerHTML = `
+        <style>
+          :host {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+          }
+          .firstdata {
+            max-width: 320px;
+          }
+          .seconddata {
+            position: fixed;
+            left: 800px;
+            /*top: -310px;*/
+            top: 180px;
+          }
+          .btn{
+            border: 1px solid #0097A7;
+            border-radius: 3px;
+            background-color: transparent;
+          }
+          .container{
+            overflow: auto;
+          }
+        </style>
 
-    <reef-view class="container">
-        <span class="shadow">
+        <reef-view class="container">
           <h1 style="font-size:24px;">Profiles - Standard Profile 1</h1>
           <div class="firstdata">
             <p>Time: (per profile)</p>
@@ -56,18 +61,9 @@
             </ul>
             <p>-- Some profile settings can be placed in settings --</p>
           </div>
-        </span>
-    </reef-view>
-  </template>
-  <script>
-    class ProfilesView extends Polymer.Element {
-      static get is() {
-        return 'profiles-view';
-      };
-      constructor() {
-        super();
-      }
+        </reef-view>
+      `;
     }
-    customElements.define(ProfilesView.is, ProfilesView);
-  </script>
-</dom-module>
+  }
+  customElements.define(ProfilesView.is, ProfilesView);
+</script>
