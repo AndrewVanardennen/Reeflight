@@ -132,15 +132,6 @@ class ReeflightApp extends AppController {
           'elements/reeflight-drawer-heading.html',
           'elements/reeflight-drawer-footer.html'
         ];
-
-        const imports = [
-          'elements/icons.html'
-        ];
-
-        imports.forEach(href => {
-          this._lazyImport(href);
-        });
-
         asyncImports.forEach(href => {
           this._lazyImport(href, true);
         });
