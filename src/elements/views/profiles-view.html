@@ -13,31 +13,19 @@
         <style>
           :host {
             display: flex;
-            flex-direction: column;
-            height: 100%;
-          }
-          .firstdata {
-            max-width: 320px;
-          }
-          .seconddata {
-            position: fixed;
-            left: 800px;
-            /*top: -310px;*/
-            top: 180px;
-          }
-          .btn{
-            border: 1px solid #0097A7;
-            border-radius: 3px;
-            background-color: transparent;
-          }
-          .container{
-            overflow: auto;
           }
         </style>
 
-        <reef-view class="container">
+        <reef-grid>
+          <style>
+            .btn {
+              border: 1px solid #0097A7;
+              border-radius: 3px;
+              background-color: transparent;
+            }
+          </style>
           <h1 style="font-size:24px;">Profiles - Standard Profile 1</h1>
-          <div class="firstdata">
+          <div class="grid-item">
             <p>Time: (per profile)</p>
             <p>-- time picker (clock) --</p>
             <input type="checkbox" name="time" value="Oldtime">Use old start time.
@@ -50,7 +38,7 @@
               <reef-slider></reef-slider>
               <button class="btn" type="submit" name="submit">Submit</button>
           </div>
-          <div class="seconddata">
+          <div class="grid-item">
             <p>-- overall lamp brightness #extra --</p>
             <p>-- duration sunlight (max = 6 hours) #extra --</p>
             <br><br>
@@ -61,7 +49,7 @@
             </ul>
             <p>-- Some profile settings can be placed in settings --</p>
           </div>
-        </reef-view>
+        </reef-grid>
       `;
     }
   }
