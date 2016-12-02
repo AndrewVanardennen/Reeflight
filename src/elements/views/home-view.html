@@ -1,4 +1,6 @@
-<link rel="import" href="../reef-view.html">
+<link rel="import" href="../reef-grid.html">
+<link rel="import" href="../reef-icon.html">
+
   <script>
     class HomeView extends HTMLElement {
       static get is() {
@@ -23,9 +25,6 @@
           <style>
             :host {
               display: flex;
-              flex-direction: column;
-              height: 100%;
-              --reef-view-padding: 12px;
             }
             h1, h2 {
               margin: 0;
@@ -35,28 +34,31 @@
             }
             @media (min-width: 680px) {
               :host {
-                --reef-view-padding: 32px;
+
               }
             }
           </style>
 
-          <reef-view>
-            <h1>Welcome
-            <span class="username"></span>
-            to Reeflight.</h1>
-            <summary>
-              <h2>Future plans:</h2>
-              <p>-- Icon Clock with color indicating active/not active --</p>
-              <p>-- Time past and/or Time until new activation --</p>
-              <p>-- Bluetooth/Wifi enabled icon --</p>
-              <p>-- Connected with Rsp icon #extra --</p>
-            </summary>
-          </reef-view>
+          <reef-grid>
+            <div class="grid-item" style="width:100%;">
+              <h1>Welcome
+              <span class="username"></span>
+              to Reeflight.</h1>
+              <summary>
+                <h2>Future plans:</h2>
+                <p>-- Icon Clock with color indicating active/not active --</p>
+                <p>-- Time past and/or Time until new activation --</p>
+                <p>-- Bluetooth/Wifi enabled icon --</p>
+                <p>-- Connected with Rsp icon #extra --</p>
+                <reef-icon icon="lightbulb-outline"></reef-icon >
+              </summary>
+            <div>
+          </reef-grid>
         `
       }
       set username(value) {
         this.setAttribute('username', value);
-        this.root.querySelector('.username').innerHTML = value;
+        this.root.querySelector('reef-grid').root.querySelector('.username').innerHTML = value;
       }
 
       attributeChangedCallback(name, oldValue, newValue) {
