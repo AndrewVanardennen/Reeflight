@@ -1,7 +1,8 @@
-<script>
 'use strict';
-class ReeflightDrawer extends HTMLElement {
-  static get is() { return 'reeflight-drawer' };
+export default class ReefDrawer extends HTMLElement {
+  static get is() {
+ return 'reef-drawer';
+};
   static get ObservedAttributes() {
     return ['show'];
   }
@@ -105,8 +106,6 @@ class ReeflightDrawer extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     console.log(name, oldValue);
-
   }
 }
-customElements.define(ReeflightDrawer.is, ReeflightDrawer);
-</script>
+customElements.define(ReefDrawer.is, ReefDrawer);

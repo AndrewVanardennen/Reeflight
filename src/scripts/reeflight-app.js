@@ -1,11 +1,17 @@
 'use strict';
 import AppController from './controllers/app-controller.js';
+import Drawer from './ui/reef-drawer.js';
 
 /**
  * ReeflightApp
  */
 class ReeflightApp extends AppController {
-  static get is() { return 'reeflight-app'; }
+  static get is() {
+    return 'reeflight-app';
+  }
+  /**
+   * create reeflight-app
+   */
   constructor() {
     super('reeflight-app');
     // bind methods
@@ -21,11 +27,15 @@ class ReeflightApp extends AppController {
   }
   /**
    * Runs everytime the user changes
+   * @param {Object} value {username: 'name', profile_picture: 'some_image'}
    */
   set user(value) {
     this._user = value;
   }
 
+  /**
+   * return {Object} value {username: 'name', profile_picture: 'some_image'}
+   */
   get user() {
     return this._user || {};
   }
@@ -35,7 +45,7 @@ class ReeflightApp extends AppController {
   }
 
   get drawer() {
-    return this._root.querySelector('reeflight-drawer');
+    return this._root.querySelector('reef-drawer');
   }
 
   get drawerFooter() {
@@ -64,6 +74,8 @@ class ReeflightApp extends AppController {
     document.addEventListener('profiles-button-click', this._onProfilesClick);
     document.addEventListener('click', this._onClick);
     window.addEventListener('resize', this._onResize);
+    let drawer = this._root.querySelector('reef-drawer');
+    drawer = new Drawer();
     this._onResize();
     this._handleLazyimports();
     // TODO: stream lamps
@@ -117,7 +129,6 @@ class ReeflightApp extends AppController {
           'elements/reeflight-footer.html',
           'elements/reef-selector.html',
           'elements/reef-button.html',
-          'elements/reeflight-drawer.html',
           'elements/reeflight-drawer-heading.html',
           'elements/reeflight-drawer-footer.html'
         ];
@@ -145,16 +156,12 @@ class ReeflightApp extends AppController {
       }, 10);
     } else if (width < 860) {
       this.classList.add('floating-drawer');
-      if (this.drawer !== null && this.drawer.shown) {
+      if (this.drawer.shown) {
         this._closeDrawer();
       }
     } else if (width > 1116) { /* 860 + 256(drawer width) */
       this.classList.remove('floating-drawer');
-      this._applyAppStateStyles(
-        'width ease-in 0.18s',
-        'calc(100% - ' + this.drawer.width + ')'
-      );
-      this.drawer.show();
+      this._openDrawer();
     }
   }
 
@@ -171,10 +178,20 @@ class ReeflightApp extends AppController {
     }
   }
 
+  _openDrawer() {
+    requestAnimationFrame(() => {
+      this._applyAppStateStyles(
+        'width ease-in 0.16s',
+        'calc(100% - ' + this.drawer.width + ')'
+      );
+      this.drawer.show();
+    });
+  }
+
   _closeDrawer() {
     requestAnimationFrame(() => {
       this._applyAppStateStyles(
-        'width ease-out 0.18s',
+        'width ease-out 0.16s',
         '100%'
       );
       this.drawer.hide();
@@ -185,11 +202,7 @@ class ReeflightApp extends AppController {
     if (this.drawer.shown) {
       this._closeDrawer();
     } else {
-      this._applyAppStateStyles(
-        'width ease-in 0.18s',
-        'calc(100% - ' + this.drawer.width + ')'
-      );
-      this.drawer.show();
+      this._openDrawer();
     }
   }
 
@@ -203,11 +216,18 @@ class ReeflightApp extends AppController {
       this._closeDrawer();
     }
   }
-
+  /**
+   * _onClick
+   * Closes the drawer if needed
+   */
   _onClick() {
     this._closeDrawerIfNeeded();
   }
-
+  /**
+   * _onHomeClick
+   * Performs pages.select('home')
+   * Closes the drawer if needed
+   */
   _onHomeClick() {
     this.pages.select('home');
     this._closeDrawerIfNeeded();
@@ -218,7 +238,7 @@ class ReeflightApp extends AppController {
     this._closeDrawerIfNeeded();
   }
 
-  _onProfilesClick(){
+  _onProfilesClick() {
     this.pages.select('profiles');
     this._closeDrawerIfNeeded();
   }
