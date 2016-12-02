@@ -53,9 +53,13 @@
      }
      connectedCallback() {
        // TODO: check for child changes
+       let styles = this.querySelectorAll('style');
+       for (let i = 0; i < styles.length; i++) {
+         this.root.appendChild(styles[i]);
+       }
        let childs = this.querySelectorAll('.grid-item');
        setTimeout(() => {
-         for (var i = 0; i < childs.length; i++) {
+         for (let i = 0; i < childs.length; i++) {
            this.root.querySelector('.grid').appendChild(childs[i]);
          }
        }, 10);
