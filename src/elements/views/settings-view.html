@@ -1,10 +1,21 @@
 <link rel="import" href="../reef-view.html">
 <link rel="import" href="../reef-grid.html">
 <script>
+/**
+ * SettingsView
+ * @extends HTMLElement
+ */
   class SettingsView extends HTMLElement {
+    /**
+     * Is
+     * @return {string} HTMLElement tagName
+     */
     static get is() {
       return 'settings-view';
     };
+    /**
+     * Create shadowRoot (root) & stamp template
+     */
     constructor() {
       super();
       this.root = this.attachShadow({mode: 'open'});
@@ -12,8 +23,6 @@
         <style>
           :host {
             display: flex;
-            flex-direction: column;
-            height: 100%;
             align-items: center;
             justify-content: center;
           }
@@ -29,7 +38,9 @@
             <p>-- logbook errors, start, stop,... #extra --</p>
           </div>
           <div class="grid-item">
-            <p>-- Gradual time shifter (less degrading coral growth)  #extra --</p>
+            <p>
+              -- Gradual time shifter (less degrading coral growth)  #extra --
+            </p>
             <p>-- SU: tweak frequency of leds #extra --</p>
           </div>
           <div class="grid-item">
@@ -45,7 +56,8 @@
               type="checkbox"
               name="phoneWifi"
               value="wified"
-              title="Enable sunlight only when smartphone is connected to wifi.">
+              title="
+              Enable sunlight only when smartphone is connected to wifi.">
               Out of the house mode.
             </p>
             <p>
@@ -53,12 +65,13 @@
                 type="checkbox"
                 name="phoneBT"
                 value="bted"
-                title="Enable sunlight only when smartphone is connected to Bluetooth">
+                title="
+                Enable sunlight only when smartphone is connected to Bluetooth">
                 Out of the room mode.
             </p>
           </div>
         </reef-grid>
-      `
+      `;
     }
   }
   customElements.define(SettingsView.is, SettingsView);
