@@ -1,0 +1,38 @@
+<script>
+  class ReefIcon extends HTMLElement {
+    static get observedAttributes() {return ['icon'];}
+    constructor() {
+      super();
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (oldValue !== newValue) this[name] = newValue;
+    }
+    get iconset() {
+      return window.svgIconSet;
+    }
+    set icon(value) {
+      let parts;
+      if (value) {
+        parts = value.split('::');
+        if (parts.length === 1){
+          this.iconset.icons.host.applyIcon(this, value);
+        }
+        else {
+          this.iconset[parts[0]].host.applyIcon(this, parts[1]);
+        }
+        this.setAttribute('icon', value);
+      } else {
+        parts = this._icon.split('::');
+        if (parts.length === 1) {
+          this.iconset.icons.host.removeIcon(this);
+        }
+        else {
+          this.iconset[parts[0]].host.removeIcon(this);
+        }
+        this.removeAttribute('icon');
+      }
+      this._icon = value;
+    }
+  }
+  customElements.define('reef-icon', ReefIcon);
+</script>
