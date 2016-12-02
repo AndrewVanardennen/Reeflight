@@ -39,7 +39,10 @@
       :host[square] .slider-knob {
         border-radius: 3px;
       }
-      </style>`;
+      </style>
+        <div class="slider-knob"></div>
+        <paper-progress></paper-progress>
+      `;
       // bind methods
       this._mousedown = this._mousedown.bind(this);
       this._mouseup = this._mouseup.bind(this);
@@ -48,9 +51,9 @@
       this.tabIndex = 0;
     }
     set value(value) {
-      if (typeof value !== 'number') {
-        return console.error('typeError::value: number required');
-      }
+      // if (typeof value !== 'number') {
+      //   return console.error('typeError::value: number required');
+      // }
       this.setAttribute('value', value);
     }
     set min(value) {
@@ -63,7 +66,7 @@
       this._lastValue = value;
     }
     get value() {
-      return this.getAttribute('value');
+      return this.getAttribute('value') || 0;
     }
     get min() {
       return this.getAttribute('min') || 0;
@@ -92,9 +95,13 @@
     }
     connectedCallback() {
       // create paperProgress
-      this.paperProgress = document.createElement('paper-progress');
-      this.sliderKnob = document.createElement('div');
-      this.sliderKnob.classList.add('slider-knob');
+      this.paperProgress = this._qs(this, 'paper-progress');
+      if (this.paperProgress === null) {
+        return setTimeout(() => {
+          this.connectedCallback();
+        }, 10);
+      }
+      this.sliderKnob = this._qs(this, '.slider-knob');
       // setup event listeners
       this.addEventListener('mousedown', this._mousedown);
       this.addEventListener('mouseup', this._mouseup);
@@ -103,9 +110,6 @@
       // set paper-progress attributes
       this.paperProgress.max = this.max;
       this.paperProgress.min = this.min;
-      // append to shadow
-      this.root.appendChild(this.sliderKnob);
-      this.root.appendChild(this.paperProgress);
 
       this._qs(this.paperProgress, '#primaryProgress').style.height = '4px';
     }
