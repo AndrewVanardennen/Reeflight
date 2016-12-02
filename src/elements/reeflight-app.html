@@ -1,3 +1,4 @@
+<link rel="import" href="icons.html">
 <link rel="import" href="views/home-view.html">
 <link rel="import" href="reef-pages.html">
 
@@ -18,7 +19,12 @@
     :host(.floating-drawer) {
       width: 100% !important;
     }
-    reeflight-drawer {
+    /*werken met reef-selector -> import voor listbox*/
+    /*.reef-selected.color1 {
+      background: #F00 !important;
+      color: #F00;
+    }*/
+    reef-drawer {
       display: none;  /* dont display till loaded */
       background: #FFF;
     }
@@ -104,7 +110,7 @@
       --reef-button-ripple-radius: none;
     }
     reef-selector.drawer-menu reef-button.reef-selected {
-      background: var(--reeflight-primary-color) !important;
+      background: var(--reeflight-primary-color);
     }
     [hidden] {
       opacity: 0;
@@ -115,7 +121,7 @@
   <reef-drawer>
     <reeflight-drawer-heading slot="heading"></reeflight-drawer-heading>
     <reef-selector class="drawer-menu">
-      <reef-button name="home" no-shadow>home</reef-button>
+      <reef-button class="color1" name="home" no-shadow>home</reef-button>
       <reef-button name="profiles" no-shadow>profiles</reef-button>
       <reef-button name="settings" no-shadow>settings</reef-button>
     </reef-selector>
