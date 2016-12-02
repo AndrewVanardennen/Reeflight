@@ -8,7 +8,14 @@
       // Create shadow Dom
       this._root = this.attachShadow( {mode:'open'} );
       // Create Dom innerHTML
-      this._root.innerHTML = '<slot></slot>';
+      this._root.innerHTML = `
+        <style>
+          :host {
+            overflow-y: auto;
+          }
+        </style>
+        <slot></slot>
+      `;
     }
     select(page) {
       for (var i = 0; i < this.children.length; i++) {
