@@ -32,11 +32,15 @@
 
     <!-- Load Web Components & customElements when not supported-->
     <script>
+      /* eslint no-var: 0 */
       var webComponentsSupported = ('registerElement' in document
           && 'import' in document.createElement('link')
           && 'content' in document.createElement('template'));
       var customElementsV1Supported = 'customElements' in window;
 
+      /**
+       * @param {String} src
+       */
       function importScript(src) {
         var script = document.createElement('script');
         script.src = src;
@@ -46,9 +50,8 @@
         importScript('../bower_components/webcomponentsjs/webcomponents-lite.js');
       }
       if (!customElementsV1Supported) {
-        importScript('../bower_components/custom-elements/custom-elements.min.js')
+        importScript('../bower_components/custom-elements/custom-elements.min.js');
       }
-
     </script>
     <style>
       body, html {

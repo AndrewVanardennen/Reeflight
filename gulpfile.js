@@ -1,16 +1,16 @@
 'use strict';
-const { task, src, series, dest } = require('gulp');
+const {task, src, series, dest} = require('gulp');
 const del = require('del');
 const lwip = require('gulp-lwip');
-const { rollup } = require( 'rollup' );
+const {rollup} = require( 'rollup' );
 const babel = require('rollup-plugin-babel');
-const { readFileSync, writeFileSync, writeFile } = require('fs');
+const {readFileSync, writeFileSync, writeFile} = require('fs');
 const vulcanize = require('gulp-vulcanize');
 const swPrecache = require('sw-precache');
 const browserSync = require('browser-sync').create();
 const reload = () => {
   return browserSync.reload;
-}
+};
 const browserSyncInit = baseDir => {
   browserSync.init({
     port: 5000,
@@ -26,17 +26,20 @@ const browserSyncInit = baseDir => {
   if (config.env === 'dist') {
     browserSync.watch(['src/index.html', 'src/**/*.html'])
       .on('change', series('copy', 'vulcanize', reload()));
+    browserSync.watch('src/**/*.js')
+      .on('change', series('rollup', 'vulcanize', reload()));
     browserSync.watch('**/*.{png,jpg}')
       .on('change', series('images', reload()));
   } else {
-    browserSync.watch('src/**/*.html').on('change', series('copy:elements', reload()));
-    browserSync.watch('src/**/*.js').on('change', series('rollup', reload()));
+    browserSync.watch('src/**/*.html')
+      .on('change', series('copy:elements', reload()));
+    browserSync.watch('src/**/*.js')
+      .on('change', series('rollup', reload()));
     browserSync.watch('src/**/*.{png,jpg}').on('change', reload());
   }
-}
+};
 
 let config = {};
-let lazyResources = ['paper-menu-button', 'paper-icon-button', 'iron-iconset-svg'];
 
 const env = (env, source, elements, bowerComponents, destination=null) => {
   return new Promise((resolve, reject) => {
@@ -47,13 +50,13 @@ const env = (env, source, elements, bowerComponents, destination=null) => {
         elements: elements,
         bowerComponents: bowerComponents,
         destination: destination || env
-      }
+      };
     } catch (error) {
       reject(error);
     }
     resolve();
   });
-}
+};
 
 task('clean', cb => {
   let glob = config.env;
@@ -68,8 +71,7 @@ task('env', () => {
 });
 
 task('env:dist', cb => {
-  return env('dist', 'dev', '{reef-view, reef-grid}',
-    '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,iron-range-behavior,paper-progress,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
+  return env('dist', 'dev', 'reef-slider', '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,iron-range-behavior,paper-progress,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
 });
 
 task('images:resize', () => {
@@ -99,7 +101,7 @@ task('copy:app', () => {
   return src([
     `${config.source}/index.html`,
     `${config.source}/service-worker.js`,
-    `${config.source}/manifest.json`,
+    `${config.source}/manifest.json`
   ])
     .pipe(dest(config.destination));
 });
@@ -123,7 +125,7 @@ task('copy', series('copy:app', 'copy:elements', 'copy:views', 'copy:bower'));
 
 task('rollup:app', () => {
   // used to track the cache for subsequent bundles
-  var cache;
+  let cache;
 
   return rollup({
     entry: 'src/scripts/reeflight-app.js',
@@ -135,7 +137,7 @@ task('rollup:app', () => {
 
     bundle.write({
       format: 'cjs',
-      plugins: [ babel() ],
+      plugins: [babel()],
       dest: 'dev/scripts/reeflight-app.js'
     });
   });
@@ -161,7 +163,13 @@ task('vulcanize:run', () => {
     .pipe(vulcanize({
         inlineScripts: true,
         inlineCss: true,
-        excludes: ['dev/elements/reef-view.html', 'bower_components/webcomponentsjs/webcomponents.js']
+        excludes: [
+          'dev/elements/reef-view.html',
+          'bower_components/webcomponentsjs/webcomponents.js',
+          'bower_components/polymer/polymer.html',
+          'bower_components/polymer/src/legacy/polymer-fn.html',
+          'bower_components/paper-progress/paper-progress.html'
+        ]
     }))
     .pipe(dest(config.destination));
 });
@@ -176,7 +184,13 @@ task('precache', () => {
   return swPrecache.write(__dirname + '/dist/service-worker.js', {
     staticFileGlobs: [
       'dist/**.html',
-      'dist/**/*.{html,js}',
+      'dist/manifest.json',
+      'dist/elements/*.{html,js}',
+      'dist/elements/**/*.{html,js}',
+      'dist/bower_components/{polymer,firebase,paper-progress}/*.{html,js}',
+      'dist/bower_components/paper-styles/*.html',
+      'dist/bower_components/iron-range-behavior/*.html',
+      'dist/bower_components/iron-flex-layout/*.html',
       'dist/sources/**.*'
     ],
     stripPrefix: 'dist',
@@ -192,12 +206,13 @@ task('precache', () => {
 // Main Tasks
 task('sources', series('images:copy', 'icons:copy'));
 
-task('default', series('clean', 'images', 'icons', 'copy', 'rollup'))
+task('default', series('clean', 'images', 'icons', 'copy', 'rollup'));
 
 task('build-dev', series('env', 'default'));
 
-task('build', series('build-dev', 'env:dist', 'default', 'sources', 'vulcanize', 'precache'))
+task('build', series('build-dev', 'env:dist', 'default', 'sources',
+  'vulcanize', 'precache'));
 
 task('serve', series('env', 'default', 'browser-sync'));
 
-task('serve:dist', series('build', 'browser-sync'))
+task('serve:dist', series('build', 'browser-sync'));

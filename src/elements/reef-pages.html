@@ -1,33 +1,44 @@
 <script>
-  class ReefPages extends HTMLElement {
-    static get is(){
-      return 'reef-pages';
-    };
-    constructor() {
-      super();
-      // Create shadow Dom
-      this._root = this.attachShadow( {mode:'open'} );
-      // Create Dom innerHTML
-      this._root.innerHTML = `
-        <style>
-          :host {
-            overflow-y: auto;
-            --reef-primary-background-color: #ECEFF1;
-          }
-        </style>
-        <slot></slot>
-      `;
-    }
-    select(page) {
-      for (var i = 0; i < this.children.length; i++) {
-        let child = this.children[i];
-        if (child.getAttribute('name') === page) {
-          child.removeAttribute('hidden');
-        } else {
-          child.setAttribute('hidden', '');
-        };
-      }
+/**
+ * @extends HTMLElement
+ */
+class ReefPages extends HTMLElement {
+  /**
+   * Creates shadowRoot
+   */
+  constructor() {
+    super();
+    this._root = this.attachShadow({mode: 'open'});
+  }
+
+  /**
+   * Stamps innerHTML
+   */
+  connectedCallback() {
+    this._root.innerHTML = `
+      <style>
+        :host {
+          overflow-y: auto;
+          --reef-primary-background-color: #ECEFF1;
+        }
+      </style>
+      <slot></slot>
+    `;
+  }
+
+  /**
+   * @param {String} page
+   */
+  select(page) {
+    for (let i = 0; i < this.children.length; i++) {
+      let child = this.children[i];
+      if (child.getAttribute('name') === page) {
+        child.removeAttribute('hidden');
+      } else {
+        child.setAttribute('hidden', '');
+      };
     }
   }
-  customElements.define(ReefPages.is, ReefPages);
+}
+customElements.define('reef-pages', ReefPages);
 </script>

@@ -25,7 +25,6 @@
       color: #F00;
     }*/
     reef-drawer {
-      display: none;  /* dont display till loaded */
       background: #FFF;
     }
     reeflight-header {
@@ -117,8 +116,16 @@
       position: absolute;
       pointer-events: none;
     }
+    :host([loading]) reef-drawer {
+      opacity: 0;
+      display: none;
+      transition: opacity ease-in 0.16s;
+    }
+    :host([loading]) {
+      width: 100% !important;
+    }
   </style>
-  <reef-drawer>
+  <reef-drawer opened>
     <reeflight-drawer-heading slot="heading"></reeflight-drawer-heading>
     <reef-selector class="drawer-menu">
       <reef-button class="color1" name="home" no-shadow>home</reef-button>
@@ -137,7 +144,7 @@
     <settings-view name="settings"></settings-view>
     <profiles-view name="profiles"></profiles-view>
   </reef-pages>
-  <reeflight-footer>
+  <reef-footer>
     <span slot="made-with">
       Made With
       <img class="icon" src="../sources/icons/heart.svg"></img>
@@ -152,7 +159,7 @@
       Except as otherwise noted,
       Documentation & media are licensed under CC-BY-4.0 License.
     </section>
-  </reeflight-footer>
+  </reef-footer>
   <user-controller></user-controller>
 </template>
 

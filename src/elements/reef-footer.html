@@ -1,0 +1,36 @@
+<script>
+/**
+ * ReefFooter
+ * @extends HTMLElement
+ */
+class ReefFooter extends HTMLElement {
+
+  /**
+   * Creates shadowRoot
+   */
+  constructor() {
+    super();
+    this._root = this.attachShadow({mode: 'open'});
+  }
+
+  /**
+   * Runs when inserted into document
+   */
+  connectedCallback() {
+    this._root.innerHTML = `
+      <style>
+        :host {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          min-height: 72px;
+        }
+      </style>
+      <slot name="made-with"></slot>
+      <slot></slot>
+      <slot name="copyright"></slot>
+    `;
+  }
+}
+customElements.define('reef-footer', ReefFooter);
+</script>

@@ -1,5 +1,3 @@
-<link rel="import" href="../reef-view.html">
-<link rel="import" href="../reef-grid.html">
 <script>
 /**
  * SettingsView
@@ -7,18 +5,17 @@
  */
   class SettingsView extends HTMLElement {
     /**
-     * Is
-     * @return {string} HTMLElement tagName
-     */
-    static get is() {
-      return 'settings-view';
-    };
-    /**
      * Create shadowRoot (root) & stamp template
      */
     constructor() {
       super();
       this.root = this.attachShadow({mode: 'open'});
+    }
+
+    /**
+     * Stamps innerHTML
+     */
+    connectedCallback() {
       this.root.innerHTML = `
         <style>
           :host {
@@ -74,5 +71,5 @@
       `;
     }
   }
-  customElements.define(SettingsView.is, SettingsView);
+  customElements.define('settings-view', SettingsView);
 </script>

@@ -1,7 +1,12 @@
 import FirebaseController from './firebase-controller';
 
+/**
+ * @extends FirebaseController
+ */
 export default class UserController extends FirebaseController {
-  static get is() { return 'user-controller' }
+  /**
+   * Binds methods
+   */
   constructor() {
     super();
     this.style.display = 'none';
@@ -10,22 +15,25 @@ export default class UserController extends FirebaseController {
     this._onAuthStateChanged = this._onAuthStateChanged.bind(this);
   }
 
-  set _user(user) {
-    if (user && user.isAnonymous) {
-    }
-  }
-
+  /**
+   * @return {Object}
+   */
   get user() {
-    return JSON.parse(localStorage.getItem(`firebase:authUser:${this.config.apiKey}:[DEFAULT]`)) || null;
+    return JSON.parse(localStorage.getItem(
+      `firebase:authUser:${this.config.apiKey}:[DEFAULT]`)) || null;
   }
 
+  /**
+   * Calls super.connectedCallback & add's eventListeners
+   */
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener('firebase-ready', this._onFirebaseReady);
   }
 
   /**
-   * @arg {string} provider default's to anonymous, options: 'anonymous', 'google'
+   * @param {string} provider default's to anonymous,
+   * **options**: 'anonymous', 'google'
    */
   login() {
     if (this.user === null) {
@@ -38,8 +46,11 @@ export default class UserController extends FirebaseController {
     }
   }
 
+  /**
+   * Runs whenever the user's auth state changes
+   * @param {Object} user
+   */
   _onAuthStateChanged(user) {
-    console.log(user);
     if (user === null) {
       // login when the user is logged out
       this.login();
@@ -47,10 +58,12 @@ export default class UserController extends FirebaseController {
       firebase.database().ref( 'users/' + user.uid).once('value', snap => {
         let data = snap.val();
         if (data) {
-          return document.dispatchEvent(new CustomEvent('user-login', {detail: data}));
+          return document.dispatchEvent(
+            new CustomEvent('user-login', {detail: data}
+          ));
         } else if(data === null) {
-          var isAnonymous = user.isAnonymous;
-          var uid = user.uid;
+          let isAnonymous = user.isAnonymous;
+          let uid = user.uid;
 
           if (isAnonymous || isAnonymous && user.email === null) {
             let newPassword = Math.random().toString(36).slice(-8);
@@ -60,14 +73,14 @@ export default class UserController extends FirebaseController {
             user.updatePassword(newPassword).then(() => {
               console.log(newPassword);
               // Update successful.
-            }, (error) => {
+            }, error => {
               this.error(error);
             });
 
             user.updateEmail(newEmail).then(() => {
               console.log(newEmail);
               // Update successful.
-            }, (error) => {
+            }, error => {
               this.error(error);
             });
 
@@ -76,30 +89,42 @@ export default class UserController extends FirebaseController {
         }
       });
       // User is signed in.
-
     }
     return;
   }
 
+  /**
+   * @return {String}
+   */
   randomAvatar() {
-    let num = Math.floor((Math.random() * 10) + 1); // Get a number between 1 & 10
+    // Get a number between 1 & 10
+    let num = Math.floor((Math.random() * 10) + 1);
     return `sources/avatars/avatar-${num}.png`;
   }
 
+  /**
+   * @param {String} uid
+   * @param {String} name
+   * @param {String} email
+   * @param {String} imageUrl
+   */
   writeUserData(uid, name, email, imageUrl) {
     if (name !== null && email !== null && imageUrl !== null) {
       firebase.database().ref('users/' + uid).set({
         username: name,
         email: email,
-        profile_picture : imageUrl
+        profile_picture: imageUrl
       });
     }
-
     // localStorage.setItem('hitchon-user-uid', userId);
   }
-  _onFirebaseReady () {
+
+  /**
+   * Removes the firebase-ready eventListener
+   */
+  _onFirebaseReady() {
     firebase.auth().onAuthStateChanged(this._onAuthStateChanged);
     document.removeEventListener('firebase-ready', this._onFirebaseReady);
   }
 }
-customElements.define(UserController.is, UserController);
+customElements.define('user-controller', UserController);
