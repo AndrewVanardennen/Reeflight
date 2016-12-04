@@ -49,7 +49,7 @@ const env = (env, source, elements, bowerComponents, destination=null) => {
         source: source,
         elements: elements,
         bowerComponents: bowerComponents,
-        destination: destination || env
+        destination: env
       };
     } catch (error) {
       reject(error);
@@ -101,7 +101,7 @@ task('copy:app', () => {
   return src([
     `${config.source}/index.html`,
     `${config.source}/service-worker.js`,
-    `${config.source}/manifest.json`
+    `src/manifest.json`
   ])
     .pipe(dest(config.destination));
 });
@@ -121,7 +121,8 @@ task('copy:bower', () => {
     .pipe(dest(`${config.destination}/bower_components`));
 });
 
-task('copy', series('copy:app', 'copy:elements', 'copy:views', 'copy:bower'));
+task('copy', series('copy:app', 'copy:elements',
+  'copy:views', 'copy:bower'));
 
 task('rollup:app', () => {
   // used to track the cache for subsequent bundles
@@ -138,7 +139,7 @@ task('rollup:app', () => {
     bundle.write({
       format: 'cjs',
       plugins: [babel()],
-      dest: 'dev/scripts/reeflight-app.js'
+      dest: `${config.destination}/scripts/reeflight-app.js`
     });
   });
 });

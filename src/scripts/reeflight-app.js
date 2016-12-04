@@ -108,19 +108,20 @@ class ReeflightApp extends AppController {
     window.addEventListener('resize', this._onResize);
     customElements.whenDefined('reeflight-app').then(() => {
       this._handleLazyimports();
-      let undefinedElements = [this._root.querySelector('reef-pages'),
-        this.drawer,
-        this.header, this.drawerFooter,
-        this._root.querySelector('reef-footer'),
-        this._root.querySelector('reef-selector')
+      let undefinedElements = ['reef-drawer', 'reef-pages',
+        'reeflight-header', 'reeflight-drawer-footer',
+        'reef-footer', 'reef-selector'
       ];
-      undefinedElements.map(el => {
-        return customElements.whenDefined(el.localName);
+      let promises = undefinedElements.map(el => {
+        return customElements.whenDefined(el);
       });
-      this._onResize();
+      Promise.all(promises).then(() => {
+        this.loadComplete = true;
+        this._onResize();
+        this._onHomeClick();
+      });
       this._preloadTasks = ['profiles', 'settings'];
       requestIdleCallback(this._preloadViews);
-      this.loadComplete = true;
     });
     // TODO: stream lamps
     // fetch('api/devices').then(response => {
@@ -171,13 +172,10 @@ class ReeflightApp extends AppController {
    */
   _handleLazyimports() {
     setTimeout(() => {
-      this._onHomeClick();
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js');
       }
-      if (this.isVulcanized) {
-        this._onHomeClick();
-      } else {
+      if (this.isVulcanized === false) {
         const asyncImports = [
           'elements/reeflight-header.html',
           'elements/reef-footer.html',
@@ -201,6 +199,7 @@ class ReeflightApp extends AppController {
   _onResize() {
     requestAnimationFrame(() => {
       this._width = this.getBoundingClientRect().width;
+      console.log(this._width);
       if (this._width === 0) {
         setTimeout(() => {
           this._onResize();

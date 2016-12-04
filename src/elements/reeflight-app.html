@@ -53,9 +53,6 @@
     a {
       text-decoration: none;
     }
-    reef-pages {
-      flex: 1;
-    }
     span[slot="made-with"] {
       padding: 0 16px;
       display: flex;
@@ -125,7 +122,7 @@
       width: 100% !important;
     }
   </style>
-  <reef-drawer opened>
+  <reef-drawer>
     <reeflight-drawer-heading slot="heading"></reeflight-drawer-heading>
     <reef-selector class="drawer-menu">
       <reef-button class="color1" name="home" no-shadow>home</reef-button>
@@ -163,4 +160,4 @@
   <user-controller></user-controller>
 </template>
 
-<script src="../scripts/reeflight-app.js"></script>
+<script src="../scripts/reeflight-app.js" async></script>
