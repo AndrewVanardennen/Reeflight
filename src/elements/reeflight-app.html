@@ -121,6 +121,15 @@
     :host([loading]) {
       width: 100% !important;
     }
+    @media (min-width: 640px) {
+      reef-pages {
+        flex: 1;
+      }
+      reef-footer {
+        display: flex;
+        flex-direction: column;
+      }
+    }
   </style>
   <reef-drawer>
     <reeflight-drawer-heading slot="heading"></reeflight-drawer-heading>
