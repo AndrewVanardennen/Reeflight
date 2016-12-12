@@ -122,6 +122,11 @@ class ReeflightApp extends AppController {
       });
       this._preloadTasks = ['profiles', 'settings'];
       requestIdleCallback(this._preloadViews);
+      if (this.isVulcanized) {
+        this.loadComplete = true;
+        this._onResize();
+        this._onHomeClick();
+      }
     });
     // TODO: stream lamps
     // fetch('api/devices').then(response => {
@@ -239,7 +244,9 @@ class ReeflightApp extends AppController {
    *   }
    */
   _onUserChange(user) {
-    if (user !== null) {
+    if (user !== null &&
+        this.drawerFooter !== null &&
+        this.homeView !== null) {
       this.drawerFooter.setAttribute('avatar', user.profile_picture);
       this.drawerFooter.setAttribute('username', user.username);
       this.homeView.setAttribute('username', user.username);
