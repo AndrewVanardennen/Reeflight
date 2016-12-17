@@ -1,6 +1,5 @@
-<link rel="import" href="../reef-slider.html">
-
-<script>
+import './../ux/reef-slider.js';
+import './../../../bower_components/time-picker/dist/time-picker.js';
 /**
  * @extends HTMLElement
  */
@@ -22,7 +21,6 @@ class ProfilesView extends HTMLElement {
         :host {
           display: flex;
           height: 100%;
-          align-items: center;
           justify-content: center;
           background-color: var(--reef-primary-background-color);
         }
@@ -40,7 +38,7 @@ class ProfilesView extends HTMLElement {
         <div class="grid-item">
         <h1 style="font-size:24px;">Profiles - Standard Profile 1</h1>
           <p>Time: (per profile)</p>
-          <p>-- time picker (clock) --</p>
+          <time-picker opened></time-picker>
           <input type="checkbox" name="time" value="Oldtime">Use old start time.
           <span>(-- disable clock pick --)</span>
           <p>-- listbox or dropdown list #profiles --</p>
@@ -67,4 +65,3 @@ class ProfilesView extends HTMLElement {
   }
 }
 customElements.define('profiles-view', ProfilesView);
-</script>
