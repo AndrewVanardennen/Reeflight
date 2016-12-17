@@ -18,9 +18,16 @@ class ReefPages extends HTMLElement {
     this._root.innerHTML = `
       <style>
         :host {
+					display: block;
+    			height: 100%;
           overflow-y: auto;
           --reef-primary-background-color: #ECEFF1;
         }
+				@media (min-width: 600px) {
+		      :host {
+		        flex: 1;
+		      }
+		    }
       </style>
       <slot></slot>
     `;

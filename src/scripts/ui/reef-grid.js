@@ -24,7 +24,6 @@ class ReefGrid extends HTMLElement {
         .grid {
           display: flex;
           flex-direction: column;
-          justify-content: space-around;
           width: 100%;
           height: 100%;
         }
@@ -38,12 +37,13 @@ class ReefGrid extends HTMLElement {
           margin-bottom: 6px;
           background: #FFF;
         }
-        @media (min-width: 1109px) {
+        @media (min-width: 600px) {
           :host {
             --reef-view-container-direction: row;
           }
           .grid {
             flex-flow: row wrap;
+	          justify-content: space-around;
           }
           .grid-item {
             width: calc(50% - 6px);
@@ -52,6 +52,12 @@ class ReefGrid extends HTMLElement {
             width: calc(100% - 6px);
           }
         }
+				/* TODO: decide to use 1400 or 1600 as a breakpoint... */
+				@media (min-width: 1400px) {
+					:host {
+						max-width: 1400px;
+					}
+				}
       </style>
       <reef-view no-shadow>
         <div class="grid"></div>

@@ -1,6 +1,9 @@
 'use strict';
 import AppController from './controllers/app-controller.js';
 import './ui/reef-grid.js';
+import './views/home-view.js';
+import './views/profiles-view.js';
+import './views/settings-view.js';
 
 /**
  * ReeflightApp
@@ -120,8 +123,8 @@ class ReeflightApp extends AppController {
         this._onResize();
         this._onHomeClick();
       });
-      this._preloadTasks = ['profiles', 'settings'];
-      requestIdleCallback(this._preloadViews);
+      // this._preloadTasks = ['profiles', 'settings'];
+      // requestIdleCallback(this._preloadViews);
       if (this.isVulcanized) {
         this.loadComplete = true;
         this._onResize();
@@ -202,19 +205,19 @@ class ReeflightApp extends AppController {
    * Closes the drawer on smallScreens & Opens it on big ones
    */
   _onResize() {
+		this._width = document.body.getBoundingClientRect().width;
     requestAnimationFrame(() => {
-      this._width = this.getBoundingClientRect().width;
       console.log(this._width);
       if (this._width === 0) {
         setTimeout(() => {
           this._onResize();
         }, 10);
-      } else if (this._width < 860) {
+      } else if (this._width < 960) {
         this.classList.add('floating-drawer');
         if (this.drawer.opened) {
           this._closeDrawer();
         }
-      } else if (this._width > 1116) { /* 860 + 256(drawer width) */
+      } else if (this._width > 960) { /* 860 + 256(drawer width) */
         this.classList.remove('floating-drawer');
         this._openDrawer();
       }
