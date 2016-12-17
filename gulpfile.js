@@ -71,7 +71,9 @@ task('env', () => {
 });
 
 task('env:dist', cb => {
-  return env('dist', 'dev', 'reef-slider', '{webcomponentsjs,custom-elements,polymer,firebase,iron-meta,neon-animation,iron-dropdown,paper-styles,iron-icon,iron-range-behavior,paper-progress,iron-behaviors,iron-resizable-behavior,iron-overlay-behavior,iron-flex-layout,web-animations-js,paper-ripple,iron-a11y-keys-behavior,iron-fit-behavior}');
+	let polyfills = '{webcomponentsjs,custom-elements,web-animations-js}';
+	let components = '{firebase,paper-styles}';
+  return env('dist', 'dev', 'reef-slider', [polyfills, components]);
 });
 
 task('images:resize', () => {
