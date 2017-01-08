@@ -29,7 +29,8 @@ export default class PubSub {
   publish(event, value) {
     for (let i = 0; i < this.handlers.length; i++) {
       if (this.handlers[i].event === event) {
-        this.handlers[i].handler(value);
+        this.handlers[i].handler(value, this.handlers[i].oldValue);
+				this.handlers[i].oldValue = value;
       }
     }
   }
