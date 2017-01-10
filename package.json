@@ -1,6 +1,6 @@
 {
   "name": "reeflight",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Remote controlled aquarium led light",
   "main": "index.js",
   "scripts": {
@@ -18,13 +18,18 @@
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-html": "^1.7.0",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-inject-html-template": "^0.2.1",
     "gulp-lwip": "^0.1.2",
     "gulp-vulcanize": "^6.1.0",
+    "merge-stream": "^1.0.1",
+    "pouchdb": "^6.1.1",
     "rollup": "^0.36.3",
     "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-json": "^2.1.0",
     "sw-precache": "^4.2.1"
   },
   "dependencies": {
+    "backed": "vandeurenglenn/backed",
     "express": "^4.14.0",
     "opn": "^4.0.2"
   },

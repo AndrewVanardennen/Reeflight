@@ -1,6 +1,6 @@
 <link rel="import" href="icons.html">
 <link rel="import" href="reef-pages.html">
-<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../styles/color.html">
 
 
 <template id="reeflight-app">
@@ -168,6 +168,8 @@
     </section>
   </reef-footer>
   <user-controller></user-controller>
+	<database-controller database="profiles"></database-controller>
+	<database-controller database="devices"></database-controller>
 </template>
 
 <script src="../scripts/reeflight-app.js" async></script>

@@ -23,11 +23,10 @@ class ReefSlider extends ReefProgress {
 		let style = document.createElement('style');
     style.innerHTML = `
 	:host {
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     align-items: center;
     height: 16px;
-    padding: 12px;
 		box-sizing: border-box;
     cursor: pointer;
     --reef-slider-container-color: var(--paper-grey-300);

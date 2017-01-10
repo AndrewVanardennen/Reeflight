@@ -20,11 +20,13 @@ export default class ReefProgress extends HTMLElement {
 		:host {
 			display: block;
 			position: relative;
-			width: 200px;
+	    padding: 12px 24px 12px 12px;
+			box-sizing: border-box;
+			width: 224px;
 		}
 		#progress {
 			position: absolute;
-			width: 100%;
+			width: 200px;
 			height: 4px;
       transform-origin: left center;
       transform: scaleX(0);
@@ -32,8 +34,8 @@ export default class ReefProgress extends HTMLElement {
 			background: var(--reef-progress-color, var(--google-green-500));
 		}
 		.progress-background {
+			width: 200px;
 			position: absolute;
-			width: 100%;
 			height: 4px;
 			background: var(--reef-progress-background, var(--paper-grey-300));
 		}

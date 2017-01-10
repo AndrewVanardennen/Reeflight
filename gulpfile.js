@@ -1,13 +1,16 @@
 'use strict';
 const {task, src, series, dest} = require('gulp');
+const merge = require('merge-stream');
 const del = require('del');
 const lwip = require('gulp-lwip');
 const {rollup} = require( 'rollup' );
 const babel = require('rollup-plugin-babel');
+const json = require('rollup-plugin-json');
 const {readFileSync, writeFileSync, writeFile} = require('fs');
 const vulcanize = require('gulp-vulcanize');
 const swPrecache = require('sw-precache');
 const browserSync = require('browser-sync').create();
+const injectTemplate = require('gulp-inject-html-template');
 const reload = () => {
   return browserSync.reload;
 };
@@ -18,7 +21,7 @@ const browserSyncInit = baseDir => {
       port: 5001
     },
     server: {
-      baseDir: [baseDir, '.tmp'],
+      baseDir: [baseDir, '.tmp', 'bower_components'],
       index: 'index.html'
     }
   });
@@ -34,7 +37,7 @@ const browserSyncInit = baseDir => {
     browserSync.watch('src/**/*.html')
       .on('change', series('copy:elements', reload()));
     browserSync.watch('src/**/*.js')
-      .on('change', series('rollup', reload()));
+      .on('change', series('copy:scripts', 'inject', 'rollup', reload()));
     browserSync.watch('src/**/*.{png,jpg}').on('change', reload());
   }
 };
@@ -63,17 +66,16 @@ task('clean', cb => {
   if (config.env === 'dev') {
     glob = ['dev', '.tmp'];
   }
-   del([glob]).then(cb());
+   del(glob).then(cb());
  });
 
 task('env', () => {
-  return env('dev', 'src', '**/*', '**');
+  return env('dev', 'src', '**/*', '{*,**/*}');
 });
 
 task('env:dist', cb => {
-	let polyfills = '{webcomponentsjs,custom-elements,web-animations-js}';
-	let components = '{firebase,paper-styles}';
-  return env('dist', 'dev', 'reef-slider', [polyfills, components]);
+	let comps = '{webcomponentsjs,custom-elements,web-animations-js,firebase,svg-iconset,pouchdb,time-picker}';
+  return env('dist', 'dev', 'reef-slider', comps);
 });
 
 task('images:resize', () => {
@@ -108,6 +110,13 @@ task('copy:app', () => {
     .pipe(dest(config.destination));
 });
 
+task('copy:styles', () => {
+  return src([
+    `src/styles/**.html`
+  ])
+    .pipe(dest(`${config.destination}/styles`));
+});
+
 task('copy:elements', () => {
   return src([`${config.source}/elements/${config.elements}.html`])
     .pipe(dest(`${config.destination}/elements`));
@@ -118,20 +127,32 @@ task('copy:views', () => {
     .pipe(dest(`${config.destination}/elements/views`));
 });
 
-task('copy:bower', () => {
-  return src(`bower_components/${config.bowerComponents}/**/*.{html,js}`)
-    .pipe(dest(`${config.destination}/bower_components`));
+task('copy:bower', cb => {
+  // if (config.env === 'dist') {
+    return src(`bower_components/${config.bowerComponents}/**/*.{html,js}`)
+      .pipe(dest(`${config.destination}/bower_components`));
+  // }
+  return cb();
 });
 
-task('copy', series('copy:app', 'copy:elements',
-  'copy:views', 'copy:bower'));
+task('copy:scripts', () => {
+  return src(`${config.source}/scripts/**/*.{js,html}`)
+    .pipe(dest('.tmp/scripts/'));
+});
+
+task('copy:sources', () => {
+	return src(['src/sources/profiles.json']).pipe(dest('.tmp/sources'));
+});
+
+task('copy', series('copy:app', 'copy:styles', 'copy:elements',
+  'copy:views', 'copy:bower', 'copy:scripts', 'copy:sources'));
 
 task('rollup:app', () => {
   // used to track the cache for subsequent bundles
   let cache;
 
   return rollup({
-    entry: 'src/scripts/reeflight-app.js',
+    entry: '.tmp/scripts/reeflight-app.js',
     // Use the previous bundle as starting point.
     cache: cache
   }).then(bundle => {
@@ -140,7 +161,7 @@ task('rollup:app', () => {
 
     bundle.write({
       format: 'cjs',
-      plugins: [babel()],
+      plugins: [json(), babel()],
       dest: `${config.destination}/scripts/reeflight-app.js`
     });
   });
@@ -168,10 +189,10 @@ task('vulcanize:run', () => {
         inlineCss: true,
         excludes: [
           'dev/elements/reef-view.html',
-          'bower_components/webcomponentsjs/webcomponents.js',
-          'bower_components/polymer/polymer.html',
-          'bower_components/polymer/src/legacy/polymer-fn.html',
-          'bower_components/paper-progress/paper-progress.html'
+					'bower_components/firebase/firebase.js',
+					'bower_components/firebase/firebase-app.js',
+					'bower_components/firebase/firebase-auth.js',
+					'bower_components/firebase/firebase-database.js'
         ]
     }))
     .pipe(dest(config.destination));
@@ -190,11 +211,10 @@ task('precache', () => {
       'dist/manifest.json',
       'dist/elements/*.{html,js}',
       'dist/elements/**/*.{html,js}',
-      'dist/bower_components/{polymer,firebase,paper-progress}/*.{html,js}',
-      'dist/bower_components/paper-styles/*.html',
-      'dist/bower_components/iron-range-behavior/*.html',
-      'dist/bower_components/iron-flex-layout/*.html',
-      'dist/sources/**.*'
+      `dist/bower_components/${config.bowerComponents}/*.{html,js}`,
+      'dist/bower_components/svg-iconset/svg-iconset.html',
+      'dist/sources/**.*',
+      'dist/bower_components/pouchdb/dist/**/*'
     ],
     stripPrefix: 'dist',
 
@@ -206,10 +226,15 @@ task('precache', () => {
     }]
   });
 });
+
+task('inject', () => {
+  return src(['.tmp/scripts/**/*.js'])
+    .pipe(injectTemplate()).pipe(dest('.tmp/scripts'));
+});
 // Main Tasks
 task('sources', series('images:copy', 'icons:copy'));
 
-task('default', series('clean', 'images', 'icons', 'copy', 'rollup'));
+task('default', series('clean', 'images', 'icons', 'copy', 'inject', 'rollup'));
 
 task('build-dev', series('env', 'default'));
 

@@ -1,4 +1,6 @@
 import BaseController from './base-controller';
+import PubSub from './../internals/pubsub.js';
+window.pubsub = window.pubsub || new PubSub();
 
 /**
  * @extends BaseController
@@ -22,6 +24,7 @@ export default class FirebaseController extends BaseController {
     script.onload = () => {
       // Initialize Firebase onload
       firebase.initializeApp(this.config);
+			pubsub.publish('firebase.ready', true);
       document.dispatchEvent(new CustomEvent('firebase-ready'));
     };
     this.appendChild(script);

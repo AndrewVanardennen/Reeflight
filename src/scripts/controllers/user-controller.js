@@ -1,5 +1,7 @@
 import FirebaseController from './firebase-controller';
-
+import UserConnectionController from './user-connection-controller.js';
+import PubSub from './../internals/pubsub.js';
+window.pubsub = window.pubsub || new PubSub();
 /**
  * @extends FirebaseController
  */
@@ -13,6 +15,7 @@ export default class UserController extends FirebaseController {
     // bind methods
     this._onFirebaseReady = this._onFirebaseReady.bind(this);
     this._onAuthStateChanged = this._onAuthStateChanged.bind(this);
+		new UserConnectionController();
   }
 
   /**
@@ -28,7 +31,8 @@ export default class UserController extends FirebaseController {
    */
   connectedCallback() {
     super.connectedCallback();
-    document.addEventListener('firebase-ready', this._onFirebaseReady);
+		pubsub.subscribe('firebase.ready', this._onFirebaseReady);
+    // document.addEventListener('firebase-ready', this._onFirebaseReady);
   }
 
   /**
@@ -53,11 +57,15 @@ export default class UserController extends FirebaseController {
   _onAuthStateChanged(user) {
     if (user === null) {
       // login when the user is logged out
+			// TODO: decide if we login the user atomatically or not
+			pubsub.publish('user.online', false);
       this.login();
     } else if(user !== null && this.user !== null) {
       firebase.database().ref( 'users/' + user.uid).once('value', snap => {
         let data = snap.val();
         if (data) {
+					pubsub.publish('user.login', data);
+					pubsub.publish('user.online', true);
           return document.dispatchEvent(
             new CustomEvent('user-login', {detail: data}
           ));
@@ -122,9 +130,11 @@ export default class UserController extends FirebaseController {
   /**
    * Removes the firebase-ready eventListener
    */
-  _onFirebaseReady() {
+  _onFirebaseReady(newValue, oldValue) {
+		if (newValue === oldValue) {
+			return;
+		}
     firebase.auth().onAuthStateChanged(this._onAuthStateChanged);
-    document.removeEventListener('firebase-ready', this._onFirebaseReady);
   }
 }
 customElements.define('user-controller', UserController);

@@ -1,5 +1,6 @@
 'use strict';
-import UserController from './user-controller';
+import './user-controller';
+import './database-controller.js';
 import BaseController from './base-controller';
 
 /**
@@ -19,7 +20,6 @@ export default class AppController extends BaseController {
         this._root.appendChild(tmpl.content.cloneNode(true));
       });
     }
-    new UserController();
   }
 
   /**

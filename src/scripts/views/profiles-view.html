@@ -1,0 +1,79 @@
+<template>
+  <style>
+    :host {
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      background-color: var(--reef-primary-background-color);
+      overflow-x: hidden;
+			--svg-icon-color: #777;
+			--svg-icon-size: 36px;
+    }
+  </style>
+
+	<reef-list>
+		<style slot="style">
+			label {
+				padding-right: 6px;
+			}
+			.flex {
+				flex: 1;
+			}
+			.mobile-view {
+				display: flex;
+			}
+			.desktop-view {
+				display: none;
+			}
+			@media (min-width: 320px) {
+				.mobile-view {
+					--svg-icon-size: 56px;
+					display: none;
+				}
+				.desktop-view {
+					display: flex;
+				}
+			}
+			.array-repeat-item {
+				align-items: center;
+			}
+		</style>
+		<template>
+			<reef-profile-item>
+					<h1>[[item.name]]</h1>
+					<reef-profile-option-item name="daylight">
+						<reef-profile-option>
+							<label>Start time</label>
+							<span class="flex"></span>
+							<time-input value="[[item.daylight.start]]" key="daylight.start" data-index="[[item.index]]" data-uid="[[item.uid]]"></time-input>
+						</reef-profile-option>
+
+						<reef-profile-option option="end">
+							<label>End time</label>
+							<span class="flex"></span>
+							<time-input value="[[item.daylight.end]]" key="daylight.end"></time-input>
+						</reef-profile-option>
+					</reef-profile-option-item>
+
+					<reef-profile-option-item name="clouds">
+						<h3>intensity</h3>
+						<reef-profile-option class="desktop-view" option="intensity">
+							<svg-icon icon="sunny"></svg-icon>
+							<reef-slider value="[[item.clouds.intensity]]"></reef-slider>
+							<svg-icon icon="cloudy"></svg-icon>
+						</reef-profile-option>
+						<span class="mobile-view">
+							<svg-icon icon="sunny"></svg-icon>
+							<span class="flex"></span>
+							<svg-icon icon="cloudy"></svg-icon>
+						</span>
+						<reef-slider
+							class="mobile-view"
+							value="[[item.clouds.intensity]]">
+						</reef-slider>
+					</reef-profile-option-item>
+
+			</reef-profile-item>
+		</template>
+	</reef-list>
+</template>

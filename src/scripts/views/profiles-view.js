@@ -1,5 +1,12 @@
 import './../ux/reef-slider.js';
+import './../ux/time-input.js';
 import './../../../bower_components/time-picker/dist/time-picker.js';
+// import './../../../bower_components/array-repeat/dist/array-repeat.js';
+import profiles from './../../sources/profiles.json';
+import './../ux/reef-list.js';
+import './../ux/reef-profile-item.js';
+import './../ux/reef-profile-option-item.js';
+import './../ux/reef-profile-option.js';
 /**
  * @extends HTMLElement
  */
@@ -10,58 +17,117 @@ class ProfilesView extends HTMLElement {
   constructor() {
     super();
     this.root = this.attachShadow({mode: 'open'});
+		this._onClick = this._onClick.bind(this);
+		this._onProfileChange = this._onProfileChange.bind(this);
+		this._pouchReady = this._pouchReady.bind(this);
+		this._onUserLogin = this._onUserLogin.bind(this);
+
+		pubsub.subscribe('pouchdb.ready', this._pouchReady);
+		pubsub.subscribe('user.login', this._onUserLogin);
   }
 
   /**
    * Stamps innerHTML
    */
   connectedCallback() {
-    this.root.innerHTML = `
-      <style>
-        :host {
-          display: flex;
-          height: 100%;
-          justify-content: center;
-          background-color: var(--reef-primary-background-color);
-        }
-      </style>
-
-      <reef-grid>
-        <style>
-          .btn {
-            border: 1px solid #0097A7;
-            border-radius: 3px;
-            background-color: transparent;
-          }
-        </style>
-
-        <div class="grid-item">
-        <h1 style="font-size:24px;">Profiles - Standard Profile 1</h1>
-          <p>Time: (per profile)</p>
-          <time-picker opened></time-picker>
-          <input type="checkbox" name="time" value="Oldtime">Use old start time.
-          <span>(-- disable clock pick --)</span>
-          <p>-- listbox or dropdown list #profiles --</p>
-          <p>Fading:</p>
-            <span>UV:</span>
-            <reef-slider></reef-slider>
-            <span>Sunrise:</span>
-            <reef-slider></reef-slider>
-            <button class="btn" type="submit" name="submit">Submit</button>
-        </div>
-        <div class="grid-item">
-          <p>-- overall lamp brightness #extra --</p>
-          <p>-- duration sunlight (max = 6 hours) #extra --</p>
-          <br><br>
-          <p>-- Enable: super user settings (not recommended) #extra --</p>
-          <ul>
-            <li>UV: set duration (no max)</li>
-            <li>Sunlight: set duration (no max)</li>
-          </ul>
-          <p>-- Some profile settings can be placed in settings --</p>
-        </div>
-      </reef-grid>
-    `;
+		// @template
+    this.timePicker = document.createElement('time-picker');
+    this.timePicker.noClock = true;
+    this.root.appendChild(this.timePicker);
+		this._reefList.addEventListener('on-item-select', this._onClick);
+		document.addEventListener('open-picker', event => {
+			let hour = this.selected.hour;
+			let minutes = this.selected.minutes;
+			this.timePicker.time = {hour: el.hour};
+			this.timePicker.open();
+		}, {capture: true});
   }
+	/**
+	 * @return {HTMLElement}
+	 */
+	get _reefList() {
+		return this.root.querySelector('reef-list');
+	}
+	set selected(value) {
+		this._selected = value;
+	}
+	get selected() {
+		return this._selected;
+	}
+	/**
+	 * @param {Array} value
+	 */
+	set profiles(value) {
+    this._profiles = value;
+    this.setUpPubSubs();
+		this._reefList.items = value;
+	}
+  get profiles() {
+    return this._profiles;
+  }
+	/**
+	 * @param {object} event
+	 */
+	_onClick(event) {
+		this.selected = event.detail.data;
+		console.log(this.selected);
+	}
+  setUpPubSubs() {
+    for (let index of Object.keys(this.profiles)) {
+      pubsub.subscribe(`data[${index}]change`, this._onProfileChange);
+    }
+  }
+	_onProfileChange(newVal, oldVal) {
+		if (newVal !== oldVal) {
+			let profiles = this.profiles;
+			let index = newVal.dataIndex;
+			let change = newVal.data;
+			let parts = change.key.split('.');
+			profiles[index][parts[0]][parts[1]] = change.value;
+			if (this.pouch === undefined) {
+				this.pouch = new PouchDB('profiles');
+			}
+			this.pouch.get('profiles').then(doc => {
+				doc[change.uid][parts[0]][parts[1]] = change.value;
+				this.pouch.put(doc, (error, result) => {
+					if (!error) {
+						let uid = firebase.auth().currentUser.uid;
+						firebase.database().ref(`users/${uid}/profiles/${change.uid}`).set(doc[change.uid]);
+						firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
+						console.log(result);
+					}
+					// update firebase
+				});
+			});
+			// this.profiles = profiles;
+		}
+	}
+
+	set pouch(value) {
+		this._pouch = value;
+	}
+
+	get pouch() {
+		return this._pouch || undefined;
+	}
+
+	_pouchReady() {
+		console.log('ppp');
+		this.pouch = new PouchDB('profiles');
+	}
+
+	_onUserLogin() {
+		let uid = firebase.auth().currentUser.uid;
+		firebase.database().ref(`users/${uid}/profiles`).on('value', snap => {
+			let data = snap.val();
+			if (data === null) {
+				for (let profile of profiles) {
+					firebase.database().ref(`users/${uid}/profiles/${profile.uid}`).set(profile);
+				}
+			} else {
+				this.profiles = data;
+			}
+		});
+	}
 }
 customElements.define('profiles-view', ProfilesView);

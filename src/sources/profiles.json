@@ -1,0 +1,78 @@
+export default [
+  {
+		"name": "profile1",
+		"uid": "000",
+    "daylight":  {
+			"start": "18:00",
+			"end": "23:00",
+			"colorTemp": "16000"
+		},
+		"clouds": {
+			"intensity": 0,
+			"probability": 5,
+			"transitionMode": "slow",
+			"on": false,
+			"simulateSeasons": false
+		},
+    "moonlight": {
+			"intensity": 10,
+			"lastFullMoon": "14-12-2016",
+			"moonCycleSimulation": false,
+			"customTime": {
+				"on": false,
+				"start": "22:00",
+				"end": "06:00"
+			}
+		}
+  }, {
+		"name": "profile2",
+		"uid": "001",
+  	"daylight": {
+			"start": "18:00",
+			"end": "23:00",
+			"colorTemp": "16000"
+		},
+		"clouds": {
+			"intensity": 70,
+			"probability": 5,
+			"transitionMode": "slow",
+			"on": false,
+			"simulateSeasons": false
+		},
+    "moonlight": {
+			"intensity": 10,
+			"lastFullMoon": "14-12-2016",
+			"moonCycleSimulation": false,
+			"customTime": {
+				"on": false,
+				"start": "22:00",
+				"end": "06:00"
+			}
+		}
+  }, {
+		"name": "profile3",
+		"uid": "002",
+  	"daylight": {
+			"start": "18:00",
+			"end": "23:00",
+			"colorTemp": "16000"
+		},
+		"clouds": {
+			"intensity": 100,
+			"probability": 5,
+			"transitionMode": "slow",
+			"on": false,
+			"simulateSeasons": false
+		},
+    "moonlight": {
+			"intensity": 10,
+			"lastFullMoon": "14-12-2016",
+			"moonCycleSimulation": false,
+			"customTime": {
+				"on": false,
+				"start": "22:00",
+				"end": "06:00"
+			}
+		}
+  }
+]

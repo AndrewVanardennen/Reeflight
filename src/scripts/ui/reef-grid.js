@@ -27,7 +27,7 @@ class ReefGrid extends HTMLElement {
           width: 100%;
           height: 100%;
         }
-        .grid-item {
+        ::slotted(*) {
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
                       0 1px 5px 0 rgba(0, 0, 0, 0.12),
                       0 3px 1px -2px rgba(0, 0, 0, 0.2);
@@ -45,7 +45,7 @@ class ReefGrid extends HTMLElement {
             flex-flow: row wrap;
 	          justify-content: space-around;
           }
-          .grid-item {
+          ::slotted(*) {
             width: calc(50% - 6px);
           }
           :host:last-child {
@@ -60,7 +60,9 @@ class ReefGrid extends HTMLElement {
 				}
       </style>
       <reef-view no-shadow>
-        <div class="grid"></div>
+        <div class="grid">
+					<slot></slot>
+				</div>
       </reef-view>
      `;
      // TODO: check for child changes
@@ -68,14 +70,6 @@ class ReefGrid extends HTMLElement {
      for (let i = 0; i < styles.length; i++) {
        this.root.appendChild(styles[i]);
      }
-     let childs = this.querySelectorAll('.grid-item');
-     setTimeout(() => {
-       for (let i = 0; i < childs.length; i++) {
-         requestAnimationFrame(() => {
-           this.root.querySelector('.grid').appendChild(childs[i]);
-         });
-       }
-     }, 10);
    }
 }
 customElements.define('reef-grid', ReefGrid);
