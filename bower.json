@@ -16,22 +16,15 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
-    "made-with": "vandeurenglenn/made-with",
-    "iron-iconset-svg": "Polymerelements/iron-iconset-svg#2.0-preview",
-    "copyright-notice": "VandeurenGlenn/copyright-notice",
+    "webcomponentsjs": "v1",
+    "paper-styles": "2.0-preview",
     "firebase": "^3.6.0",
-    "paper-icon-button": "2.0-preview",
-    "paper-menu-button": "2.0-preview",
-    "paper-listbox": "2.0-preview",
-    "paper-progress": "^1.0.11"
+    "time-picker": "^0.1.4",
+    "array-repeat": "vandeurenglenn/array-repeat#^0.2.0",
+    "svg-iconset": "vandeurenglenn/svg-iconset",
+    "pouchdb": "^6.1.1"
   },
   "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1",
-    "iron-flex-layout": "2.0-preview",
-    "paper-styles": "2.0-preview",
-    "paper-progress": "2.0-preview",
-    "iron-range-behavior": "2.0-preview"
+    "custom-elements": "v1"
   }
 }
