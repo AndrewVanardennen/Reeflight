@@ -62,7 +62,7 @@ const env = (env, source, elements, bowerComponents, destination=null) => {
 };
 
 task('clean', cb => {
-  let glob = config.env;
+  let glob = `[${config.env}]`;
   if (config.env === 'dev') {
     glob = ['dev', '.tmp'];
   }
@@ -75,7 +75,7 @@ task('env', () => {
 
 task('env:dist', cb => {
 	let comps = '{webcomponentsjs,custom-elements,web-animations-js,firebase,svg-iconset,pouchdb,time-picker}';
-  return env('dist', 'dev', 'reef-slider', comps);
+  return env('dist', 'dev', null, comps);
 });
 
 task('images:resize', () => {
@@ -117,14 +117,17 @@ task('copy:styles', () => {
     .pipe(dest(`${config.destination}/styles`));
 });
 
-task('copy:elements', () => {
+task('copy:elements', cb => {
+  if (config.elements === null) {
+    return cb();
+  }
   return src([`${config.source}/elements/${config.elements}.html`])
     .pipe(dest(`${config.destination}/elements`));
 });
 
 task('copy:views', () => {
-  return src(`${config.source}/elements/views/*.html`)
-    .pipe(dest(`${config.destination}/elements/views`));
+  return src(`${config.source}/scripts/views/*.html`)
+    .pipe(dest(`${config.destination}/scripts/views`));
 });
 
 task('copy:bower', cb => {
@@ -188,7 +191,6 @@ task('vulcanize:run', () => {
         inlineScripts: true,
         inlineCss: true,
         excludes: [
-          'dev/elements/reef-view.html',
 					'bower_components/firebase/firebase.js',
 					'bower_components/firebase/firebase-app.js',
 					'bower_components/firebase/firebase-auth.js',
