@@ -1,4 +1,5 @@
 import './../ux/swipeable-cards.js';
+import './../ui/reef-pages.js';
 /**
  * HomeView
  * @extends HTMLElement
@@ -23,7 +24,7 @@ export default class HomeView extends HTMLElement {
    * connectedCallback runs when the element is inserted into document
    */
   connectedCallback() {
-    // @template
+		// @template
   }
   /**
    * @param {String} username 'some-name'

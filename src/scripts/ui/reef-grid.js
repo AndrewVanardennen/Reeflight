@@ -1,3 +1,4 @@
+import './reef-view.js';
 /**
  * @extends HTMLElement
  */

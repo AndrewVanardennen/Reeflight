@@ -2,7 +2,7 @@
 /**
  * @extends HTMLElement
  */
-class ReefView extends HTMLElement {
+export default class ReefView extends HTMLElement {
   /**
    * Attributes to observer
    * @return {Array} ['no-shadow']
@@ -16,9 +16,8 @@ class ReefView extends HTMLElement {
    */
   constructor() {
     super();
-    // Create shadow Dom
-    this._root = this.attachShadow({mode: 'open'});
-
+    this.root = this.attachShadow({mode: 'open'});
+		// @template
     this._onResize = this._onResize.bind(this);
     this.maxWidthChange = this.maxWidthChange.bind(this);
     this.widthChange = this.widthChange.bind(this);
@@ -28,7 +27,7 @@ class ReefView extends HTMLElement {
    * @return {HTMLElement} .shadow
    */
   get _shadow() {
-    return this._root.querySelector('.shadow');
+    return this.root.querySelector('.shadow');
   }
 
   /**
@@ -54,39 +53,6 @@ class ReefView extends HTMLElement {
    * Stamps innerHTML, add's eventListeners, runs _onResize
    */
   connectedCallback() {
-    this._root.innerHTML = `
-      <style>
-        :host {
-          background-color: #ECEFF1;
-          height: 100%;
-        }
-        .container {
-          padding: var(--reef-view-padding, 24px);
-          display: flex;
-          flex-direction: var(--reef-view-container-direction, column);
-        }
-        .shadow {
-          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-                      0 1px 5px 0 rgba(0, 0, 0, 0.12),
-                      0 3px 1px -2px rgba(0, 0, 0, 0.2);
-          background-color: var(--reef-view-background, #FFF);
-        }
-        .no-shadow {
-          box-shadow: none;
-        }
-        :host, .container {
-          width: 100%;
-          box-sizing: border-box;
-        }
-        :host, .shadow {
-          width: 100%;
-          Box-sizing: border-box;
-        }
-      </style>
-      <span class="shadow">
-        <div class="container"><slot></slot></div>
-      </span>
-    `;
     window.addEventListener('resize', this._onResize);
     this._onResize();
   }
