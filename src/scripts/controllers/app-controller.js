@@ -1,6 +1,4 @@
 'use strict';
-import './user-controller';
-import './database-controller.js';
 import BaseController from './base-controller';
 
 /**
@@ -10,16 +8,11 @@ export default class AppController extends BaseController {
   /**
    * @param {String} name
    */
-  constructor(name) {
+  constructor() {
     super();
     // TODO: create CustomHTMLElement
     // when name given, try to find template
-    if (name) {
-      this._root = this.attachShadow({mode: 'open'});
-      this._tryFindTemplate(name).then(tmpl => {
-        this._root.appendChild(tmpl.content.cloneNode(true));
-      });
-    }
+    this.root = this.attachShadow({mode: 'open'});
   }
 
   /**
