@@ -1,0 +1,71 @@
+<template>
+	<style>
+		:host {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			height: 128px;
+			background-color: #0097A7;
+			color: #fff;
+			position: relative;
+		}
+		:host::after {
+			position: absolute;
+			right: 0px;
+			bottom: -5px;
+			left: 0px;
+			width: 100%;
+			height: 5px;
+			content: "";
+			/*transition: opacity 0.4s;*/
+			pointer-events: none;
+			/*opacity: 0;*/
+			box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+			will-change: opacity;
+			@apply(--app-header-shadow);
+		}
+		.nav-toolbar {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 64px;
+			padding: 0 16px;
+			box-sizing: border-box;
+			align-items: center;
+		}
+		.avatar {
+			width: 48px;
+			height: 48px;
+			padding: 0;
+		}
+		.flex {
+			flex: 1;
+		}
+
+		reef-button {
+			outline: none;
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			font-family: 'roboto' sans-serif;
+			font-weight: 700;
+			text-transform: uppercase;
+			color: white;
+		}
+
+		@media (max-width: 321px) {
+			.dropdown-content {
+				width: 100%,
+			}
+		}
+	</style>
+	<slot name="main-toolbar"></slot>
+	<div class="nav-toolbar">
+		<reef-icon-button
+			icon="icons::menu"
+			class="drawer-toggle">
+		</reef-icon-button>
+		<span class="flex"></span>
+		<slot></slot>
+	</div>
+</template>

@@ -19,7 +19,7 @@
     "webcomponentsjs": "v1",
     "paper-styles": "2.0-preview",
     "firebase": "^3.6.0",
-    "time-picker": "^0.1.4",
+    "time-picker": "vandeurenglenn/time-picker#^0.1.5",
     "array-repeat": "vandeurenglenn/array-repeat#^0.2.0",
     "svg-iconset": "vandeurenglenn/svg-iconset",
     "pouchdb": "^6.1.1"

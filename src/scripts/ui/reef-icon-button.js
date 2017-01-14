@@ -1,18 +1,9 @@
-<link rel="import" href="icons.html">
-<link rel="import" href="reef-button.html">
-
-<script>
+import ReefButton from './reef-button.js';
 /**
  * ReefIconButton
  * @extends ReefButton
  */
-class ReefIconButton extends ReefButton {
-	/**
-   * @return {string} HTMLElement tagName
-   */
-	static get is() {
-		return 'reef-icon-button';
-	}
+export default class ReefIconButton extends ReefButton {
 	/**
 	 * Attributes to observer
 	 * @return {Array} ['icon']
@@ -30,24 +21,24 @@ class ReefIconButton extends ReefButton {
 	 */
 	constructor(opts={width: 40, height: 40, color: '#FFF', stroke: 'none'}) {
 		super();
-		this.root.innerHTML = `
-	<style>
-    :host {
-      width: var(--reef-icon-button-size, ${opts.width}px);
-      height: var(--reef-icon-button-size, ${opts.height}px);
-      fill: var(--reef-icon-button-color, ${opts.color});
-      stroke: var(--reef-icon-button-stroke-color, ${opts.stroke});
-      --reef-button-radius: 50%;
-			--reef-button-padding: var(--reef-icon-button-padding);
-    }
-    :host([toggled]) {
-      --reef-icon-button-color: var(--reef-icon-button-toggled, #0097A7);
-    }
-  </style>
-  	`;
+
 		this.noShadow = true;
 		this._onIconsetAdded = this._onIconsetAdded.bind(this);
 		window.addEventListener('svg-iconset-added', this._onIconsetAdded);
+		let style = document.createElement('style');
+		style.innerHTML = `
+	:host {
+		width: var(--reef-icon-button-size, ${opts.width}px);
+		height: var(--reef-icon-button-size, ${opts.height}px);
+		fill: var(--reef-icon-button-color, ${opts.color});
+		stroke: var(--reef-icon-button-stroke-color, ${opts.stroke});
+		--reef-button-radius: 50%;
+		--reef-button-padding: var(--reef-icon-button-padding);
+	}
+	:host([toggled]) {
+		--reef-icon-button-color: var(--reef-icon-button-toggled, #0097A7);
+	}`;
+		this.root.appendChild(style);
 	}
 	/**
 	 * @return {Boolean}
@@ -151,5 +142,4 @@ class ReefIconButton extends ReefButton {
 		if (oldValue !== newValue) this[name] = newValue;
 	}
 }
-customElements.define(ReefIconButton.is, ReefIconButton);
-</script>
+customElements.define('reef-icon-button', ReefIconButton);

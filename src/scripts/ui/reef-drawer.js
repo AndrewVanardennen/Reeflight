@@ -1,9 +1,10 @@
-<script>
 'use strict';
+import './reef-drawer-heading.js';
+import './reef-drawer-footer.js';
 /**
  * @extends HTMLElement
  */
-class ReefDrawer extends HTMLElement {
+export default class ReefDrawer extends HTMLElement {
   /**
    * @param {Object} opts
    * @param {Number} width
@@ -11,8 +12,8 @@ class ReefDrawer extends HTMLElement {
    */
   constructor(opts={width: 256, drawerLeft: true}) {
     super();
+    this.root = this.attachShadow({mode: 'open'});
     this._onClick = this._onClick.bind(this);
-    this._root = this.attachShadow({mode: 'open'});
     this.width = opts.width;
     this.drawerLeft = opts.drawerLeft;
   }
@@ -103,41 +104,7 @@ class ReefDrawer extends HTMLElement {
    * Stamps innerHTML
    */
   connectedCallback() {
-    this._root.innerHTML = `
-      <style>
-        :host {
-          user-select: none;
-          cursor: default;
-          box-shadow: 3px 0 6px -3px rgba(0,0,0,0.21);
-          z-index: 100;
-          opacity: 0;
-          display: flex;
-          flex-direction: column;
-          position: fixed;
-          top: 0;
-          bottom:0;
-          width: var(--reef-drawer-width, 256px);
-          transform: translateX(-102%);
-          transition: transform ease-out 0.16s, opacity ease-out 0.16s;
-        }
-        :host([opened]) {
-          opacity: 1;
-          transform: translateX(0);
-          transition: transform ease-in 0.16s, opacity ease-in 0.16s;
-        }
-        :host(.drawer-left) {
-          left: 0;
-        }
-        :host(.drawer-right) {
-          right: 0;
-        }
-      </style>
-      <slot name="heading"></slot>
-      <div style="flex: 1">
-        <slot></slot>
-      </div>
-      <slot name="footer"></slot>
-    `;
+		// @template
     this.addEventListener('click', this._onClick);
     if (this.forcedShow) {
       this.opened = true;
@@ -152,5 +119,3 @@ class ReefDrawer extends HTMLElement {
   }
 }
 customElements.define('reef-drawer', ReefDrawer);
-
-</script>

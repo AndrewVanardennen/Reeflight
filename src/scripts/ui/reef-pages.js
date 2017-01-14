@@ -1,20 +1,13 @@
-<script>
 /**
  * @extends HTMLElement
  */
-class ReefPages extends HTMLElement {
+export default class ReefPages extends HTMLElement {
   /**
    * Creates shadowRoot
    */
   constructor() {
     super();
     this._root = this.attachShadow({mode: 'open'});
-  }
-
-  /**
-   * Stamps innerHTML
-   */
-  connectedCallback() {
     this._root.innerHTML = `
       <style>
         :host {
@@ -48,4 +41,3 @@ class ReefPages extends HTMLElement {
   }
 }
 customElements.define('reef-pages', ReefPages);
-</script>

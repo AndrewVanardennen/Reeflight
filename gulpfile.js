@@ -112,7 +112,7 @@ task('copy:app', () => {
 
 task('copy:styles', () => {
   return src([
-    `src/styles/**.html`
+    `${config.source}/styles/**/*.css`
   ])
     .pipe(dest(`${config.destination}/styles`));
 });
@@ -131,10 +131,13 @@ task('copy:views', () => {
 });
 
 task('copy:bower', cb => {
-  // if (config.env === 'dist') {
+  if (config.env !== 'dist') {
     return src(`bower_components/${config.bowerComponents}/**/*.{html,js}`)
       .pipe(dest(`${config.destination}/bower_components`));
-  // }
+  } else {
+		return src(`bower_components/firebase/**/*.{html,js}`)
+      .pipe(dest(`${config.destination}/bower_components/firebase`));
+  }
   return cb();
 });
 
@@ -174,15 +177,16 @@ task('rollup', series('rollup:app'));
 
 task('vulcanize:prepare', cb => {
   let index = readFileSync('dev/index.html');
-  let file = readFileSync('dev/elements/app-imports.html');
-  let app = readFileSync('dev/elements/reeflight-app.html');
+  // let file = readFileSync('dev/elements/app-imports.html');
+  // let app = readFileSync('dev/elements/reeflight-app.html');
   index = index.toString();
-  file = file.toString();
-  app = app.toString();
+  // file = file.toString();
+  // app = app.toString();
   index = index.replace(/reeflight-app>/g, 'reeflight-app is-vulcanized>');
-  file += app;
+  // file += app;
   writeFileSync('dev/index.html', index);
-  writeFile('dev/elements/reeflight-app.html', file, cb());
+  cb();
+  // writeFile('dev/elements/reeflight-app.html', file, cb());
 });
 
 task('vulcanize:run', () => {
@@ -190,7 +194,13 @@ task('vulcanize:run', () => {
     .pipe(vulcanize({
         inlineScripts: true,
         inlineCss: true,
+				stripComments: true,
+				addedImports: [
+					'src/elements/icons.html'
+				],
         excludes: [
+					'bower_components/svg-icon/svg-icon.html',
+					'bower_components/svg-iconset/svg-iconset.html',
 					'bower_components/firebase/firebase.js',
 					'bower_components/firebase/firebase-app.js',
 					'bower_components/firebase/firebase-auth.js',
@@ -209,14 +219,19 @@ task('browser-sync', () => {
 task('precache', () => {
   return swPrecache.write(__dirname + '/dist/service-worker.js', {
     staticFileGlobs: [
+			'elements/icons.html',
       'dist/**.html',
       'dist/manifest.json',
       'dist/elements/*.{html,js}',
       'dist/elements/**/*.{html,js}',
-      `dist/bower_components/${config.bowerComponents}/*.{html,js}`,
+      `bower_components/**/{custom-elements.min,webcomponents-lite}.js`,
+			'bower_components/**/{svg-icon,svg-iconset,time-picker}.html',
       'dist/bower_components/svg-iconset/svg-iconset.html',
-      'dist/sources/**.*',
-      'dist/bower_components/pouchdb/dist/**/*'
+			'!bower_components/firebase/firebase.js',
+			'!bower_components/firebase/firebase-app.js',
+			'!bower_components/firebase/firebase-auth.js',
+			'!bower_components/firebase/firebase-database.js',
+      'dist/sources/**.*'
     ],
     stripPrefix: 'dist',
 
@@ -240,8 +255,7 @@ task('default', series('clean', 'images', 'icons', 'copy', 'inject', 'rollup'));
 
 task('build-dev', series('env', 'default'));
 
-task('build', series('build-dev', 'env:dist', 'default', 'sources',
-  'vulcanize', 'precache'));
+task('build', series('build-dev', 'env:dist', 'default', 'sources', 'precache'));
 
 task('serve', series('env', 'default', 'browser-sync'));
 

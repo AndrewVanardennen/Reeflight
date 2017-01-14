@@ -1,9 +1,4 @@
-<link rel="import" href="icons.html">
-<link rel="import" href="reef-pages.html">
-<link rel="import" href="../styles/color.html">
-
-
-<template id="reeflight-app">
+<template>
   <style>
     :host {
       display: flex;
@@ -28,7 +23,7 @@
     reef-drawer {
       background: #FFF;
     }
-    reeflight-header {
+    reef-header {
       background-color: #0097A7;
       display: flex;
       flex-direction: column;
@@ -133,19 +128,19 @@
     }
   </style>
   <reef-drawer>
-    <reeflight-drawer-heading slot="heading"></reeflight-drawer-heading>
+    <reef-drawer-heading slot="heading"></reef-drawer-heading>
     <reef-selector class="drawer-menu">
       <reef-button class="color1" name="home" no-shadow>home</reef-button>
       <reef-button name="profiles" no-shadow>profiles</reef-button>
       <reef-button name="settings" no-shadow>settings</reef-button>
     </reef-selector>
-    <reeflight-drawer-footer slot="footer"></reeflight-drawer-footer>
+    <reef-drawer-footer slot="footer"></reef-drawer-footer>
   </reef-drawer>
-  <reeflight-header>
+  <reef-header>
     <div class="main-toolbar" slot="main-toolbar">
       <span class="appname">Reef Light</span>
     </div>
-  </reeflight-header>
+  </reef-header>
   <reef-pages default-selected="home">
     <home-view name="home"></home-view>
     <settings-view name="settings"></settings-view>
@@ -171,5 +166,3 @@
 	<database-controller database="profiles"></database-controller>
 	<database-controller database="devices"></database-controller>
 </template>
-
-<script src="../scripts/reeflight-app.js" async></script>

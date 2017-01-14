@@ -1,4 +1,3 @@
-<script>
 /**
  * @extends HTMLElement
  */
@@ -99,4 +98,3 @@ class ReefSelector extends HTMLElement {
    }
 }
 customElements.define('reef-selector', ReefSelector);
-</script>

@@ -1,9 +1,8 @@
-<script>
 /**
  * ReefFooter
  * @extends HTMLElement
  */
-class ReefFooter extends HTMLElement {
+export default class ReefFooter extends HTMLElement {
 
   /**
    * Creates shadowRoot
@@ -11,12 +10,6 @@ class ReefFooter extends HTMLElement {
   constructor() {
     super();
     this._root = this.attachShadow({mode: 'open'});
-  }
-
-  /**
-   * Runs when inserted into document
-   */
-  connectedCallback() {
     this._root.innerHTML = `
       <style>
         :host {
@@ -33,4 +26,3 @@ class ReefFooter extends HTMLElement {
   }
 }
 customElements.define('reef-footer', ReefFooter);
-</script>

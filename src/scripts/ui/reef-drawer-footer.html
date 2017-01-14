@@ -1,0 +1,27 @@
+<template>
+	<style>
+		:host {
+			min-height: 72px;
+		}
+		:host, .container {
+			display: flex;
+			flex-direction: column;
+		}
+		.container {
+			box-sizing: border-box;
+			padding: 8px 12px;
+		}
+		.username, .greeting {
+			display: block;
+		}
+		.greeting {
+			color: var(--paper-grey-700);
+			font-weight: 700;
+			padding-bottom: 8px;
+		}
+		.username {
+			font-weight: 500;
+			color: var(--paper-grey-700);
+		}
+	</style>
+</template>
