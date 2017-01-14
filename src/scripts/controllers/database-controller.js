@@ -1,15 +1,16 @@
 'use strict';
 import OfflineDatabaseController from './offline-database-controller.js';
 import toJsProp from './../../../node_modules/backed/src/methods/to-js-prop.js';
+/**
+ * @extends OfflineDatabaseController
+ */
 export default class DatabaseController extends OfflineDatabaseController {
 	static get observedAttributes() {
 		return ['database'];
 	}
 	constructor() {
 		super();
-		this._onPouchDatabaseReady = this._onPouchDatabaseReady.bind(this);
 		this._onUserLogin = this._onUserLogin.bind(this);
-		this._handleData = this._handleData.bind(this);
 		pubsub.subscribe('user.online', this._onUserLogin);
 	}
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -32,7 +33,7 @@ export default class DatabaseController extends OfflineDatabaseController {
 		if (value === true) {
 			this.getFirebaseData();
 		}
-		this._onPouchDatabaseReady();
+		this._onDatabaseReady();
 	}
 	get offline() {
 		return this._offline || false;
@@ -50,9 +51,7 @@ export default class DatabaseController extends OfflineDatabaseController {
 		if (database === undefined || database == null) {
 			return console.warn(`name is ${database}`);
 		}
-		pubsub.subscribe(`database.${database}.ready`, this._onPouchDatabaseReady);
-		pubsub.subscribe(`database.${database}.pouch`, this._handleData);
-		pubsub.subscribe(`database.${database}.firebase`, this._handleData);
+		this._handleData();
 	}
 	_onUserLogin(newValue, oldValue) {
 		if (oldValue !== newValue) this.userOnline = newValue;
@@ -66,14 +65,14 @@ export default class DatabaseController extends OfflineDatabaseController {
 		firebase.database().ref(this.databaseLocation).on('value', snap => {
 			let data = snap.val();
 			this.firebaseData = data;
-			pubsub.publish(`database.${databaseName}.firebase`, data);
+			this._handleData();
 		});
 	}
-	_onPouchDatabaseReady() {
+	_onDatabaseReady() {
+		super._onDatabaseReady();
 		if (this.userOnline && this.offline === false) {
 			// handle data when online
-			this.pouch = new PouchDB(this.database);
-			pubsub.publish(`database.${this.database}.pouch`);
+			this._handleData();
 		}
 	}
 	_splitRef(ref) {
@@ -83,7 +82,17 @@ export default class DatabaseController extends OfflineDatabaseController {
 	_handleData() {
 		let name = this.database;
 		let data = this.firebaseData;
-		if (this.pouch && data !== null) { // && pouchdata
+		if (this.pouch && data !== null && data._rev === null) {
+			this.pouch.put(data, (error, result) => {
+				if (!error) {
+					firebase.database().ref(`${this.databaseLocation}/_rev`)
+						.set(result.rev);
+					console.log(`Local ${name}-database created`);
+				} else {
+					console.warn(error);
+				}
+			});
+		} else if (this.pouch && data !== null) { // && pouchdata
 			this.pouch.get(name).then(doc => {
 				if (doc._rev === data._rev) {
 					console.log(`Local ${name}-database up to date`);

@@ -1,3 +1,4 @@
+import PouchController from './../controllers/pouch-controller.js';
 import './../ux/reef-slider.js';
 import './../ux/time-input.js';
 import './../../../bower_components/time-picker/dist/time-picker.js';
@@ -10,7 +11,7 @@ import './../ux/reef-profile-option.js';
 /**
  * @extends HTMLElement
  */
-class ProfilesView extends HTMLElement {
+class ProfilesView extends PouchController {
   /**
    * Creates shadowRoot
    */
@@ -19,11 +20,10 @@ class ProfilesView extends HTMLElement {
     this.root = this.attachShadow({mode: 'open'});
 		this._onClick = this._onClick.bind(this);
 		this._onProfileChange = this._onProfileChange.bind(this);
-		this._pouchReady = this._pouchReady.bind(this);
 		this._onUserLogin = this._onUserLogin.bind(this);
-
-		pubsub.subscribe('pouchdb.ready', this._pouchReady);
+		this._pouchReady = this._pouchReady.bind(this);
 		pubsub.subscribe('user.login', this._onUserLogin);
+		this.pubsub.subscribe('pouchdb.ready', this._pouchReady);
   }
 
   /**
@@ -31,6 +31,7 @@ class ProfilesView extends HTMLElement {
    */
   connectedCallback() {
 		// @template
+		super.connectedCallback();
     this.timePicker = document.createElement('time-picker');
     this.timePicker.noClock = true;
     this.root.appendChild(this.timePicker);
@@ -73,7 +74,8 @@ class ProfilesView extends HTMLElement {
 		console.log(this.selected);
 	}
   setUpPubSubs() {
-    for (let index of Object.keys(this.profiles)) {
+    if (this.profiles !== null && this.profiles !== undefined)
+		for (let index of Object.keys(this.profiles)) {
       pubsub.subscribe(`data[${index}]change`, this._onProfileChange);
     }
   }
@@ -94,7 +96,6 @@ class ProfilesView extends HTMLElement {
 						let uid = firebase.auth().currentUser.uid;
 						firebase.database().ref(`users/${uid}/profiles/${change.uid}`).set(doc[change.uid]);
 						firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
-						console.log(result);
 					}
 					// update firebase
 				});
@@ -112,8 +113,13 @@ class ProfilesView extends HTMLElement {
 	}
 
 	_pouchReady() {
-		console.log('ppp');
 		this.pouch = new PouchDB('profiles');
+		this.pouch.get('profiles').then(doc => {
+			this.profiles = doc;
+		}).catch(err => {
+			// TODO: create log
+			// console.log(err);
+		});
 	}
 
 	_onUserLogin() {
@@ -123,10 +129,11 @@ class ProfilesView extends HTMLElement {
 			if (data === null) {
 				for (let profile of profiles) {
 					firebase.database().ref(`users/${uid}/profiles/${profile.uid}`).set(profile);
-				}
-			} else {
+				};
+				firebase.database().ref(`users/${uid}/profiles/_id`).set('profiles');
+			}	else {
 				this.profiles = data;
-			}
+			};
 		});
 	}
 }

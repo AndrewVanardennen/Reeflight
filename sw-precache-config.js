@@ -2,6 +2,7 @@ module.exports = {
   staticFileGlobs: [
     '**.html',
     '**/*.{html,js}',
+		'!bower_components/firebase/*',
     'sources/**.*'
   ],
 

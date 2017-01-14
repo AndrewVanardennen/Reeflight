@@ -1,6 +1,15 @@
 'use strict';
-import AppController from './controllers/app-controller.js';
+import PubSub from './internals/pubsub.js';
+import Iconset from './internals/iconset-loader.js';
+import './controllers/user-controller';
+import './controllers/database-controller.js';
+import './internals/request-idle-callback-shim';
+import './ui/reef-header.js';
 import './ui/reef-grid.js';
+import './ui/reef-footer.js';
+import './ui/reef-drawer.js';
+import './ux/reef-selector.js';
+import './ui/reef-pages.js';
 import './views/home-view.js';
 import './views/profiles-view.js';
 import './views/settings-view.js';
@@ -8,13 +17,14 @@ import './views/settings-view.js';
 /**
  * ReeflightApp
  */
-class ReeflightApp extends AppController {
+class ReeflightApp extends HTMLElement {
   /**
    * create reeflight-app
    */
   constructor() {
-    super('reeflight-app');
+    super();
     // bind methods
+    this.root = this.attachShadow({mode: 'open'});
     this._onUserLogin = this._onUserLogin.bind(this);
     this._onUserChange = this._onUserChange.bind(this);
     this._onToggleDrawer = this._onToggleDrawer.bind(this);
@@ -24,6 +34,8 @@ class ReeflightApp extends AppController {
     this._onClick = this._onClick.bind(this);
     this._onResize = this._onResize.bind(this);
     this._preloadViews = this._preloadViews.bind(this);
+    new Iconset();
+    // @template
   }
 
   /**
@@ -45,28 +57,28 @@ class ReeflightApp extends AppController {
    * @return {HTMLElement} reeflight-header
    */
   get header() {
-    return this._root.querySelector('reeflight-header');
+    return this.root.querySelector('reef-header');
   }
 
   /**
    * @return {HTMLElement} reef-drawer
    */
   get drawer() {
-    return this._root.querySelector('reef-drawer');
+    return this.root.querySelector('reef-drawer');
   }
 
   /**
    * @return {HTMLElement} reeflight-drawer-footer
    */
   get drawerFooter() {
-    return this._root.querySelector('reeflight-drawer-footer');
+    return this.root.querySelector('reef-drawer-footer');
   }
 
   /**
    * @return {HTMLElement} reef-pages
    */
   get pages() {
-    return this._root.querySelector('reef-pages');
+    return this.root.querySelector('reef-pages');
   }
 
   /**
@@ -99,8 +111,8 @@ class ReeflightApp extends AppController {
    * sets up the drawer & the eventListeners
    */
   connectedCallback() {
-    super.connectedCallback();
     this.loadComplete = false;
+		this.pubsub = new PubSub();
     this.pubsub.subscribe('user.change', this._onUserChange);
     document.addEventListener('user-login', this._onUserLogin);
     document.addEventListener('toggle-drawer', this._onToggleDrawer);
@@ -112,7 +124,7 @@ class ReeflightApp extends AppController {
     customElements.whenDefined('reeflight-app').then(() => {
       this._handleLazyimports();
       let undefinedElements = ['reef-drawer', 'reef-pages',
-        'reeflight-header', 'reeflight-drawer-footer',
+        'reef-header', 'reef-drawer-footer',
         'reef-footer', 'reef-selector'
       ];
       let promises = undefinedElements.map(el => {
@@ -123,7 +135,6 @@ class ReeflightApp extends AppController {
         this._onResize();
         this._onHomeClick();
       });
-      // this._preloadTasks = ['profiles', 'settings'];
       // requestIdleCallback(this._preloadViews);
       if (this.isVulcanized) {
         this.loadComplete = true;
@@ -164,7 +175,7 @@ class ReeflightApp extends AppController {
    */
   _loadView(view) {
     this.busy = true;
-    this._lazyImport(`elements/views/${view}-view.html`, true).then(() => {
+    this._lazyImport(`elements/scripts/${view}-view.html`, true).then(() => {
       let index = this._preloadTasks.indexOf(view);
       if (index > -1) {
         this._preloadTasks.splice(index, 1);
@@ -179,27 +190,38 @@ class ReeflightApp extends AppController {
    * lazyImports elements
    */
   _handleLazyimports() {
-    setTimeout(() => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js');
+		}
+  }
+  /**
+   * logs given error
+   * @param {Object} error
+   */
+  error(error=Object) {
+    let errorCode = error.code;
+    let errorMessage = error.message;
+    console.log(`error-${errorCode}::${errorMessage}`);
+  }
+	/**
+   * @param {String} href
+   * @param {Boolean} _async_
+   * @return {Promise}
+   */
+  _lazyImport(href, _async_) {
+    return new Promise((resolve, reject) => {
+      let link = document.createElement('link');
+      link.rel = 'import';
+      link.href = href;
+      if (_async_) {
+        link.setAttribute('async', '');
       }
-      if (this.isVulcanized === false) {
-        const asyncImports = [
-          'elements/reeflight-header.html',
-          'elements/reef-footer.html',
-          'elements/reef-selector.html',
-          'elements/reef-button.html',
-          'elements/reef-drawer.html',
-          'elements/reeflight-drawer-heading.html',
-          'elements/reeflight-drawer-footer.html'
-        ];
-        asyncImports.forEach(href => {
-          this._lazyImport(href, true);
-        });
-      }
+      link.onload = result => {
+        resolve(result);
+      };
+      this.root.appendChild(link);
     });
   }
-
   /**
    * Runs when the window resizes
    * Closes the drawer on smallScreens & Opens it on big ones
@@ -207,7 +229,6 @@ class ReeflightApp extends AppController {
   _onResize() {
 		this._width = document.body.getBoundingClientRect().width;
     requestAnimationFrame(() => {
-      console.log(this._width);
       if (this._width === 0) {
         setTimeout(() => {
           this._onResize();
