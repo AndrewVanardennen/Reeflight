@@ -24,7 +24,24 @@
 			will-change: opacity;
 			@apply(--app-header-shadow);
 		}
-		.nav-toolbar {
+		.main-toolbar {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 128px;
+			padding: 0 16px;
+			box-sizing: border-box;
+			align-items: center;
+			justify-content: center;
+		}
+		.main-toolbar .appname{
+			font-size: 40px;
+			text-transform: uppercase;
+			text-align: left;
+			color: #FFF;
+		}
+
+		.condensed-toolbar {
 			display: flex;
 			flex-direction: row;
 			width: 100%;
@@ -32,6 +49,18 @@
 			padding: 0 16px;
 			box-sizing: border-box;
 			align-items: center;
+		}
+		.condensed-toolbar.condensed .appname {
+			opacity: 1;
+		}
+		.condensed-toolbar.condensed {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+		}
+		.condensed-toolbar .appname {
+			opacity: 0;
 		}
 		.avatar {
 			width: 48px;
@@ -41,7 +70,6 @@
 		.flex {
 			flex: 1;
 		}
-
 		reef-button {
 			outline: none;
 			background: transparent;
@@ -59,13 +87,18 @@
 			}
 		}
 	</style>
-	<slot name="main-toolbar"></slot>
-	<div class="nav-toolbar">
+	<div class="main-toolbar">
+		<span class="appname">Reef Light</span>
+	</div>
+	<div class="condensed-toolbar">
 		<reef-icon-button
 			icon="icons::menu"
 			class="drawer-toggle">
 		</reef-icon-button>
+		<span class="appname">Reef Light</span>
 		<span class="flex"></span>
+		<custom-search></custom-search>
+
 		<slot></slot>
 	</div>
 </template>

@@ -20,43 +20,19 @@
     box-sizing: border-box;
   }
   reef-icon-button {
-    color: #FFF;
-    --reef-icon-button-color: #fff;
+    color: #444;
+    --reef-icon-button-color: #444;
+    box-shadow: var(--custom-shadow);
   }
-  .flex {
-    flex: 1;
+  .fixed {
+    position: fixed;
+    bottom: 94px;
+    right: 24px;
   }
-  svg-icon {
-    cursor: pointer;
-  }
-  .search-bar {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    align-items: center;
-    padding: 2px 8px;
-    box-sizing: border-box;
-  }
-  .search-bar.opened {
-    height: 100%;
-    width: 180px;
-    border-radius: 3px;
-  }
-  .search-bar.opened .search-bar-container {
-    width: 100%;
-    display: flex;
-  }
+
   </style>
-<div class="toolbar">
-  <reef-icon-button icon="add"></reef-icon-button>
-  <span class="flex"></span>
-  <div class="search-bar">
-    <div class="search-bar-container">
 
-    </div>
-    <svg-icon icon="search" class="search-icon"></svg-icon>
-  </div>
+  <reef-icon-button icon="add" class="fixed" no-shadow="false"></reef-icon-button>
 
 
-</div>
 </template>

@@ -14,6 +14,7 @@ import './views/home-view.js';
 import './views/profiles-view.js';
 import './views/settings-view.js';
 import './views/devices-view.js';
+import './ux/custom-search.js';
 
 /**
  * ReeflightApp

@@ -1,6 +1,10 @@
 <template>
   <style>
+
     :host {
+      --custom-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                       0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                       0 3px 1px -2px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -35,22 +39,6 @@
       flex-direction: column;
       width: 100%;
       min-height: 128px;
-    }
-    .main-toolbar {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-      height: 64px;
-      padding: 0 16px;
-      box-sizing: border-box;
-      align-items: center;
-      justify-content: center;
-    }
-    .appname {
-      font-size: 40px;
-      text-transform: uppercase;
-      text-align: left;
-      color: #FFF;
     }
     a {
       text-decoration: none;
@@ -124,6 +112,9 @@
     :host([loading]) {
       width: 100% !important;
     }
+    .flex {
+      flex: 1;
+    }
     @media (min-width: 600px) {
       reef-pages {
         flex: 1;
@@ -144,11 +135,7 @@
     </reef-selector>
     <reef-drawer-footer slot="footer"></reef-drawer-footer>
   </reef-drawer>
-  <reef-header>
-    <div class="main-toolbar" slot="main-toolbar">
-      <span class="appname">Reef Light</span>
-    </div>
-  </reef-header>
+  <reef-header></reef-header>
   <reef-pages default-selected="home">
     <home-view name="home"></home-view>
     <settings-view name="settings"></settings-view>

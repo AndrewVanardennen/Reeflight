@@ -9,7 +9,7 @@ export default class ReefIconButton extends ReefButton {
 	 * @return {Array} ['icon']
 	 */
 	static get observedAttributes() {
-		return ['icon'];
+		return ['icon', 'no-shadow'];
 	}
 	/**
 	 * Create icon-button
@@ -22,7 +22,7 @@ export default class ReefIconButton extends ReefButton {
 	constructor(opts={width: 40, height: 40, color: '#FFF', stroke: 'none'}) {
 		super();
 
-		this.noShadow = true;
+		this.noShadow = false;
 		this._onIconsetAdded = this._onIconsetAdded.bind(this);
 		window.addEventListener('svg-iconset-added', this._onIconsetAdded);
 		let style = document.createElement('style');
