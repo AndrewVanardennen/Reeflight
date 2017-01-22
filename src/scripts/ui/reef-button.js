@@ -46,6 +46,9 @@ export default class ReefButton extends HTMLElement {
         -webkit-tap-highlight-color: transparent;
         box-sizing: border-box !important;
         color: var(--reef-button-color, #111);
+				box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                    0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                    0 3px 1px -2px rgba(0, 0, 0, 0.2)
       }
       .ripple {
         background: rgba(0,0,0,0.12);
@@ -65,6 +68,9 @@ export default class ReefButton extends HTMLElement {
         transition: transform cubic-bezier(0, 0, 0.2, 1) 400ms;
         transform: translate3d(0,0,0);
       }
+			:host([no-shadow]) {
+				box-shadow: none;
+			}
     `;
     this.ripple = document.createElement('div');
     this.ripple.classList.add('ripple');
@@ -87,33 +93,9 @@ export default class ReefButton extends HTMLElement {
   }
 
   /**
-   * @param {Boolean} value add's the 'no-shadow' class when true,
-   * removes the 'no-shadow' class when false
-   */
-  set noShadow(value) {
-    if (value) {
-      this.setAttribute('no-shadow', '');
-    } else {
-      this.removeAttribute('no-shadow');
-    }
-  }
-
-  /**
-   * @return {Boolean}
-   */
-  get hasNoShadow() {
-    return this.hasAttribute('no-shadow');
-  }
-
-  /**
    * Add's mousedown to classList
    */
   onMouseDown() {
-    if (this.hasNoShadow === false) {
-      this.style.boxShadow = `0 2px 2px 0 rgba(0, 0, 0, 0.14),
-                              0 1px 5px 0 rgba(0, 0, 0, 0.12),
-                              0 3px 1px -2px rgba(0, 0, 0, 0.2)`;
-    }
     this.classList.add('mousedown');
   }
 
@@ -122,7 +104,6 @@ export default class ReefButton extends HTMLElement {
    */
   onMouseUp() {
     this.classList.remove('mousedown');
-    this.style.boxShadow = 'none';
   }
 
   /**
