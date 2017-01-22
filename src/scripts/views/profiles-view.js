@@ -1,4 +1,3 @@
-import PouchController from './../controllers/pouch-controller.js';
 import './../ux/reef-slider.js';
 import './../ux/time-input.js';
 import './../../../bower_components/time-picker/dist/time-picker.js';
@@ -11,7 +10,7 @@ import './../ux/reef-profile-option.js';
 /**
  * @extends HTMLElement
  */
-class ProfilesView extends PouchController {
+class ProfilesView extends HTMLElement {
   /**
    * Creates shadowRoot
    */
@@ -20,10 +19,11 @@ class ProfilesView extends PouchController {
     this.root = this.attachShadow({mode: 'open'});
 		this._onClick = this._onClick.bind(this);
 		this._onProfileChange = this._onProfileChange.bind(this);
-		this._onUserLogin = this._onUserLogin.bind(this);
 		this._pouchReady = this._pouchReady.bind(this);
+		this._onUserLogin = this._onUserLogin.bind(this);
+
+		pubsub.subscribe('pouchdb.ready', this._pouchReady);
 		pubsub.subscribe('user.login', this._onUserLogin);
-		this.pubsub.subscribe('pouchdb.ready', this._pouchReady);
   }
 
   /**
@@ -31,7 +31,6 @@ class ProfilesView extends PouchController {
    */
   connectedCallback() {
 		// @template
-		super.connectedCallback();
     this.timePicker = document.createElement('time-picker');
     this.timePicker.noClock = true;
     this.root.appendChild(this.timePicker);
@@ -74,8 +73,7 @@ class ProfilesView extends PouchController {
 		console.log(this.selected);
 	}
   setUpPubSubs() {
-    if (this.profiles !== null && this.profiles !== undefined)
-		for (let index of Object.keys(this.profiles)) {
+    for (let index of Object.keys(this.profiles)) {
       pubsub.subscribe(`data[${index}]change`, this._onProfileChange);
     }
   }
@@ -114,12 +112,6 @@ class ProfilesView extends PouchController {
 
 	_pouchReady() {
 		this.pouch = new PouchDB('profiles');
-		this.pouch.get('profiles').then(doc => {
-			this.profiles = doc;
-		}).catch(err => {
-			// TODO: create log
-			// console.log(err);
-		});
 	}
 
 	_onUserLogin() {
@@ -129,11 +121,10 @@ class ProfilesView extends PouchController {
 			if (data === null) {
 				for (let profile of profiles) {
 					firebase.database().ref(`users/${uid}/profiles/${profile.uid}`).set(profile);
-				};
-				firebase.database().ref(`users/${uid}/profiles/_id`).set('profiles');
-			}	else {
+				}
+			} else {
 				this.profiles = data;
-			};
+			}
 		});
 	}
 }
