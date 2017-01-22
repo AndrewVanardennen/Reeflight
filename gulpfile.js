@@ -35,7 +35,7 @@ const browserSyncInit = baseDir => {
       .on('change', series('images', reload()));
   } else {
     browserSync.watch('src/**/*.html')
-      .on('change', series('copy:elements', reload()));
+      .on('change', series('build', reload()));
     browserSync.watch('src/**/*.js')
       .on('change', series('copy:scripts', 'inject', 'rollup', reload()));
     browserSync.watch('src/**/*.{png,jpg}').on('change', reload());
