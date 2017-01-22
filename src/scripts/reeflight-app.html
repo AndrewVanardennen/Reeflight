@@ -22,6 +22,12 @@
     }*/
     reef-drawer {
       background: #FFF;
+      --svg-icon-color: #444;
+      --svg-icon-size: 24px;
+    }
+    reef-drawer reef-button  svg-icon {
+      padding-right: 24px;
+
     }
     reef-header {
       background-color: #0097A7;
@@ -100,6 +106,7 @@
       align-items: center;
       --reef-button-radius: none;
       --reef-button-ripple-radius: none;
+      padding: 0 18px;
     }
     reef-selector.drawer-menu reef-button.reef-selected {
       background: var(--reeflight-primary-color);
@@ -130,9 +137,10 @@
   <reef-drawer>
     <reef-drawer-heading slot="heading"></reef-drawer-heading>
     <reef-selector class="drawer-menu">
-      <reef-button class="color1" name="home" no-shadow>home</reef-button>
-      <reef-button name="profiles" no-shadow>profiles</reef-button>
-      <reef-button name="settings" no-shadow>settings</reef-button>
+      <reef-button class="color1" name="home" no-shadow><svg-icon icon="home"></svg-icon>home</reef-button>
+      <reef-button name="profiles" no-shadow><svg-icon icon="import-contacts"></svg-icon>profiles</reef-button>
+      <reef-button name="devices" no-shadow><svg-icon icon="tablet"></svg-icon>devices</reef-button>
+      <reef-button name="settings" no-shadow><svg-icon icon="settings"></svg-icon>settings</reef-button>
     </reef-selector>
     <reef-drawer-footer slot="footer"></reef-drawer-footer>
   </reef-drawer>
@@ -145,6 +153,7 @@
     <home-view name="home"></home-view>
     <settings-view name="settings"></settings-view>
     <profiles-view name="profiles"></profiles-view>
+    <devices-view name="devices"></devices-view>
   </reef-pages>
   <reef-footer>
     <span slot="made-with">

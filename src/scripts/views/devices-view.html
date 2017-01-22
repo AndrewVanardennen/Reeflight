@@ -1,0 +1,62 @@
+<template>
+  <style>
+  :host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    --reef-icon-button-color: #555;
+    background-color: var(--reef-primary-background-color);
+    overflow-x: hidden;
+  }
+  .toolbar {
+    height: 48px;
+    width: 100%;
+    background: rgba(0,151,167,0.29);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  reef-icon-button {
+    color: #FFF;
+    --reef-icon-button-color: #fff;
+  }
+  .flex {
+    flex: 1;
+  }
+  svg-icon {
+    cursor: pointer;
+  }
+  .search-bar {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+    padding: 2px 8px;
+    box-sizing: border-box;
+  }
+  .search-bar.opened {
+    height: 100%;
+    width: 180px;
+    border-radius: 3px;
+  }
+  .search-bar.opened .search-bar-container {
+    width: 100%;
+    display: flex;
+  }
+  </style>
+<div class="toolbar">
+  <reef-icon-button icon="add"></reef-icon-button>
+  <span class="flex"></span>
+  <div class="search-bar">
+    <div class="search-bar-container">
+
+    </div>
+    <svg-icon icon="search" class="search-icon"></svg-icon>
+  </div>
+
+
+</div>
+</template>

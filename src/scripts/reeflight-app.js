@@ -13,6 +13,7 @@ import './ui/reef-pages.js';
 import './views/home-view.js';
 import './views/profiles-view.js';
 import './views/settings-view.js';
+import './views/devices-view.js';
 
 /**
  * ReeflightApp
@@ -25,15 +26,18 @@ class ReeflightApp extends HTMLElement {
     super();
     // bind methods
     this.root = this.attachShadow({mode: 'open'});
+
     this._onUserLogin = this._onUserLogin.bind(this);
     this._onUserChange = this._onUserChange.bind(this);
     this._onToggleDrawer = this._onToggleDrawer.bind(this);
     this._onHomeClick = this._onHomeClick.bind(this);
     this._onSettingsClick = this._onSettingsClick.bind(this);
     this._onProfilesClick = this._onProfilesClick.bind(this);
+    this._onDevicesClick = this._onDevicesClick.bind(this);
     this._onClick = this._onClick.bind(this);
     this._onResize = this._onResize.bind(this);
     this._preloadViews = this._preloadViews.bind(this);
+
     new Iconset();
     // @template
   }
@@ -119,6 +123,7 @@ class ReeflightApp extends HTMLElement {
     document.addEventListener('home-button-click', this._onHomeClick);
     document.addEventListener('settings-button-click', this._onSettingsClick);
     document.addEventListener('profiles-button-click', this._onProfilesClick);
+    document.addEventListener('devices-button-click', this._onDevicesClick);
     this.addEventListener('click', this._onClick);
     window.addEventListener('resize', this._onResize);
     customElements.whenDefined('reeflight-app').then(() => {
@@ -365,6 +370,11 @@ class ReeflightApp extends HTMLElement {
    */
   _onProfilesClick() {
     this.pages.select('profiles');
+    this._closeDrawerIfNeeded();
+  }
+
+  _onDevicesClick() {
+    this.pages.select('devices');
     this._closeDrawerIfNeeded();
   }
 }
