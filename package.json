@@ -19,19 +19,68 @@
     "eslint-plugin-html": "^1.7.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-inject-html-template": "^0.2.1",
-    "gulp-lwip": "^0.1.2",
     "gulp-vulcanize": "^6.1.0",
     "merge-stream": "^1.0.1",
     "pouchdb": "^6.1.1",
     "rollup": "^0.36.3",
     "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-inject-template": "^1.0.2",
     "rollup-plugin-json": "^2.1.0",
     "sw-precache": "^4.2.1"
   },
   "dependencies": {
-    "backed": "vandeurenglenn/backed",
+    "backed": "^0.2.5",
+    "backed-utils": "^0.0.2",
     "express": "^4.14.0",
-    "opn": "^4.0.2"
+    "opn": "^4.0.2",
+    "web-clock-lite": "^0.0.1",
+    "web-time-picker": "^0.1.8"
+  },
+  "backed": {
+    "bundles": [
+      {
+        "src": [
+          "src/reeflight-app.js"
+        ],
+        "dest": "dist/reeflight-app.js",
+        "moduleName": "reeflight",
+        "format": "iife",
+        "plugins": {
+          "inject-template": {}
+        }
+      }
+    ],
+    "sources": [
+      {
+        "src": [
+          "node_modules/backed/dist/backed.js"
+        ],
+        "dest": "dist"
+      },
+      {
+        "src": [
+          "src/index.html"
+        ],
+        "dest": "dist"
+      }
+    ],
+    "watch": [
+      {
+        "task": "copy",
+        "src": [
+          "src/**/*.html"
+        ]
+      },
+      {
+        "task": "build",
+        "src": [
+          "src/**/*.js"
+        ]
+      }
+    ],
+    "server": {
+      "demo": "dist"
+    }
   },
   "eslintConfig": {
     "rules": {
@@ -43,14 +92,17 @@
         "error",
         "never"
       ],
-      "require-jsdoc": ["error", {
-        "require": {
+      "require-jsdoc": [
+        "error",
+        {
+          "require": {
             "FunctionDeclaration": false,
             "MethodDefinition": false,
             "ClassDeclaration": false,
             "ArrowFunctionExpression": false
+          }
         }
-    }]
+      ]
     },
     "parserOptions": {
       "sourceType": "module"
@@ -61,9 +113,6 @@
     "extends": [
       "google",
       "es2015"
-    ],
-    "plugins": [
-      "eslint-plugin-html"
     ]
   }
 }

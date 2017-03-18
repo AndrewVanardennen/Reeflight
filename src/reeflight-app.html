@@ -1,0 +1,165 @@
+<template>
+  <style>
+
+    :host {
+      --custom-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                       0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                       0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      right: 0; /* needed for drawer */
+      position: absolute;
+      cursor: default;
+      font-family: 'Roboto', sans-serif;
+      text-rendering: optimizeSpeed;
+      --reeflight-primary-color: #0097A7;
+    }
+    :host(.floating-drawer) {
+      width: 100% !important;
+    }
+    /*werken met reef-selector -> import voor listbox*/
+    /*.reef-selected.color1 {
+      background: #F00 !important;
+      color: #F00;
+    }*/
+    reef-drawer {
+      background: #FFF;
+      --svg-icon-color: #444;
+      --svg-icon-size: 24px;
+    }
+    reef-drawer reef-button  svg-icon {
+      padding-right: 24px;
+
+    }
+    reef-header {
+			--reef-icon-button-color: #FFF;
+      background-color: #0097A7;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 128px;
+    }
+    a {
+      text-decoration: none;
+    }
+    span[slot="made-with"] {
+      padding: 0 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 40px;
+      width: 100%;
+      background-color: var(--paper-blue-grey-900, #263238);
+      color: #FFF;
+      box-sizing: border-box;
+    }
+    span[slot="made-with"] a {
+      padding-left: 8px;
+      color: #0097A7;
+    }
+    section.copyright {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 8px 16px;
+      box-sizing: border-box;
+      font-size: 12px;
+    }
+    span[slot="made-with"] .icon {
+      width: 24px;
+      height: 24px;
+      padding: 0 8px;
+    }
+    section.copyright .icon, span[slot="made-with"] .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    section.copyright .icon {
+      padding-right: 8px;
+      width: 12px;
+      height: 12px;
+    }
+    reef-selector.drawer-menu {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+      height: 100%;
+      box-sizing: border-box;
+      background: #FFF;
+    }
+    reef-selector.drawer-menu reef-button {
+      height: 56px;
+      align-items: center;
+      --reef-button-radius: none;
+      --reef-button-ripple-radius: none;
+      padding: 0 18px;
+    }
+    reef-selector.drawer-menu reef-button.reef-selected {
+      background: var(--reeflight-primary-color);
+    }
+    [hidden] {
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+    }
+    :host([loading]) reef-drawer {
+      opacity: 0;
+      display: none;
+      transition: opacity ease-in 0.16s;
+    }
+    :host([loading]) {
+      width: 100% !important;
+    }
+    .flex {
+      flex: 1;
+    }
+    @media (min-width: 600px) {
+      reef-pages {
+        flex: 1;
+      }
+      reef-footer {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <reef-drawer>
+    <reef-drawer-heading slot="heading"></reef-drawer-heading>
+    <reef-selector class="drawer-menu">
+      <reef-button class="color1" name="home" no-shadow><svg-icon icon="home"></svg-icon>home</reef-button>
+      <reef-button name="profiles" no-shadow><svg-icon icon="import-contacts"></svg-icon>profiles</reef-button>
+      <reef-button name="devices" no-shadow><svg-icon icon="tablet"></svg-icon>devices</reef-button>
+      <reef-button name="settings" no-shadow><svg-icon icon="settings"></svg-icon>settings</reef-button>
+    </reef-selector>
+    <reef-drawer-footer slot="footer"></reef-drawer-footer>
+  </reef-drawer>
+  <reef-header></reef-header>
+  <reef-pages default-selected="home">
+    <home-view name="home"></home-view>
+    <settings-view name="settings"></settings-view>
+    <profiles-view name="profiles"></profiles-view>
+    <devices-view name="devices"></devices-view>
+  </reef-pages>
+  <reef-footer>
+    <span slot="made-with">
+      Made With
+      <img class="icon" src="../sources/icons/heart.svg"></img>
+      By
+      <a href="https://reeflight.github.io/#contributors">
+        The Reeflight Team
+      </a>
+    </span>
+    <section class="copyright" slot="copyright">
+      <img class="icon" src="../sources/icons/copyright.svg"></img>
+      2016 Reeflight. Code licensed under the CC-BY-NC-SA-4.0 License.
+      Except as otherwise noted,
+      Documentation & media are licensed under CC-BY-4.0 License.
+    </section>
+  </reef-footer>
+  <user-controller></user-controller>
+	<database-controller database="profiles"></database-controller>
+	<database-controller database="devices"></database-controller>
+</template>

@@ -1,0 +1,40 @@
+<template>
+	<style>
+		:host {
+			display: inline-flex;
+			position: relative;
+			padding: var(--reef-icon-button-padding, 8px);
+			align-items: center;
+			border-radius: var(--reef-icon-button-radius, 50%);
+			text-transform: uppercase;
+			outline: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			cursor: pointer;
+			z-index: 0;
+			line-height: 1;
+			-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			-webkit-tap-highlight-color: transparent;
+			box-sizing: border-box;
+			color: var(--reef-icon-button-color, #555);
+			--svg-icon-color: var(--reef-icon-button-color, #555);
+			width: var(--reef-icon-button-size, 40px);
+			height: var(--reef-icon-button-size, 40px);
+			stroke: var(--reef-icon-button-stroke-color, none);
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+									0 1px 5px 0 rgba(0, 0, 0, 0.12),
+									0 3px 1px -2px rgba(0, 0, 0, 0.2)
+		}
+		:host([toggled]) {
+			--reef-icon-button-color: var(--reef-icon-button-toggled, #0097A7);
+			--svg-icon-color: var(--reef-icon-button-toggled, #0097A7);
+		}
+		:host([no-shadow]) {
+			box-shadow: none;
+		}
+	</style>
+	<svg-icon></svg-icon>
+	<custom-ripple></custom-ripple>
+</template>

@@ -2,7 +2,6 @@
 const {task, src, series, dest} = require('gulp');
 const merge = require('merge-stream');
 const del = require('del');
-const lwip = require('gulp-lwip');
 const {rollup} = require( 'rollup' );
 const babel = require('rollup-plugin-babel');
 const json = require('rollup-plugin-json');
@@ -31,8 +30,8 @@ const browserSyncInit = baseDir => {
       .on('change', series('copy', 'vulcanize', reload()));
     browserSync.watch('src/**/*.js')
       .on('change', series('rollup', 'vulcanize', reload()));
-    browserSync.watch('**/*.{png,jpg}')
-      .on('change', series('images', reload()));
+    // browserSync.watch('**/*.{png,jpg}')
+    //   .on('change', series('images', reload()));
   } else {
     browserSync.watch('src/**/*.html')
       .on('change', series('build', reload()));
@@ -79,9 +78,9 @@ task('env:dist', cb => {
 });
 
 task('images:resize', () => {
-  return src([`${config.source}/sources/**/*.{jpg,png}`])
-    .pipe(lwip.resize(256))
-    .pipe(dest('.tmp/sources'));
+  // return src([`${config.source}/sources/**/*.{jpg,png}`])
+  //   .pipe(lwip.resize(256))
+  //   .pipe(dest('.tmp/sources'));
 });
 
 task('images:copy', () => {
@@ -89,17 +88,17 @@ task('images:copy', () => {
     .pipe(dest(`${config.destination}/sources`));
 });
 
-task('images', series('images:resize'));
+// task('images', series('images:resize'));
 
-task('icons', () => {
-  return src(`${config.source}/sources/**/*.svg`)
-    .pipe(dest(`.tmp/sources`));
-});
-
-task('icons:copy', () => {
-  return src(`.tmp/sources/**/*.svg`)
-    .pipe(dest(`${config.destination}/sources`));
-});
+// task('icons', () => {
+//   return src(`${config.source}/sources/**/*.svg`)
+//     .pipe(dest(`.tmp/sources`));
+// });
+//
+// task('icons:copy', () => {
+//   return src(`.tmp/sources/**/*.svg`)
+//     .pipe(dest(`${config.destination}/sources`));
+// });
 
 task('copy:app', () => {
   return src([
@@ -249,13 +248,13 @@ task('inject', () => {
     .pipe(injectTemplate()).pipe(dest('.tmp/scripts'));
 });
 // Main Tasks
-task('sources', series('images:copy', 'icons:copy'));
+task('sources', series('images:copy'));
 
-task('default', series('clean', 'images', 'icons', 'copy', 'inject', 'rollup'));
+task('default', series('clean', 'copy', 'inject', 'rollup'));
 
 task('build-dev', series('env', 'default'));
 
-task('build', series('build-dev', 'env:dist', 'default', 'sources', 'precache'));
+task('build', series('build-dev', 'env:dist', 'default', 'precache'));
 
 task('serve', series('env', 'default', 'browser-sync'));
 

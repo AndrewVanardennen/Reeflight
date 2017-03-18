@@ -38,6 +38,8 @@
           && 'content' in document.createElement('template'));
       var customElementsV1Supported = 'customElements' in window;
 
+			var supportsShadowDOMV1 = !!HTMLElement.prototype.attachShadow;
+
       /**
        * @param {String} src
        */
@@ -52,7 +54,12 @@
       if (!customElementsV1Supported) {
         importScript('../bower_components/custom-elements/custom-elements.min.js');
       }
+			if (!supportsShadowDOMV1) {
+				importScript('../bower_components/shadydom/shadydom.min.js');
+		    importScript('../bower_components/shadycss/shadycss.min.js');
+			}
     </script>
+
     <style>
       body, html {
         margin: 0;
@@ -66,7 +73,7 @@
   </head>
   <body>
     <reeflight-app></reeflight-app>
-
-		<script src="scripts/reeflight-app.js" async></script>
+    <script src="node_modules/backed/dist/backed.js"></script>
+		<script src="reeflight-app.js" ></script>
   </body>
 </html>
