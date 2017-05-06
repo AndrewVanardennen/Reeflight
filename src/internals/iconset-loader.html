@@ -1,5 +1,6 @@
-<template>
 
+
+<template id="iconset-loader">
 	<svg-iconset name="icons" size="24">
 	  <svg>
 	    <defs>
@@ -29,3 +30,18 @@
 	  </svg>
 	</svg-iconset>
 </template>
+
+<script>
+	'use strict';
+	import Backed from './../../node_modules/backed/dist/backed-es.js';
+
+	export default Backed(class IconsetLoader extends HTMLElement {
+
+		created() {
+			console.log('e');
+		}
+		connected() {
+			console.log(this.shadowRoot);
+		}
+	});
+</script>

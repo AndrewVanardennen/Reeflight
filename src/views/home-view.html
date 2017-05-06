@@ -1,4 +1,6 @@
-<template>
+<link rel="import" href="../ux/swipeable-card.html">
+
+<template id="home-view">
   <style>
     :host {
       display: flex;
@@ -73,3 +75,53 @@
       </div>
   </reef-grid>
 </template>
+
+<script>
+	import Backed from './../../node_modules/backed/dist/backed-es.js';
+	/**
+	 * HomeView
+	 * @extends HTMLElement
+	 */
+	export default Backed(class HomeView extends HTMLElement {
+		/**
+		 * observedAttributes
+		 * The attributes to observe
+		 * @return {Array} ['username']
+		 */
+		static get observedAttributes() {
+			return ['username'];
+		}
+		/**
+		 * @param {String} username 'some-name'
+		 */
+		set username(username) {
+			this.setAttribute('username', username);
+			// this.usernameEl.innerHTML = username;
+		}
+		/**
+		 * @return {HTMLElement} element containing the (.)username class
+		 */
+		get usernameEl() {
+			return this.shadowRoot.querySelector('.username');
+		}
+		/**
+		 * @return {HTMLElement} reef-grid
+		 */
+		get reefGrid() {
+			return this.shadowRoot.querySelector('reef-grid');
+		}
+
+		/**
+		 * Runs whenever attribute changes are detected
+		 * @param {string} name The name of the attribute that changed.
+		 * @param {string|object|array} oldValue
+		 * @param {string|object|array} newValue
+		 */
+		attributeChangedCallback(name, oldValue, newValue) {
+			if (oldValue !== newValue) {
+				this[name] = newValue;
+			}
+		}
+	});
+
+</script>

@@ -1,0 +1,29 @@
+:host {
+	display: block;
+	position: relative;
+	padding: 12px 24px 12px 12px;
+	box-sizing: border-box;
+	width: 224px;
+}
+#progress {
+	position: absolute;
+	width: 200px;
+	height: 4px;
+	transform-origin: left center;
+	transform: scaleX(0);
+	will-change: transform;
+	background: var(--reef-progress-color, var(--google-green-500));
+}
+.progress-background {
+	width: 200px;
+	position: absolute;
+	height: 4px;
+	background: var(--reef-progress-background, var(--paper-grey-300));
+}
+:host([disabled]) #progress {
+	background:
+		var(--reef-progress-disabled-color, var(--google-grey-500));
+}
+#progress.transiting {
+	transition: transform ease 0.08s;
+}

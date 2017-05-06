@@ -1,4 +1,7 @@
-<template>
+<link rel="import" href="custom-ripple.html">
+<link rel="import" href="../mixins/button-mixin.html">
+
+<template id="reef-icon-button">
 	<style>
 		:host {
 			display: inline-flex;
@@ -35,6 +38,121 @@
 			box-shadow: none;
 		}
 	</style>
-	<svg-icon></svg-icon>
+	<reef-icon></reef-icon>
 	<custom-ripple></custom-ripple>
 </template>
+
+<script>
+	import Backed from './../../node_modules/backed/dist/backed-es.js';
+	/**
+	 * ReefIconButton
+	 * @extends ReefButton
+	 */
+	export default Backed(class ReefIconButton extends ButtonMixin(HTMLElement) {
+		/**
+		 * Attributes to observer
+		 * @return {Array} ['icon']
+		 */
+		static get observedAttributes() {
+			return ['icon'];
+		}
+
+		static get properties() {
+			return {
+				/**
+				 * icon
+				 * @param {string} value The desired icon.
+				 * optional: you can create multiple iconsets
+				 * by setting a different name on svg-iconset.
+				 *
+				 * **example:** ```html
+				 * <svg-iconset name="my-icons">
+				 *   <g id="menu">....</g>
+				 * </svg-iconset>
+				 * ```
+				 * This means we can ask for the icon using a prefix
+				 * **example:** ```html
+				 * <reef-icon-button icon="my-icons::menu"></reef-icon-button>
+				 * ```
+				 */
+				icon: {
+					observer: '__iconChanged__'
+				}
+			}
+		}
+
+		/**
+		 * Create icon-button
+		 * @param {object} opts Default options
+		 * @param {number} opts.width The desired height for the svg.
+		 * @param {number} opts.height The desired width for the svg.
+		 * @param {string} opts.color The color to fill.
+		 * @param {string} opts.stroke The stroke color.
+		 */
+		connected() {
+			super.connected();
+		}
+
+		ready() {
+			this.icon = this.getAttribute('icon');
+		}
+
+		/**
+		 * @return {Boolean}
+		 */
+		get toggles() {
+			return this.hasAttribute('toggles');
+		}
+		/**
+		 * @param {Boolean} value
+		 */
+		set toggled(value) {
+		 if (value) {
+			 this.setAttribute('toggled', '');
+		 } else {
+			 this.removeAttribute('toggled', '');
+		 }
+		 this._toggled = value;
+		}
+		/**
+		 * @return {Boolean}
+		 */
+		get toggled() {
+			return this._toggled || false;
+		}
+		/**
+		 * Toggles the state of toggled
+		 * @param {Object} event
+		 */
+		onMouseClick(event) {
+			super.onMouseClick(event);
+			if (this.toggles === true) {
+				let toggled = this.toggled;
+				if (toggled === false) {
+					toggled = true;
+				} else {
+					toggled = false;
+				}
+				this.toggled = toggled;
+				document.dispatchEvent(new CustomEvent('reef-icon-button-toggle', {
+					detail: {target: this, value: toggled}
+				}));
+			}
+		}
+		__iconChanged__(change) {
+			if (change.value) {
+				this.shadowRoot.querySelector('reef-icon').icon = change.value;
+			}
+		}
+		/**
+		 * Runs when attribute changes.
+		 * @param {string} name The name of the attribute that changed.
+		 * @param {string|object|array} oldValue
+		 * @param {string|object|array} newValue
+		 */
+		attributeChangedCallback(name, oldValue, newValue) {
+			if (oldValue !== newValue) this[name] = newValue;
+		}
+	});
+
+</script>

@@ -1,0 +1,23 @@
+<template id="reef-footer">
+  <style>
+    :host {
+      flex-direction: column;
+      width: 100%;
+      min-height: 72px;
+    }
+  </style>
+
+	<slot name="made-with"></slot>
+  <slot></slot>
+  <slot name="copyright"></slot>
+</template>
+
+<script>
+  'use strict';
+  import Backed from './../../node_modules/backed/dist/backed-es.js';
+  /**
+   * ReefFooter
+   * @extends HTMLElement
+   */
+  export default Backed(class ReefFooter extends HTMLElement {});
+</script>

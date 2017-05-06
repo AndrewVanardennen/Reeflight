@@ -1,34 +1,15 @@
-import ReefProgress from './reef-progress';
-/**
- * ReefSlider
- * @extends HTMLElement
- */
-export default Backed(class ReefSlider extends ReefProgress {
+<link rel="import" href="../mixins/progress-mixin.html">
+<link rel="import" href="reef-progress-bar.html">
 
-  /**
-   * observedAttributes
-   */
-  static get observedAttributes() {
-    return ['value'];
-  }
-
-  created() {
-		super.created();
-    this._mousedown = this._mousedown.bind(this);
-    this._mouseup = this._mouseup.bind(this);
-    this._click = this._click.bind(this);
-  }
-
-	connected() {
-		super.connected();
-		let style = document.createElement('style');
-    style.innerHTML = `
-	:host {
+<template id="reef-slider">
+  <style>
+  :host {
+		position: relative;
     display: inline-flex;
     flex-direction: row;
     align-items: center;
     height: 16px;
-		box-sizing: border-box;
+    box-sizing: border-box;
     cursor: pointer;
     --reef-slider-container-color: var(--paper-grey-300);
     --reef-slider-color: var(--paper-cyan-700);
@@ -44,39 +25,54 @@ export default Backed(class ReefSlider extends ReefProgress {
     border-radius: 50%;
     background: var(--reef-slider-knob-color);
     transform: translateX(-8px);
-		transform-origin: left center;
+    transform-origin: left center;
     z-index: 10;
+		position: absolute;
+		left: 0;
   }
   :host[square] .slider-knob {
     border-radius: 3px;
   }
-		`;
-
-    this.sliderKnob = document.createElement('div');
-		this.sliderKnob.classList.add('slider-knob');
-		this.root.appendChild(style);
-		this.root.appendChild(this.sliderKnob);
-	}
+  </style>
+	<reef-progress-bar></reef-progress-bar>
+</template>
+<script>
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+/**
+ * ReefSlider
+ * @extends HTMLElement
+ */
+export default Backed(class ReefSlider extends ProgressMixin(HTMLElement) {
 
   /**
-   * @param {Number} value
+   * observedAttributes
    */
-  set value(value) {
-    this._value = value;
-		super.value = value;
-		// value *= 2;
-		// value -= 16;
-		requestAnimationFrame(() => {
-			let ratio = this._calcRatio(value) * 100;
-			// console.log((ratio / 100));
-			// value = (((ratio / 100) * 2) - 8);
-			// 	if (value < -8) {
-			// 		value = -8;
-			// 	} else if (value > 192) {
-			// 		value = 192;
-			// 	}
-			this.sliderKnob.style.transform = 'translateX(' + ((ratio * 2) - 8) + 'px)';
-		});
+  static get observedAttributes() {
+    return ['value'];
+  }
+
+  created() {
+    // super.created();
+    this._mousedown = this._mousedown.bind(this);
+    this._mouseup = this._mouseup.bind(this);
+    this._click = this._click.bind(this);
+  }
+
+  connected() {
+    super.connected();
+    let style = document.createElement('style');
+
+    this.sliderKnob = document.createElement('div');
+    this.sliderKnob.classList.add('slider-knob');
+    this.shadowRoot.appendChild(this.sliderKnob);
+
+
+    // Needed for tabbing
+    this.tabIndex = 0;
+    // setup event listeners
+    this.addEventListener('mousedown', this._mousedown);
+    this.addEventListener('mouseup', this._mouseup);
+    this.addEventListener('click', this._click);
   }
 
   /**
@@ -97,19 +93,31 @@ export default Backed(class ReefSlider extends ReefProgress {
       this[name] = newVal;
     }
   }
-  /**
-   * Runs when inserted in document,
-   * Stamps innerHTML, set's up eventListeners
-   */
-  connectedCallback() {
-		super.connectedCallback();
-    // Needed for tabbing
-    this.tabIndex = 0;
-    // setup event listeners
-    this.addEventListener('mousedown', this._mousedown);
-    this.addEventListener('mouseup', this._mouseup);
-    this.addEventListener('click', this._click);
-  }
+
+ 	/**
+ 	 * @return {HTMLElement}
+ 	 */
+ 	get _progress() {
+ 		return this.shadowRoot.querySelector('reef-progress-bar').shadowRoot.querySelector('#progress');
+ 	}
+ 	/**
+ 	 * @param {number} value
+ 	 */
+ 	render(change) {
+ 		let ratio = this._calcRatio(change.value) * 100;
+ 		this._transformProgress(ratio);
+ 	}
+
+ 	/**
+ 	 * @param {Number} ratio
+ 	 */
+ 	_transformProgress(ratio) {
+ 		let transform = 'scaleX(' + ratio / 100 + ')';
+ 		requestAnimationFrame(() => {
+			this.sliderKnob.style.transform = 'translateX(' + ((ratio * 2)) + 'px)';
+ 			this._progress.style.transform = transform;
+ 		});
+ 	}
   /**
    * @param {Number} x current value
    * @param {Number} _x previous value of x
@@ -173,3 +181,5 @@ export default Backed(class ReefSlider extends ReefProgress {
     return (Math.min(max, Math.max(min, value)));
   }
 });
+
+</script>

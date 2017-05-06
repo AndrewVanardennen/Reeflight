@@ -1,4 +1,5 @@
 'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
 import './swipeable-card.js';
 /**
  * @class SwipeableCards

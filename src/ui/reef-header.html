@@ -1,4 +1,6 @@
-<template>
+<link rel="import" href="reef-icon-button.html">
+
+<template id="reef-header">
 	<style>
 		:host {
 			display: flex;
@@ -103,3 +105,34 @@
 		<slot></slot>
 	</div>
 </template>
+
+<script>
+	import Backed from './../../node_modules/backed/dist/backed-es.js';
+	/**
+	* ReeflightHeader
+	*/
+	export default Backed(class ReefHeader extends HTMLElement {
+
+		/**
+		 * Runs when inserted into document
+		 */
+		connected() {
+			this.drawerToggle.addEventListener('click', this.toggleDrawer);
+		}
+
+		/**
+		 * @return {HTMLElement} .drawer-toggle
+		 */
+		get drawerToggle() {
+			return this.shadowRoot.querySelector('.drawer-toggle');
+		}
+
+		/**
+		 * Dispatches toggle-drawer event
+		 */
+		toggleDrawer() {
+			document.dispatchEvent(new CustomEvent('toggle-drawer'));
+		}
+	});
+
+</script>

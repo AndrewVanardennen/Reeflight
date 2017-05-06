@@ -1,19 +1,7 @@
-'use strict';
-import ArrayRepeat from
-	'./../../bower_components/array-repeat/dist/array-repeat.es.js';
-/**
- * @extends ArrayRepeat
- */
-export default class ReefList extends ArrayRepeat {
-	/**
-	 * Runs whenever inserted into dom
-	 */
-	connected() {
-		super.connectedCallback();
-		setTimeout(() => {
-			let style = document.createElement('style');
-			style.setAttribute('slot', 'style');
-			style.innerHTML = `
+<link rel="import" href="../mixins/repeat.html">
+
+<template id="reef-list">
+	<style>
 		:host {
 			display: flex;
 			width: 100%;
@@ -45,9 +33,20 @@ export default class ReefList extends ArrayRepeat {
 				width: calc(100% / 3 - 6px);
 			}
 		}
-			`;
-			this.appendChild(style);
-		}, 10);
+	</style>
+</template>
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+/**
+ * @extends ArrayRepeat
+ */
+export default Backed(class ReefList extends ArrayRepeat(HTMLElement) {
+	/**
+	 * Runs whenever inserted into dom
+	 */
+	connected() {
+		super.connected();
 	}
-}
-customElements.define('reef-list', ReefList);
+});
+</script>

@@ -1,4 +1,4 @@
-<template>
+<template id="reef-profile-option">
 	<style>
 		:host {
 			display: flex;
@@ -17,3 +17,9 @@
 		<slot></slot>
 	</span>
 </template>
+
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+Backed(class ReefProfileOption extends HTMLElement {});
+</script>

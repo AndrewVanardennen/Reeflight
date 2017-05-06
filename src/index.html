@@ -12,53 +12,15 @@
     <!-- Chrome / Android -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#006064">
-    <link rel="icon" href="icon.png">
+    <!-- <link rel="icon" href="icon.png"> -->
 
     <!-- Safari / iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
+    <!-- <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png"> -->
 
     <!-- Import manifest for serviceWorker, pushNotifications & addToHomeScreen support. -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- Polymer settings, use shadowDom & lazyRegister -->
-    <script>
-      window.Polymer = {
-        dom: 'shadow',
-        lazyRegister: 'max'
-      };
-    </script>
-
-    <!-- Load Web Components & customElements when not supported-->
-    <script>
-      /* eslint no-var: 0 */
-      var webComponentsSupported = ('registerElement' in document
-          && 'import' in document.createElement('link')
-          && 'content' in document.createElement('template'));
-      var customElementsV1Supported = 'customElements' in window;
-
-			var supportsShadowDOMV1 = !!HTMLElement.prototype.attachShadow;
-
-      /**
-       * @param {String} src
-       */
-      function importScript(src) {
-        var script = document.createElement('script');
-        script.src = src;
-        document.head.appendChild(script);
-      }
-      if (!webComponentsSupported) {
-        importScript('../bower_components/webcomponentsjs/webcomponents-lite.js');
-      }
-      if (!customElementsV1Supported) {
-        importScript('../bower_components/custom-elements/custom-elements.min.js');
-      }
-			if (!supportsShadowDOMV1) {
-				importScript('../bower_components/shadydom/shadydom.min.js');
-		    importScript('../bower_components/shadycss/shadycss.min.js');
-			}
-    </script>
+    <!-- <link rel="manifest" href="manifest.json"> -->
 
     <style>
       body, html {
@@ -68,12 +30,14 @@
         overflow: hidden;
       }
     </style>
+		<link rel="import" href="../node_modules/backed/backed.html">
 
 		<link rel="stylesheet" href="styles/color.css">
+		<link rel="import" href="reeflight-app.html">
+
+
   </head>
   <body>
     <reeflight-app></reeflight-app>
-    <script src="node_modules/backed/dist/backed.js"></script>
-		<script src="reeflight-app.js" ></script>
   </body>
 </html>

@@ -1,4 +1,7 @@
-<template>
+<link rel="import" href="reef-drawer-heading.html">
+<link rel="import" href="reef-drawer-footer.html">
+
+<template id="reef-drawer">
 	<style>
 		:host {
 			user-select: none;
@@ -33,3 +36,92 @@
 	</div>
 	<slot name="footer"></slot>
 </template>
+
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+/**
+ * @extends HTMLElement
+ */
+export default Backed(class ReefDrawer extends HTMLElement {
+
+	static get properties() {
+		return {
+			/**
+			 * @param {number} width
+			 */
+			width: {
+				value: 256,
+				observer: '__render__'
+			},
+			/**
+			 * @param {Boolean} drawerLeft
+			 */
+			drawerLeft: {
+				value: true
+			}
+		}
+	}
+
+	ready() {
+		this._onClick = this._onClick.bind(this);
+		this.addEventListener('click', this._onClick);
+		if (this.forcedShow) {
+			this.opened = true;
+		}
+	}
+
+	/**
+	 * @return {Boolean}
+	 */
+	get forcedShow() {
+		return this.hasAttribute('force-show');
+	}
+
+	/**
+	 * @param {Boolean} value
+	 */
+	set opened(value) {
+		this._opened = value;
+		if (value) {
+			this.setAttribute('opened', '');
+		} else {
+			this.removeAttribute('opened');
+		}
+	}
+
+	/**
+	 * @return {Boolean}
+	 */
+	get opened() {
+		return this._opened;
+	}
+
+	__render__(change) {
+		this.style.setProperty('--reef-drawer-width', `${change.value}px`);
+	}
+
+	/**
+	 * @param {Boolean} value
+	 */
+	set drawerLeft(value) {
+		if (value) {
+			this.classList.add('drawer-left');
+			this.classList.remove('drawer-right');
+			this._drawerLeft = true;
+		} else {
+			this.classList.remove('drawer-left');
+			this.classList.add('drawer-right');
+			this._drawerLeft = false;
+		}
+	}
+
+	/**
+	 * stops event propagation
+	 */
+	_onClick() {
+		event.stopPropagation();
+	}
+});
+
+</script>

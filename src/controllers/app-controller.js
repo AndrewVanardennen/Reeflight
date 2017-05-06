@@ -1,11 +1,11 @@
 'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
 import BaseController from './base-controller';
 
 /**
  * @extends BaseController
  */
-export default Backed() {
-	class AppController extends BaseController {
+export default Backed(class AppController extends BaseController {
 	  /**
 	   * @param {String} name
 	   */
@@ -55,5 +55,4 @@ export default Backed() {
 	      this.appendChild(link);
 	    });
 	  }
-	}
-}
+	});

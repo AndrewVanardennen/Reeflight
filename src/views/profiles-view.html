@@ -1,4 +1,13 @@
-<template>
+<link rel="import" href="../ux/reef-slider.html">
+<link rel="import" href="../ux/time-input.html">
+<link rel="import" href="../ux/reef-profile-item.html">
+<link rel="import" href="../ux/reef-profile-option-item.html">
+<link rel="import" href="../ux/reef-profile-option.html">
+<link rel="import" href="../ux/reef-list.html">
+<link rel="import" href="../mixins/database-offline-mixin.html">
+<link rel="import" href="../sources/profiles.html">
+
+<template id="profiles-view">
   <style>
     :host {
       display: flex;
@@ -13,6 +22,37 @@
 
 	<reef-list>
 		<style slot="style">
+		:host {
+			display: flex;
+			width: 100%;
+			flex-flow: row wrap;
+			justify-content: space-around;
+			// height: 100%;
+		}
+		.array-repeat-item {
+			display: flex;
+			flex-direction: column;
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+									0 1px 5px 0 rgba(0, 0, 0, 0.12),
+									0 3px 1px -2px rgba(0, 0, 0, 0.2);
+			box-sizing: border-box;
+			width: 100%;
+			padding: 8px 16px;
+			margin-bottom: 6px;
+			background: #FFF;
+			height: 420px;
+			@apply(var(--reef-list-item));
+		}
+		@media (min-width: 840px) {
+			.array-repeat-item {
+				width: calc(50% - 6px);
+			}
+		}
+		@media (min-width: 1280px) {
+			.array-repeat-item {
+				width: calc(100% / 3 - 6px);
+			}
+		}
 			label {
 				padding-right: 6px;
 			}
@@ -38,7 +78,7 @@
 				align-items: center;
 			}
 		</style>
-		<template>
+		<template id="repeat">
 			<reef-profile-item>
 					<h1>[[item.name]]</h1>
 					<reef-profile-option-item name="daylight">
@@ -77,3 +117,130 @@
 		</template>
 	</reef-list>
 </template>
+
+<script>
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+/**
+ * @extends HTMLElement
+ */
+export default Backed(class ProfilesView extends DatabaseOfflineMixin(HTMLElement) {
+	static get properties() {
+		return {
+			user: {
+				observer: '_onUserChange',
+				global: true
+			}
+		};
+	}
+	created() {
+		this._onClick = this._onClick.bind(this);
+		this._onProfileChange = this._onProfileChange.bind(this);
+		this._onUserChange = this._onUserChange.bind(this);
+
+		// pubsub.subscribe('user.login', this._onUserLogin);
+	}
+
+	/**
+	 * Stamps innerHTML
+	 */
+	ready() {
+		// @template
+		this.timePicker = document.createElement('time-picker');
+		this.timePicker.noClock = true;
+		this.shadowRoot.appendChild(this.timePicker);
+		this._reefList.addEventListener('on-item-select', this._onClick);
+		document.addEventListener('open-picker', event => {
+			let hour = this.selected.hour;
+			let minutes = this.selected.minutes;
+			this.timePicker.time = {hour: el.hour};
+			this.timePicker.open();
+		}, {capture: true});
+	}
+	/**
+	 * @return {HTMLElement}
+	 */
+	get _reefList() {
+		return this.shadowRoot.querySelector('reef-list');
+	}
+	set selected(value) {
+		this._selected = value;
+	}
+	get selected() {
+		return this._selected;
+	}
+	/**
+	 * @param {Array} value
+	 */
+	set profiles(value) {
+		this._profiles = value;
+		this.setUpPubSubs();
+		this._reefList.items = value;
+	}
+	get profiles() {
+		return this._profiles;
+	}
+	/**
+	 * @param {object} event
+	 */
+	_onClick(event) {
+		this.selected = event.detail.data;
+		console.log(this.selected);
+	}
+	setUpPubSubs() {
+		for (let index of Object.keys(this.profiles)) {
+			PubSub.subscribe(`data[${index}]change`, this._onProfileChange);
+		}
+	}
+	_onProfileChange(newVal, oldVal) {
+		if (newVal !== oldVal) {
+			let profiles = this.profiles;
+			let index = newVal.dataIndex;
+			let change = newVal.data;
+			let parts = change.key.split('.');
+			profiles[index][parts[0]][parts[1]] = change.value;
+			if (this.pouch === undefined) {
+				this.pouch = new PouchDB('profiles');
+			}
+			this.pouch.get('profiles').then(doc => {
+				doc[change.uid][parts[0]][parts[1]] = change.value;
+				this.pouch.put(doc, (error, result) => {
+					if (!error) {
+						let uid = firebase.auth().currentUser.uid;
+						firebase.database().ref(`users/${uid}/profiles/${change.uid}`).set(doc[change.uid]);
+						firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
+					}
+					// update firebase
+				});
+			});
+			// this.profiles = profiles;
+		}
+	}
+
+	set pouch(value) {
+		this._pouch = value;
+	}
+
+	get pouch() {
+		return this._pouch || undefined;
+	}
+
+	_pouchdbReady(change) {
+		if (change.value) this.pouch = new PouchDB('profiles');
+	}
+
+	_onUserChange() {
+		let uid = firebase.auth().currentUser.uid;
+		firebase.database().ref(`users/${uid}/profiles`).on('value', snap => {
+			let data = snap.val();
+			if (data === null) {
+				for (let profile of profiles) {
+					firebase.database().ref(`users/${uid}/profiles/${profile.uid}`).set(profile);
+				}
+			} else {
+				this.profiles = data;
+			}
+		});
+	}
+});
+
+</script>

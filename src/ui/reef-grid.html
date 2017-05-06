@@ -1,0 +1,73 @@
+<link rel="import" href="reef-view.html">
+
+<template id="reef-grid">
+  <style>
+    :host {
+      display: flex;
+      --reef-view-padding: 0;
+      --reef-view-background: none;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+    ::slotted(*) {
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                  0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                  0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      box-sizing: border-box;
+      width: 100%;
+      padding: 8px 16px;
+      margin-bottom: 6px;
+      background: #FFF;
+    }
+    @media (min-width: 600px) {
+      :host {
+        --reef-view-container-direction: row;
+      }
+      .grid {
+        flex-flow: row wrap;
+        justify-content: space-around;
+      }
+      ::slotted(*) {
+        width: calc(50% - 6px);
+      }
+      :host:last-child {
+        width: calc(100% - 6px);
+      }
+    }
+    /* TODO: decide to use 1400 or 1600 as a breakpoint... */
+    @media (min-width: 1400px) {
+      :host {
+        max-width: 1400px;
+      }
+    }
+  </style>
+  <reef-view no-shadow>
+    <div class="grid">
+      <slot></slot>
+    </div>
+  </reef-view>
+</template>
+
+<script>
+  import Backed from './../../node_modules/backed/dist/backed-es.js';
+  /**
+   * @extends HTMLElement
+   */
+  Backed(class ReefGrid extends HTMLElement {
+
+     /**
+      * Set's up children & styles
+      */
+     connected() {
+       // TODO: check for child changes
+       let styles = this.querySelectorAll('style');
+       for (let i = 0; i < styles.length; i++) {
+         this.shadowRoot.appendChild(styles[i]);
+       }
+     }
+  });
+</script>

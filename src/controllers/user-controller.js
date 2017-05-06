@@ -1,3 +1,4 @@
+import Backed from './../../node_modules/backed/dist/backed-es.js';
 import FirebaseController from './firebase-controller';
 import UserConnectionController from './user-connection-controller.js';
 // import PubSub from './../internals/pubsub.js';
@@ -9,21 +10,24 @@ export default Backed(class UserController extends FirebaseController {
   static get properties() {
 		return {
 			user: {
+        value: null,
 				global: true
 			},
 			firebaseReady: {
 				observer: '_onFirebaseReady',
 				global: true,
 				value: false
+			},
+			userOnline: {
+				value: false,
+				observer: '__onUserOnline__',
+				global: true
 			}
 		};
 	}
 
 	created() {
     this.style.display = 'none';
-    // bind methods
-    this._onAuthStateChanged = this._onAuthStateChanged.bind(this);
-		new UserConnectionController();
 	}
 
   /**
@@ -31,22 +35,33 @@ export default Backed(class UserController extends FirebaseController {
    */
   connected() {
     super.connected();
+		this.shadowRoot.appendChild(new UserConnectionController());
   }
 
   /**
    * @param {string} provider default's to anonymous,
    * **options**: 'anonymous', 'google'
    */
+	// mq1qyqfr
   login() {
-    if (this.user === null) {
-      firebase.auth().signInAnonymously().catch(error => {
-        if (error) {
-          let user = firebase.auth().currentUser;
-          user.reauthenticate(user.refreshToken);
-        }
-      });
-    } else {
-    }
+		const provider = new firebase.auth.GoogleAuthProvider();
+		provider.addScope('profile');
+		provider.addScope('email');
+		firebase.auth().signInWithPopup(provider).then(result => {
+		 // This gives you a Google Access Token.
+		 let token = result.credential.accessToken;
+		 // The signed-in user info.
+		 this.user = result.user;
+		});
+    // if (this.user === null) {
+    //   firebase.auth().signInAnonymously().catch(error => {
+    //     if (error) {
+    //       let user = firebase.auth().currentUser;
+    //       user.reauthenticate(user.refreshToken);
+    //     }
+    //   });
+    // } else {
+    // }
   }
 
   /**
@@ -54,61 +69,24 @@ export default Backed(class UserController extends FirebaseController {
    * @param {Object} user
    */
   _onAuthStateChanged(user) {
-		console.log(user);
-    if (user === null) {
-      // login when the user is logged out
-			// TODO: decide if we login the user atomatically or not
-			this.userOnline = false;
-      this.login();
-    } else if(user !== null) {
-      firebase.database().ref( 'users/' + user.uid).once('value', snap => {
-        let data = snap.val();
-        if (data) {
-					this.user = data;
-					this.userOnline = true;
-					// pubsub.publish('user.online', true);
-          return document.dispatchEvent(
-            new CustomEvent('user-login', {detail: data}
-          ));
-        } else if(data === null) {
-          let isAnonymous = user.isAnonymous;
-          let uid = user.uid;
-
-          if (isAnonymous || isAnonymous && user.email === null) {
-            let newPassword = Math.random().toString(36).slice(-8);
-            let newName = Math.random().toString(36).slice(-8);
-            let newEmail = `${newName}@reeflight.be`;
-
-            user.updatePassword(newPassword).then(() => {
-              // console.log(newPassword);
-              // Update successful.
-            }, error => {
-              this.error(error);
-            });
-
-            user.updateEmail(newEmail).then(() => {
-              // console.log(newEmail);
-              // Update successful.
-            }, error => {
-              this.error(error);
-            });
-
-            this.writeUserData(uid, newName, newEmail, this.randomAvatar());
-          }
-        }
-      });
-      // User is signed in.
-    }
-    return;
-  }
-
-  /**
-   * @return {String}
-   */
-  randomAvatar() {
-    // Get a number between 1 & 10
-    let num = Math.floor((Math.random() * 10) + 1);
-    return `sources/avatars/avatar-${num}.png`;
+		if (user === null || user === undefined) {
+			this.login();
+		}
+    firebase.database().ref( 'users/' + user.uid).once('value', snap => {
+      let data = snap.val();
+      if (data) {
+				this.user = data;
+				this.userOnline = true;
+				// pubsub.publish('user.online', true);
+        return document.dispatchEvent(
+          new CustomEvent('user-login', {detail: data}
+        ));
+      } else if(data === null) {
+        this.writeUserData(
+					user.uid,	user.displayName, user.email, user.photoURL
+				);
+      }
+    });
   }
 
   /**
@@ -135,6 +113,6 @@ export default Backed(class UserController extends FirebaseController {
 		if (!change.value || change.value === oldValue) {
 			return;
 		}
-    firebase.auth().onAuthStateChanged(this._onAuthStateChanged);
+    firebase.auth().onAuthStateChanged(this._onAuthStateChanged.bind(this));
   }
 });

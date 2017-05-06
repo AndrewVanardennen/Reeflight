@@ -1,4 +1,4 @@
-<template>
+<template id="reef-profile-option-item">
 	<style>
 		.title {
 			text-transform: uppercase;
@@ -8,3 +8,36 @@
 	<h2 class="title">[[name]]</h2>
 	<slot></slot>
 </template>
+
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+export default Backed(class ReefProfileOptionItem extends HTMLElement {
+	static get properties() {
+		return {
+			name: {
+				observer: 'nameChanged'
+			}
+		}
+	}
+	static get observedAttributes() {
+		return ['name'];
+	}
+	connected() {
+		this.nameChanged({name: 'name', value: this.name})
+	}
+	attributeChangedCallback(name, oldVal, newVal) {
+		if (oldVal !== newVal) {
+			this[name] = newVal;
+		}
+	}
+	get titleElement() {
+		return this.shadowRoot.querySelector('.title');
+	}
+
+	nameChanged(change) {
+		this.titleElement.innerHTML = change.value;
+	}
+});
+
+</script>

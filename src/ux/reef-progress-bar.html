@@ -1,0 +1,50 @@
+<template id="reef-progress-bar">
+	<style>
+		:host {
+			padding: 12px 0 12px 0;
+			box-sizing: border-box;
+		}
+		.bar {
+			display: block;
+			position: relative;
+
+			padding: 9px 24px 12px 9px;
+			box-sizing: border-box;
+			width: 224px;
+		}
+		#progress {
+			position: absolute;
+			width: 200px;
+			height: 4px;
+			transform-origin: left center;
+			transform: scaleX(0);
+			will-change: transform;
+			background: var(--reef-progress-color, var(--google-green-500));
+		}
+		.progress-background {
+			width: 200px;
+			position: absolute;
+			height: 4px;
+			background: var(--reef-progress-background, var(--paper-grey-300));
+		}
+		:host([disabled]) #progress {
+			background:
+				var(--reef-progress-disabled-color, var(--google-grey-500));
+		}
+		#progress.transiting {
+			transition: transform ease 0.08s;
+		}
+	</style>
+
+	<div class="bar">
+		<div class="progress-background"></div>
+		<div id="progress"></div>
+	</div>
+</template>
+
+<script>
+	import Backed from './../../node_modules/backed/dist/backed-es.js'
+	export default Backed(class ReefProgressBar extends HTMLElement {
+
+	});
+</script>

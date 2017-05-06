@@ -1,7 +1,8 @@
+<script>
 'use strict';
 // import PubSub from './../internals/pubsub.js';
-
-export default Backed(class PouchController extends HTMLElement {
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+window.PouchController = Backed(class PouchController extends HTMLElement {
 	constructor() {
 		super();
 	}
@@ -43,3 +44,4 @@ export default Backed(class PouchController extends HTMLElement {
 		this.appendChild(script);
 	}
 });
+</script>

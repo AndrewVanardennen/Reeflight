@@ -10,7 +10,7 @@
   "license": "CC-BY-NC-ND-4.0",
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.18.0",
-    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-es2015": "^6.24.1",
     "browser-sync": "^2.18.2",
     "del": "^2.2.2",
     "eslint": "^3.11.1",
@@ -29,24 +29,34 @@
     "sw-precache": "^4.2.1"
   },
   "dependencies": {
-    "backed": "^0.2.5",
+    "array-repeat": "^0.0.0",
+    "backed": "^0.3.1",
+    "backed-splitter": "^1.4.0",
     "backed-utils": "^0.0.2",
     "express": "^4.14.0",
     "opn": "^4.0.2",
+    "rollup-plugin-html-bundler": "^1.4.2",
+    "svg-icon": "vandeurenglenn/svg-icon",
+    "svg-iconset": "^0.3.1",
     "web-clock-lite": "^0.0.1",
     "web-time-picker": "^0.1.8"
   },
   "backed": {
     "bundles": [
       {
-        "src": [
-          "src/reeflight-app.js"
-        ],
-        "dest": "dist/reeflight-app.js",
+        "src": "src/index.html",
+        "dest": "dist/index.html",
         "moduleName": "reeflight",
         "format": "iife",
         "plugins": {
-          "inject-template": {}
+          "html-bundler": {
+            "external": [
+              "node_modules/backed/backed.html"
+            ],
+            "exclude": [
+              "reload/reload.js"
+            ]
+          }
         }
       }
     ],
@@ -55,31 +65,31 @@
         "src": [
           "node_modules/backed/dist/backed.js"
         ],
-        "dest": "dist"
+        "dest": "dist/node_modules"
       },
       {
         "src": [
-          "src/index.html"
+          "bower_components/firebase/{firebase-app,firebase-database,firebase}.js"
         ],
-        "dest": "dist"
+        "dest": "dist/bundled/bower_components"
+      },
+      {
+        "src": [
+          "src/sources/{avatars,icons}/*"
+        ],
+        "dest": "dist/bundled"
       }
     ],
     "watch": [
       {
-        "task": "copy",
-        "src": [
-          "src/**/*.html"
-        ]
-      },
-      {
         "task": "build",
         "src": [
-          "src/**/*.js"
+          "src/**/*.{js,html}"
         ]
       }
     ],
     "server": {
-      "demo": "dist"
+      "demo": "dist/bundled"
     }
   },
   "eslintConfig": {

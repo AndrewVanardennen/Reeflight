@@ -1,4 +1,4 @@
-<template>
+<template id="devices-view">
   <style>
   :host {
     display: flex;
@@ -36,3 +36,9 @@
 
 
 </template>
+
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+export default Backed(class DevicesView extends HTMLElement {});
+</script>

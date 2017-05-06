@@ -1,0 +1,60 @@
+<link rel="import" href="../mixins/progress-mixin.html">
+<link rel="import" href="reef-progress-bar.html">
+
+
+<template id="reef-progress">
+	<reef-progress-bar></reef-progress-bar>
+</template>
+
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+/**
+ * @extends HTMLElement
+ */
+ window.ReefProgress = Backed(class ReefProgress extends ProgressMixin(HTMLElement) {
+	 static get properties() {
+		 return {
+			 value: {
+				 value: 0,
+				 observer: 'render'
+			 }
+		 }
+	 }
+ 	/**
+ 	 * Attributes to observe
+ 	 */
+ 	static get observedAttributes() {
+ 		return ['disabled', 'value'];
+ 	}
+ 	/**
+ 	 * @return {HTMLElement}
+ 	 */
+ 	get _progress() {
+ 		return this.shadowRoot.querySelector('reef-progress-bar');
+ 	}
+
+	connected() {
+		super.connected();
+	}
+ 	/**
+ 	 * @param {number} value
+ 	 */
+ 	render(change) {
+ 		let ratio = this._calcRatio(change.value) * 100;
+ 		this._transformProgress(ratio);
+ 	}
+
+ 	/**
+ 	 * @param {Number} ratio
+ 	 */
+ 	_transformProgress(ratio) {
+ 		let transform = 'scaleX(' + ratio / 100 + ')';
+ 		requestAnimationFrame(() => {
+ 			this._progress.style.transform = transform;
+ 		});
+ 	}
+
+ });
+
+</script>

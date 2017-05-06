@@ -1,4 +1,4 @@
-<template>
+<template id="settings-view">
   <style>
     :host {
       display: flex;
@@ -50,3 +50,12 @@
     </div>
   </reef-grid>
 </template>
+
+<script>
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+/**
+ * SettingsView
+ * @extends HTMLElement
+ */
+export default Backed(class SettingsView extends HTMLElement {});
+</script>

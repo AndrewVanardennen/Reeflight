@@ -1,6 +1,7 @@
 'use strict';
 // import PubSub from './../internals/pubsub.js';
 // window.pubsub = window.pubsub || new PubSub();
+import Backed from './../../node_modules/backed/dist/backed-es.js';
 export default Backed(class UserConnectionController extends HTMLElement {
 	static get properties() {
 		return {

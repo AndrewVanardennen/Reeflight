@@ -1,6 +1,8 @@
+<link rel="import" href="offline-database-controller.html">
+
+<script>
 'use strict';
-import OfflineDatabaseController from './offline-database-controller.js';
-import utils from './../../node_modules/backed-utils/dist/utils-es.js';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
 /**
  * @extends OfflineDatabaseController
  */
@@ -18,7 +20,7 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 	}
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (oldValue !== newValue) {
-			this[utils.toJsProp(name)] = newValue;
+			this[this.toJsProp(name)] = newValue;
 		}
 	}
 	set database(value) {
@@ -47,6 +49,7 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 		this._handleData();
 	}
 	_onUserLogin(change, oldValue) {
+		console.log(change);
 		if (change.value !== oldValue && oldValue) {
 			this.getFirebaseData();
 		}
@@ -58,6 +61,7 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 		this._getFirebaseData(this.database, uid);
 	}
 	_getFirebaseData(databaseName) {
+		console.log(this.databaseLocation);
 		firebase.database().ref(this.databaseLocation).on('value', snap => {
 			let data = snap.val();
 			this.firebaseData = data;
@@ -77,6 +81,7 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 	_handleData() {
 		let name = this.database;
 		let data = this.firebaseData;
+		console.log(data, name);
 		if (this.pouch && data !== null && data._rev === null) {
 			this.pouch.put(data, (error, result) => {
 				if (!error) {
@@ -124,3 +129,5 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 		}
 	}
 });
+
+</script>

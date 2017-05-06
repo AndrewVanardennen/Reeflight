@@ -1,4 +1,4 @@
-<template>
+<template id="custom-search">
   <style>
     svg-icon {
       cursor: pointer;
@@ -28,3 +28,41 @@
     <svg-icon icon="search" class="search-icon"></svg-icon>
   </div>
 </template>
+
+<script>
+'use strict';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
+export default Backed(class CustomSearch extends HTMLElement {
+	connected() {
+		this.onSearchClick = this.onSearchClick.bind(this);
+		this.searchIcon.addEventListener('click', this.onSearchClick);
+		this.searchIcon.addEventListener('tap', this.onSearchClick);
+	}
+
+	get searchIcon() {
+		return this.shadowRoot.querySelector('.search-icon');
+	}
+
+	set searchBarOpened(value) {
+		this._searchBarOpened = value;
+	}
+
+	get searchBarOpened() {
+		return this._searchBarOpened || false;
+	}
+
+	get searchBar() {
+		return this.shadowRoot.querySelector('.search-bar');
+	}
+
+	onSearchClick() {
+		event.preventDefault();
+		event.stopPropagation();
+		this.searchBarOpened = !this.searchBarOpened;
+		if (this.searchBarOpened)
+			this.searchBar.classList.add('opened');
+		else
+			this.searchBar.classList.remove('opened');
+	}
+});
+</script>

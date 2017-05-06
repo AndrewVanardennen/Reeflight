@@ -1,5 +1,5 @@
 'use strict';
-// import PubSub from './../internals/pubsub';
+import Backed from './../../node_modules/backed/dist/backed-es.js';
 import './../internals/request-idle-callback-shim';
 
 /**

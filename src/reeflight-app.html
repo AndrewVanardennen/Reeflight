@@ -1,4 +1,22 @@
-<template>
+<link rel="import" href="ui/reef-drawer.html">
+<link rel="import" href="ui/reef-header.html">
+<link rel="import" href="ui/reef-button.html">
+<link rel="import" href="ui/reef-grid.html">
+<link rel="import" href="ui/reef-footer.html">
+<link rel="import" href="ux/custom-search.html">
+<link rel="import" href="ux/reef-selector.html">
+<link rel="import" href="ui/reef-pages.html">
+<link rel="import" href="views/home-view.html">
+<link rel="import" href="controllers/database-controller.html">
+<link rel="import" href="views/profiles-view.html">
+<link rel="import" href="views/devices-view.html">
+<link rel="import" href="views/settings-view.html">
+<link rel="import" href="internals/iconset-loader.html">
+<link rel="import" href="ui/reef-icon.html">
+
+
+
+<template id="reeflight-app">
   <style>
 
     :host {
@@ -19,6 +37,14 @@
     :host(.floating-drawer) {
       width: 100% !important;
     }
+
+    main {
+      width: calc(100% - 256px);
+    }
+
+    :host(.floating-drawer) reef-pages, :host(.floating-drawer) reef-footer {
+      width: 100%;
+    }
     /*werken met reef-selector -> import voor listbox*/
     /*.reef-selected.color1 {
       background: #F00 !important;
@@ -29,7 +55,7 @@
       --svg-icon-color: #444;
       --svg-icon-size: 24px;
     }
-    reef-drawer reef-button  svg-icon {
+    reef-drawer reef-button  reef-icon {
       padding-right: 24px;
 
     }
@@ -125,14 +151,18 @@
         flex-direction: column;
       }
     }
+
+		reef-pages {
+			width: calc(100% - var(--reef-drawer-width));
+		}
   </style>
   <reef-drawer>
     <reef-drawer-heading slot="heading"></reef-drawer-heading>
     <reef-selector class="drawer-menu">
-      <reef-button class="color1" name="home" no-shadow><svg-icon icon="home"></svg-icon>home</reef-button>
-      <reef-button name="profiles" no-shadow><svg-icon icon="import-contacts"></svg-icon>profiles</reef-button>
-      <reef-button name="devices" no-shadow><svg-icon icon="tablet"></svg-icon>devices</reef-button>
-      <reef-button name="settings" no-shadow><svg-icon icon="settings"></svg-icon>settings</reef-button>
+      <reef-button class="color1" name="home" no-shadow><reef-icon icon="home"></reef-icon>home</reef-button>
+      <reef-button name="profiles" no-shadow><reef-icon icon="import-contacts"></reef-icon>profiles</reef-button>
+      <reef-button name="devices" no-shadow><reef-icon icon="tablet"></reef-icon>devices</reef-button>
+      <reef-button name="settings" no-shadow><reef-icon icon="settings"></reef-icon>settings</reef-button>
     </reef-selector>
     <reef-drawer-footer slot="footer"></reef-drawer-footer>
   </reef-drawer>
@@ -146,14 +176,14 @@
   <reef-footer>
     <span slot="made-with">
       Made With
-      <img class="icon" src="../sources/icons/heart.svg"></img>
+      <img class="icon" src="sources/icons/heart.svg"></img>
       By
       <a href="https://reeflight.github.io/#contributors">
         The Reeflight Team
       </a>
     </span>
     <section class="copyright" slot="copyright">
-      <img class="icon" src="../sources/icons/copyright.svg"></img>
+      <img class="icon" src="sources/icons/copyright.svg"></img>
       2016 Reeflight. Code licensed under the CC-BY-NC-SA-4.0 License.
       Except as otherwise noted,
       Documentation & media are licensed under CC-BY-4.0 License.
@@ -162,4 +192,420 @@
   <user-controller></user-controller>
 	<database-controller database="profiles"></database-controller>
 	<database-controller database="devices"></database-controller>
+	<svg-iconset name="icons" size="24">
+	  <svg>
+	    <defs>
+				<g id="clock"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></g>
+				<g id="cloudy"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z"/></g>
+	      <g id="favorite"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></g>
+	      <g id="menu"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></g>
+	      <g id="lightbulb-outline"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></g>
+	      <g id="wifi"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></g>
+	      <g id="settings"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></g>
+	      <g id="bluetooth"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></g>
+	      <g id="bluetooth-connected"><path d="M7 12l-2-2-2 2 2 2 2-2zm10.71-4.29L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88zM19 10l-2 2 2 2 2-2-2-2z"/></g>
+	      <g id="bluetooth-disabled"><path d="M13 5.83l1.88 1.88-1.6 1.6 1.41 1.41 3.02-3.02L12 2h-1v5.03l2 2v-3.2zM5.41 4L4 5.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l4.29-4.29 2.3 2.29L20 18.59 5.41 4zM13 18.17v-3.76l1.88 1.88L13 18.17z"/></g>
+	      <g id="bluetooth-searching"><path d="M14.24 12.01l2.32 2.32c.28-.72.44-1.51.44-2.33 0-.82-.16-1.59-.43-2.31l-2.33 2.32zm5.29-5.3l-1.26 1.26c.63 1.21.98 2.57.98 4.02s-.36 2.82-.98 4.02l1.2 1.2c.97-1.54 1.54-3.36 1.54-5.31-.01-1.89-.55-3.67-1.48-5.19zm-3.82 1L10 2H9v7.59L4.41 5 3 6.41 8.59 12 3 17.59 4.41 19 9 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM11 5.83l1.88 1.88L11 9.59V5.83zm1.88 10.46L11 18.17v-3.76l1.88 1.88z"/></g>
+	      <g id="more-vert"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></g>
+	      <g id="add"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></g>
+	      <g id="mode-edit"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></g>
+	      <g id="close"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></g>
+	      <g id="favorite"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></g>
+	      <g id="home"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></g>
+	      <g id="import-contacts"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></g>
+				<g id="sunny"><path d="M12 7c2.761 0 5 2.239 5 5s-2.239 5-5 5s-5-2.239-5-5S9.239 7 12 7 M12 2l2.39 3.42C13.65 5.15 12.84 5 12 5 s-1.65 0.15-2.39 0.42L12 2 M3.34 7L7.5 6.65C6.9 7.16 6.36 7.78 5.94 8.5C5.5 9.24 5.25 10 5.11 10.79L3.34 7 M3.36 17l1.76-3.77 C5.26 14 5.53 14.78 5.95 15.5c0.42 0.74 0.96 1.36 1.55 1.87L3.36 17 M20.65 7l-1.77 3.79C18.74 10 18.47 9.23 18.05 8.5 c-0.42-0.72-0.95-1.35-1.55-1.86L20.65 7 M20.64 17l-4.14 0.36c0.59-0.51 1.12-1.14 1.54-1.86c0.42-0.73 0.69-1.5 0.83-2.29 L20.64 17 M12 22l-2.41-3.44C10.33 18.83 11.14 19 12 19c0.82 0 1.63-0.17 2.37-0.44L12 22z"/></g>
+				<g id="save"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></g>
+				<g id="tablet"><path d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 1.99-.9 1.99-2L23 6c0-1.1-.9-2-2-2zm-2 14H5V6h14v12z"/></g>
+				<g id="search"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></g>
+			</defs>
+	  </svg>
+	</svg-iconset>
 </template>
+
+<script>
+'use strict';
+// import PubSub from './internals/pubsub.js';
+import Backed from  './../node_modules/backed/dist/backed-es.js';
+import './controllers/user-controller';
+import './internals/request-idle-callback-shim';
+import './../node_modules/svg-iconset/dist/svg-iconset.js';
+import './../node_modules/web-time-picker/dist/time-picker.js';
+
+// <!-- <link rel="import" href="../node_modules/svg-iconset/svg-iconset.html"> -->
+// <!-- <link rel="import" href="../node_modules/svg-icon/svg-icon.html"> -->
+
+/**
+ * ReeflightApp
+ */
+export default Backed(class ReeflightApp extends HTMLElement {
+	static get properties() {
+		return {
+			user: {
+				observer: '_onUserChange',
+				global: true
+			}
+		};
+	}
+
+	/**
+	 * Runs everytime the user changes
+	 * @param {Object} value {username: 'name', profile_picture: 'some_image'}
+	 */
+	set user(value) {
+		this._user = value;
+	}
+
+	/**
+	 * return {Object} value {username: 'name', profile_picture: 'some_image'}
+	 */
+	get user() {
+		return this._user || {};
+	}
+
+	/**
+	 * @return {HTMLElement} reeflight-header
+	 */
+	get header() {
+		return this.shadowRoot.querySelector('reef-header');
+	}
+
+	/**
+	 * @return {HTMLElement} reef-drawer
+	 */
+	get drawer() {
+		return this.shadowRoot.querySelector('reef-drawer');
+	}
+
+	/**
+	 * @return {HTMLElement} reeflight-drawer-footer
+	 */
+	get drawerFooter() {
+		return this.shadowRoot.querySelector('reef-drawer-footer');
+	}
+
+	/**
+	 * @return {HTMLElement} reef-pages
+	 */
+	get pages() {
+		return this.shadowRoot.querySelector('reef-pages');
+	}
+
+	/**
+	 * @return {HTMLElement} home-view
+	 */
+	get homeView() {
+		return this.pages.querySelector('home-view');
+	}
+
+	/**
+	 * @return {Boolean} true when the is-vulcanized attribute is set
+	 */
+	get isVulcanized() {
+		return this.hasAttribute('is-vulcanized');
+	}
+
+	/**
+	 * @param {Boolean} value
+	 */
+	set loadComplete(value) {
+		if (value) {
+			this.removeAttribute('loading');
+		} else {
+			this.setAttribute('loading', '');
+		}
+	}
+	/**
+	 * Subscribes user.change to pubsub, lazyImports elements,
+	 * sets up the drawer & the eventListeners
+	 */
+	connected() {
+		this._onUserLogin = this._onUserLogin.bind(this);
+		this._onUserChange = this._onUserChange.bind(this);
+		this._onToggleDrawer = this._onToggleDrawer.bind(this);
+		this._onHomeClick = this._onHomeClick.bind(this);
+		this._onSettingsClick = this._onSettingsClick.bind(this);
+		this._onProfilesClick = this._onProfilesClick.bind(this);
+		this._onDevicesClick = this._onDevicesClick.bind(this);
+		this._onClick = this._onClick.bind(this);
+		this._onResize = this._onResize.bind(this);
+		this._preloadViews = this._preloadViews.bind(this);
+		this._handleResize = this._handleResize.bind(this);
+		this.loadComplete = false;
+		// this.pubsub.subscribe('user.change', this._onUserChange);
+		document.addEventListener('user-login', this._onUserLogin);
+		document.addEventListener('toggle-drawer', this._onToggleDrawer);
+		document.addEventListener('home-button-click', this._onHomeClick);
+		document.addEventListener('settings-button-click', this._onSettingsClick);
+		document.addEventListener('profiles-button-click', this._onProfilesClick);
+		document.addEventListener('devices-button-click', this._onDevicesClick);
+		this.addEventListener('click', this._onClick);
+		window.addEventListener('resize', this._onResize);
+		customElements.whenDefined('reeflight-app').then(() => {
+			this._handleLazyimports();
+			let undefinedElements = ['reef-drawer', 'reef-pages',
+				'reef-header', 'reef-drawer-footer',
+				'reef-footer', 'reef-selector'
+			];
+			let promises = undefinedElements.map(el => {
+				return customElements.whenDefined(el);
+			});
+			Promise.all(promises).then(() => {
+				this.loadComplete = true;
+				this._onResize();
+				this._onHomeClick();
+			});
+			// requestIdleCallback(this._preloadViews);
+			if (this.isVulcanized) {
+				this.loadComplete = true;
+				this._onResize();
+				this._onHomeClick();
+			}
+		});
+
+		this.drawerFooter.setAttribute('avatar', this.randomAvatar());
+		// TODO: stream lamps
+		// fetch('api/devices').then(response => {
+		//   //stream
+		// }).then(response => {
+		//
+		// })
+		// load lazy resources after render and set `loadComplete` when done.
+	}
+
+	/**
+	 * PreloadViews when the user is idle &
+	 * requests a new idleCallback when tasks aren't finished
+	 * @param {Object} deadline
+	 */
+	_preloadViews(deadline) {
+		for (let view of this._preloadTasks) {
+			this._loadView(view);
+
+			// Use any remaining time, or, if timed out, just run through the tasks.
+			while ((deadline.timeRemaining() > 0 || deadline.didTimeout) &&
+						 this._preloadTasks.length > 0 && !this.busy)
+				this._loadViews();
+
+			if (this._preloadTasks.length > 0 && !this.busy)
+				requestIdleCallback(this._preloadViews);
+		}
+	}
+
+	/**
+	 * @param {String} view
+	 */
+	_loadView(view) {
+		this.busy = true;
+		this._lazyImport(`elements/scripts/${view}-view.html`, true).then(() => {
+			let index = this._preloadTasks.indexOf(view);
+			if (index > -1) {
+				this._preloadTasks.splice(index, 1);
+				if (this._preloadTasks.length === 0) {
+					this.busy === false;
+				}
+			}
+		});
+	}
+	/**
+	 * Registers service-worker, runs _onHomeClick, _preloadViews &
+	 * lazyImports elements
+	 */
+	_handleLazyimports() {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js');
+		}
+		this._preloadTasks = ['profiles', 'settings', 'devices'];
+
+	}
+	/**
+	 * logs given error
+	 * @param {Object} error
+	 */
+	error(error=Object) {
+		let errorCode = error.code;
+		let errorMessage = error.message;
+		console.log(`error-${errorCode}::${errorMessage}`);
+	}
+	/**
+	 * @param {String} href
+	 * @param {Boolean} _async_
+	 * @return {Promise}
+	 */
+	_lazyImport(href, _async_) {
+		return new Promise((resolve, reject) => {
+			let link = document.createElement('link');
+			link.rel = 'import';
+			link.href = href;
+			if (_async_) {
+				link.setAttribute('async', '');
+			}
+			link.onload = result => {
+				resolve(result);
+			};
+			this.shadowRoot.appendChild(link);
+		});
+	}
+	/**
+	 * Runs when the window resizes
+	 * Closes the drawer on smallScreens & Opens it on big ones
+	 */
+	_onResize() {
+		this._width = document.body.getBoundingClientRect().width;
+		requestAnimationFrame(this._handleResize);
+	}
+
+	_handleResize() {
+		if (this._width === 0) {
+			setTimeout(() => {
+				this._onResize();
+			}, 10);
+		} else if (this._width < 960) {
+			this.classList.add('floating-drawer');
+			if (this.drawer.opened) {
+				this._closeDrawer();
+			}
+		} else if (this._width > 960) { /* 860 + 256(drawer width) */
+			this.classList.remove('floating-drawer');
+			this._openDrawer();
+		}
+	}
+
+	/**
+	 * Runs on user login, publishes to pubsub
+	 *
+	 * @param {Object} event {event.detail: {
+	 *     user: {
+	 *       username: 'username', profile_picture: 'profile_picture'
+	 *     }
+	 *   }
+	 * }
+	 */
+	_onUserLogin(event) {
+		this.user = event.detail;
+	}
+
+  /**
+   * @return {String}
+   */
+  randomAvatar() {
+    // Get a number between 1 & 10
+    let num = Math.floor((Math.random() * 10) + 1);
+    return `sources/avatars/avatar-${num}.png`;
+  }
+
+	/**
+	 * Runs whenever user changes, changes are detected by the pubsub
+	 *
+	 * @param {Object} user {
+	 *    username: 'username', profile_picture: 'profile_picture'
+	 *   }
+	 */
+	_onUserChange(change) {
+		if (change.value &&
+				this.drawerFooter !== null &&
+				this.homeView !== null) {
+			const user = change.value;
+			this.drawerFooter.setAttribute('avatar', user.profile_picture);
+			this.drawerFooter.setAttribute('username', user.username);
+			this.homeView.setAttribute('username', user.username);
+		}
+	}
+
+	/**
+	 * Opens the drawer
+	 */
+	_openDrawer() {
+		requestAnimationFrame(() => {
+			this._applyAppStateStyles(
+				'width ease-in 0.16s',
+				'calc(100% - ' + this.drawer.width + 'px)'
+			);
+			this.drawer.opened = true;
+		});
+	}
+
+	/**
+	 * Closes the drawer
+	 */
+	_closeDrawer() {
+		requestAnimationFrame(() => {
+			this._applyAppStateStyles(
+				'width ease-out 0.16s',
+				'100%'
+			);
+			this.drawer.opened = false;
+		});
+	}
+
+	/**
+	 * Toggles the drawer
+	 */
+	_onToggleDrawer() {
+		if (this.drawer.opened) {
+			this._closeDrawer();
+		} else {
+			this._openDrawer();
+		}
+	}
+
+	/**
+	 * Applies transition & width when closing or opening the drawer
+	 *
+	 * @param {String} transition the transition to run
+	 * @param {String} width the width to set
+	 */
+	_applyAppStateStyles(transition, width) {
+		this.style.transition = transition;
+		this.style.width = width;
+	}
+
+	/**
+	 * Closes the drawer when opened & when width is under 1116px
+	 */
+	_closeDrawerIfNeeded() {
+		let width = this._width || this.getBoundingClientRect().width;
+		if (this.drawer.opened && width < 1116) {
+			this._closeDrawer();
+		}
+	}
+
+	/**
+	 * _onClick
+	 * Closes the drawer if needed
+	 */
+	_onClick() {
+		this._closeDrawerIfNeeded();
+	}
+
+	/**
+	 * Performs pages.select('home')
+	 * Closes the drawer if needed
+	 */
+	_onHomeClick() {
+		this.pages.select('home');
+		this._closeDrawerIfNeeded();
+	}
+	/**
+	 * Performs pages.select('settings')
+	 * Closes the drawer if needed
+	 */
+	_onSettingsClick() {
+		this.pages.select('settings');
+		this._closeDrawerIfNeeded();
+	}
+	/**
+	 * Performs pages.select('profiles')
+	 * Closes the drawer if needed
+	 */
+	_onProfilesClick() {
+		this.pages.select('profiles');
+		this._closeDrawerIfNeeded();
+	}
+
+	_onDevicesClick() {
+		this.pages.select('devices');
+		this._closeDrawerIfNeeded();
+	}
+});
+
+</script>
