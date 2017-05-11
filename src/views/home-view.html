@@ -20,6 +20,9 @@
       --reef-icon-button-color: #555;
 			--svg-icon-color: #555;
 		}
+    .grid-item {
+      width: calc(100% - 6px);
+    }
   </style>
 
   <reef-grid>
@@ -31,11 +34,11 @@
 				<span class="username"></span>
 				to Reeflight.</h1>
 				<p>
-				We made an anonymous account for you, you can link it to a personal
-				account for more functionality & integration
+				For the moment you can only adjust the start time
+        of your Aquarium fixture.
 				</p>
-				<a href="account/learn-more" style="text-decoration: none;
-					text-transform: uppercase; padding: 12px;">learn more</a>
+				<a href="/profiles" style="text-decoration: none;
+					text-transform: uppercase; padding: 12px;">Go to profile</a>
 
 				<p style="font-size: 12px;">
 					<strong>tip:</strong>
@@ -43,34 +46,10 @@
 				</p>
 			</div>
 		</swipeable-card>
-
-    <div class="grid-item">
-      <reef-icon-button icon="lightbulb-outline"
-				toggles
-				no-shadow>
-			</reef-icon-button>
-      <reef-icon-button icon="wifi"
-				toggles
-				no-shadow>
-			</reef-icon-button>
-      <reef-icon-button icon="bluetooth"
-				toggles
-				no-shadow>
-			</reef-icon-button>
-      <reef-icon-button icon="settings"
-				toggles
-				no-shadow>
-			</reef-icon-button>
-      <reef-icon-button icon="import-contacts"
-				toggles
-				no-shadow>
-			</reef-icon-button>
-    </div>
       <div class="grid-item">
         <summary>
           <h2>Future plans:</h2>
-          <p>-- Time past and/or Time until new activation --</p>
-          <p>-- Connected with Rsp icon #extra --</p>
+            <p>For future plans check the settings view</p>
         </summary>
       </div>
   </reef-grid>

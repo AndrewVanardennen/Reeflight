@@ -79,6 +79,7 @@
 			}
 		</style>
 		<template id="repeat">
+      <p>profile</p>
 			<reef-profile-item>
 					<h1>[[item.name]]</h1>
 					<reef-profile-option-item name="daylight">
@@ -88,15 +89,15 @@
 							<time-input value="[[item.daylight.start]]" key="daylight.start" data-index="[[item.index]]" data-uid="[[item.uid]]"></time-input>
 						</reef-profile-option>
 
-						<reef-profile-option option="end">
+						<!-- <reef-profile-option option="end">
 							<label>End time</label>
 							<span class="flex"></span>
 							<time-input value="[[item.daylight.end]]" key="daylight.end"></time-input>
-						</reef-profile-option>
+						</reef-profile-option> -->
 					</reef-profile-option-item>
 
 					<reef-profile-option-item name="clouds">
-						<h3>intensity</h3>
+						<h3>#not working yet# intensity</h3>
 						<reef-profile-option class="desktop-view" option="intensity">
 							<svg-icon icon="sunny"></svg-icon>
 							<reef-slider value="[[item.clouds.intensity]]"></reef-slider>

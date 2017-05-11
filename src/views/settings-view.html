@@ -6,29 +6,67 @@
       justify-content: center;
       background-color: var(--reef-primary-background-color);
     }
+    .wide {
+      width: 100%;
+      text-align: center;
+      padding-top: 12px;
+    }
+    .padder {
+      padding-right: 12px;
+    }
   </style>
   <reef-grid class="grid">
+    <div class="wide">
+      <strong>
+        On this page you'll find the future settings and components
+        for the fixture.
+      </strong>
+    </div>
     <div class="grid-item">
-      <p>-- Manual globalclock setting --</p>
-      <p>-- Startclock setting without user profile changes --</p>
+      <p>-- Time past and/or Time until new activation #extra--</p>
+      <p>-- Connected with Rsp icon #extra --</p>
     </div>
     <div class="grid-item">
       <p>-- logbook errors, start, stop,... #extra --</p>
+      <p>-- get devices in devices view</p>
     </div>
     <div class="grid-item">
       <p>
         -- Gradual time shifter (less degrading coral growth)  #extra --
       </p>
       <p>-- SU: tweak frequency of leds #extra --</p>
+      <div class="grid-item">
+        <reef-icon-button icon="lightbulb-outline"
+          toggles
+          no-shadow>
+        </reef-icon-button>
+        <reef-icon-button icon="wifi"
+          toggles
+          no-shadow>
+        </reef-icon-button>
+        <reef-icon-button icon="bluetooth"
+          toggles
+          no-shadow>
+        </reef-icon-button>
+        <reef-icon-button icon="settings"
+          toggles
+          no-shadow>
+        </reef-icon-button>
+        <reef-icon-button icon="import-contacts"
+          toggles
+          no-shadow>
+        </reef-icon-button>
+        #extra
+      </div>
     </div>
     <div class="grid-item">
-      <p>-- cloud settings (may go to profile settings) --</p>
-      <p>-- lightning settings (may go to profile settings) --</p>
+      <p>-- cloud settings (may go to profile settings)  #extra --</p>
+      <p>-- lightning settings (may go to profile settings) #extra --</p>
       <p>-- Season simulation #extra --</p>
       <p>-- Matched weather settings outside/inside #extra --</p>
-      <p>-- Mooncycle settings (may go to profile settings) --</p>
+      <p>-- Mooncycle settings (may go to profile settings) #extra --</p>
     </div>
-    <div class="grid-item">
+    <div class="wide">
       <p>
         <input
         type="checkbox"
@@ -36,16 +74,14 @@
         value="wified"
         title="
         Enable sunlight only when smartphone is connected to wifi.">
-        Out of the house mode.
-      </p>
-      <p>
-        <input
+        <span class = "padder">Out of the house mode. #extra</span>
+        <input class = "padder"
           type="checkbox"
           name="phoneBT"
           value="bted"
           title="
           Enable sunlight only when smartphone is connected to Bluetooth">
-          Out of the room mode.
+          <span class = "padder">Out of the room mode. #extra</span>
       </p>
     </div>
   </reef-grid>
