@@ -16,6 +16,10 @@ window.ButtonMixin = base => class extends base {
 		return this.shadowRoot.querySelector('custom-ripple');
 	}
 
+	get isLink() {
+		return this.hasAttribute('is-link');
+	}
+
 	/**
 	 * Add's mousedown to classList
 	 */
@@ -38,6 +42,9 @@ window.ButtonMixin = base => class extends base {
 			event.stopPropagation();
 		}
 		document.dispatchEvent(new CustomEvent(this.name)); // Fire event
+		if (this.isLink) {
+			window.location.hash = this.getAttribute('name');
+		}
 		this.ripple.run();
 	}
 

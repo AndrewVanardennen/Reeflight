@@ -52,8 +52,8 @@
     }*/
     reef-drawer {
       background: #FFF;
-      --svg-icon-color: #444;
-      --svg-icon-size: 24px;
+      --reef-icon-color: #444;
+      --reef-icon-size: 24px;
     }
     reef-drawer reef-button  reef-icon {
       padding-right: 24px;
@@ -159,10 +159,10 @@
   <reef-drawer>
     <reef-drawer-heading slot="heading"></reef-drawer-heading>
     <reef-selector class="drawer-menu">
-      <reef-button class="color1" name="home" no-shadow><reef-icon icon="home"></reef-icon>home</reef-button>
-      <reef-button name="profiles" no-shadow><reef-icon icon="import-contacts"></reef-icon>profiles</reef-button>
-      <reef-button name="devices" no-shadow><reef-icon icon="tablet"></reef-icon>devices</reef-button>
-      <reef-button name="settings" no-shadow><reef-icon icon="settings"></reef-icon>settings</reef-button>
+      <reef-button class="color1" name="home" no-shadow is-link><reef-icon icon="home"></reef-icon>home</reef-button>
+      <reef-button name="profiles" no-shadow is-link><reef-icon icon="import-contacts"></reef-icon>profiles</reef-button>
+      <reef-button name="devices" no-shadow is-link><reef-icon icon="tablet"></reef-icon>devices</reef-button>
+      <reef-button name="settings" no-shadow is-link><reef-icon icon="settings"></reef-icon>settings</reef-button>
     </reef-selector>
     <reef-drawer-footer slot="footer"></reef-drawer-footer>
   </reef-drawer>
@@ -232,7 +232,7 @@ import './../node_modules/svg-iconset/dist/svg-iconset.js';
 import './../node_modules/web-time-picker/dist/time-picker.js';
 
 // <!-- <link rel="import" href="../node_modules/svg-iconset/svg-iconset.html"> -->
-// <!-- <link rel="import" href="../node_modules/svg-icon/svg-icon.html"> -->
+// <!-- <link rel="import" href="../node_modules/reef-icon/reef-icon.html"> -->
 
 /**
  * ReeflightApp
@@ -322,22 +322,15 @@ export default Backed(class ReeflightApp extends HTMLElement {
 		this._onUserLogin = this._onUserLogin.bind(this);
 		this._onUserChange = this._onUserChange.bind(this);
 		this._onToggleDrawer = this._onToggleDrawer.bind(this);
-		this._onHomeClick = this._onHomeClick.bind(this);
-		this._onSettingsClick = this._onSettingsClick.bind(this);
-		this._onProfilesClick = this._onProfilesClick.bind(this);
-		this._onDevicesClick = this._onDevicesClick.bind(this);
 		this._onClick = this._onClick.bind(this);
 		this._onResize = this._onResize.bind(this);
 		this._preloadViews = this._preloadViews.bind(this);
 		this._handleResize = this._handleResize.bind(this);
+		this._locationHashChanged = this._locationHashChanged.bind(this);
 		this.loadComplete = false;
 		// this.pubsub.subscribe('user.change', this._onUserChange);
 		document.addEventListener('user-login', this._onUserLogin);
 		document.addEventListener('toggle-drawer', this._onToggleDrawer);
-		document.addEventListener('home-button-click', this._onHomeClick);
-		document.addEventListener('settings-button-click', this._onSettingsClick);
-		document.addEventListener('profiles-button-click', this._onProfilesClick);
-		document.addEventListener('devices-button-click', this._onDevicesClick);
 		this.addEventListener('click', this._onClick);
 		window.addEventListener('resize', this._onResize);
 		customElements.whenDefined('reeflight-app').then(() => {
@@ -352,14 +345,20 @@ export default Backed(class ReeflightApp extends HTMLElement {
 			Promise.all(promises).then(() => {
 				this.loadComplete = true;
 				this._onResize();
-				this._onHomeClick();
+				// this._onHomeClick();
 			});
 			// requestIdleCallback(this._preloadViews);
 			if (this.isVulcanized) {
 				this.loadComplete = true;
 				this._onResize();
-				this._onHomeClick();
 			}
+
+			window.onhashchange = this._locationHashChanged;
+	    if (!window.location.hash) {
+	      window.location.hash = 'home'
+	    } else {
+	      this._locationHashChanged({newURL: window.location.hash})
+	    }
 		});
 
 		this.drawerFooter.setAttribute('avatar', this.randomAvatar());
@@ -370,7 +369,19 @@ export default Backed(class ReeflightApp extends HTMLElement {
 		//
 		// })
 		// load lazy resources after render and set `loadComplete` when done.
+
+
 	}
+
+	_locationHashChanged(change) {
+    let parts = change.newURL.split('#');
+		if(parts.length < 1) {
+			this.shadowRoot.innerHTML = 'wrong page'
+			return;
+		}
+		this.pages.select(parts[1]);
+		this._closeDrawerIfNeeded();
+  }
 
 	/**
 	 * PreloadViews when the user is idle &
@@ -574,36 +585,6 @@ export default Backed(class ReeflightApp extends HTMLElement {
 	 * Closes the drawer if needed
 	 */
 	_onClick() {
-		this._closeDrawerIfNeeded();
-	}
-
-	/**
-	 * Performs pages.select('home')
-	 * Closes the drawer if needed
-	 */
-	_onHomeClick() {
-		this.pages.select('home');
-		this._closeDrawerIfNeeded();
-	}
-	/**
-	 * Performs pages.select('settings')
-	 * Closes the drawer if needed
-	 */
-	_onSettingsClick() {
-		this.pages.select('settings');
-		this._closeDrawerIfNeeded();
-	}
-	/**
-	 * Performs pages.select('profiles')
-	 * Closes the drawer if needed
-	 */
-	_onProfilesClick() {
-		this.pages.select('profiles');
-		this._closeDrawerIfNeeded();
-	}
-
-	_onDevicesClick() {
-		this.pages.select('devices');
 		this._closeDrawerIfNeeded();
 	}
 });
