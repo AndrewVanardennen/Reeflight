@@ -92,7 +92,16 @@
       padding: 8px 16px;
       box-sizing: border-box;
       font-size: 12px;
+			text-overflow: ellipsis;
+	    white-space: nowrap;
+	    overflow: hidden;
     }
+		section.copyright span {
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: calc(100% - 30px) !important;
+		}
     span[slot="made-with"] .icon {
       width: 24px;
       height: 24px;
@@ -142,6 +151,9 @@
     .flex {
       flex: 1;
     }
+		/*reef-footer {
+			display: none;
+		}*/
     @media (min-width: 600px) {
       reef-pages {
         flex: 1;
@@ -184,9 +196,9 @@
     </span>
     <section class="copyright" slot="copyright">
       <img class="icon" src="sources/icons/copyright.svg"></img>
-      2016 Reeflight. Code licensed under the CC-BY-NC-SA-4.0 License.
+      <span>2016 Reeflight. Code licensed under the CC-BY-NC-SA-4.0 License.
       Except as otherwise noted,
-      Documentation & media are licensed under CC-BY-4.0 License.
+      Documentation & media are licensed under CC-BY-4.0 License.</span>
     </section>
   </reef-footer>
   <user-controller></user-controller>
