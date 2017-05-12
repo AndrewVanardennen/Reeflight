@@ -20,7 +20,11 @@
     <!-- <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png"> -->
 
     <!-- Import manifest for serviceWorker, pushNotifications & addToHomeScreen support. -->
-    <!-- <link rel="manifest" href="manifest.json"> -->
+    <link rel="manifest" href="manifest.json">
+		<link rel="import" href="node_modules/backed/backed.html">
+
+		<link rel="stylesheet" href="styles/color.css">
+		<link rel="import" href="reeflight-app.html">
 
     <style>
       body, html {
@@ -30,12 +34,6 @@
         overflow: hidden;
       }
     </style>
-		<link rel="import" href="../node_modules/backed/backed.html">
-
-		<link rel="stylesheet" href="styles/color.css">
-		<link rel="import" href="reeflight-app.html">
-
-
   </head>
   <body>
     <reeflight-app></reeflight-app>
