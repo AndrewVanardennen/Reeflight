@@ -15,8 +15,8 @@
       justify-content: center;
       background-color: var(--reef-primary-background-color);
       overflow-x: hidden;
-			--svg-icon-color: #777;
-			--svg-icon-size: 36px;
+			--reef-icon-color: #777;
+			--reef-icon-size: 36px;
     }
   </style>
 
@@ -67,7 +67,7 @@
 			}
 			@media (min-width: 320px) {
 				.mobile-view {
-					--svg-icon-size: 56px;
+					--reef-icon-size: 56px;
 					display: none;
 				}
 				.desktop-view {
@@ -95,21 +95,22 @@
 						</reef-profile-option> -->
 					</reef-profile-option-item>
 
-					<reef-profile-option-item name="clouds">
-						<h3>#not working yet# intensity</h3>
+					<reef-profile-option-item name="clouds" disabled title="Future option, coming soon!">
+						<h3>intensity</h3>
 						<reef-profile-option class="desktop-view" option="intensity">
-							<svg-icon icon="sunny"></svg-icon>
+							<reef-icon icon="sunny" disabled></reef-icon>
 							<reef-slider value="[[item.clouds.intensity]]"></reef-slider>
-							<svg-icon icon="cloudy"></svg-icon>
+							<reef-icon icon="cloudy" disabled></reef-icon>
 						</reef-profile-option>
 						<span class="mobile-view">
-							<svg-icon icon="sunny"></svg-icon>
+							<reef-icon icon="sunny" disabled></reef-icon>
 							<span class="flex"></span>
-							<svg-icon icon="cloudy"></svg-icon>
+							<reef-icon icon="cloudy" disabled></reef-icon>
 						</span>
 						<reef-slider
 							class="mobile-view"
-							value="[[item.clouds.intensity]]">
+							value="[[item.clouds.intensity]]"
+							disabled>
 						</reef-slider>
 					</reef-profile-option-item>
 

@@ -33,6 +33,11 @@
   :host[square] .slider-knob {
     border-radius: 3px;
   }
+	:host([disabled]) {
+		color: #9b9b9b;
+		pointer-events: none;
+		cursor: default;
+	}
   </style>
 	<reef-progress-bar></reef-progress-bar>
 </template>

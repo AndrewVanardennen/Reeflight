@@ -1,8 +1,8 @@
 <template id="reef-icon">
 <style>
 	:host {
-		width: var(--svg-icon-size, 24px);
-		height: var(--svg-icon-size, 24px);
+		width: var(--reef-icon-size, 24px);
+		height: var(--reef-icon-size, 24px);
 		display: inline-flex;
 		display: -ms-inline-flexbox;
 		display: -webkit-inline-flex;
@@ -15,8 +15,13 @@
 		justify-content: center;
 		position: relative;
 		vertical-align: middle;
-		fill: var(--svg-icon-color, #111);
-		stroke: var(--svg-icon-stroke, none);
+		fill: var(--reef-icon-color, #111);
+		stroke: var(--reef-icon-stroke, none);
+	}
+	:host([disabled]) {
+		--reef-icon-color: #9b9b9b !important;
+		pointer-events: none;
+		cursor: default;
 	}
 </style>
 </template>
@@ -39,12 +44,12 @@ export default Backed(class ReefIcon extends HTMLElement {
 			 * icon
 			 * @param {string} value The desired icon.
 			 * optional: you can create multiple iconsets
-			 * by setting a different name on svg-iconset.
+			 * by setting a different name on reef-iconset.
 			 *
 			 * **example:** ```html
-			 * <svg-iconset name="my-icons">
+			 * <reef-iconset name="my-icons">
 			 *   <g id="menu">....</g>
-			 * </svg-iconset>
+			 * </reef-iconset>
 			 * ```
 			 * This means we can ask for the icon using a prefix
 			 * **example:** ```html
@@ -58,7 +63,7 @@ export default Backed(class ReefIcon extends HTMLElement {
 			/**
 			 * Iconset
 			 * @return {object} window.svgIconset
-			 * [checkout](svg-iconset.html) for more info.
+			 * [checkout](reef-iconset.html) for more info.
 			 */
 			iconset: {
 				value: window.svgIconset
