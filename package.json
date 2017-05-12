@@ -4,6 +4,10 @@
   "description": "Remote controlled aquarium led light",
   "main": "index.js",
   "scripts": {
+    "deploy": "npm run build && npm run sw-precache && firebase deploy",
+    "sw-precache": "sw-precache --config sw-precache-config.js --root dist/bundled",
+    "build": "backed -b",
+    "serve": "backed -w -s",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Andrew Vanardennen",
@@ -48,11 +52,12 @@
         "dest": "dist/index.html",
         "moduleName": "reeflight",
         "format": "iife",
+				"external": [
+					"manifest.json",
+					"node_modules/backed/backed.html"
+				],
         "plugins": {
           "html-bundler": {
-            "external": [
-              "node_modules/backed/backed.html"
-            ],
             "exclude": [
               "reload/reload.js"
             ]
@@ -63,9 +68,17 @@
     "sources": [
       {
         "src": [
-          "node_modules/backed/dist/backed.js"
+          "node_modules/backed/dist/backed.js",
+          "node_modules/backed/backed.html"
         ],
-        "dest": "dist/node_modules"
+        "dest": "dist/bundled/node_modules"
+      },
+      {
+        "src": [
+          "node_modules/backed/dist/backed.js",
+          "node_modules/backed/backed.html"
+        ],
+        "dest": "dist/unbundled/node_modules"
       },
       {
         "src": [
@@ -75,6 +88,7 @@
       },
       {
         "src": [
+          "src/manifest.json",
           "src/sources/{avatars,icons}/*"
         ],
         "dest": "dist/bundled"
