@@ -1,21 +1,22 @@
 <template id="time-input">
 <style>
 	:host {
-		--reef-icon-button-size: 24px;
+		--reef-icon-button-size: 36px;
 		--reef-icon-button-color: #777;
 		--reef-icon-button-padding: 0;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		background: #FFF;
-		border: 1px solid #ddd;
 		padding: 6px 12px;
 		box-sizing: border-box;
 		border-radius: 2px;
+		outline: none
 	}
 	.container {
-		padding-right: 6px;
+		padding-right: 12px;
 		cursor: pointer;
+		font-size: 20px
 	}
 	:host([contenteditable]) .container {
 		cursor: text;
@@ -27,16 +28,18 @@
 	:host([contenteditable]) reef-icon-button[icon="save"] {
 		display: initial;
 	}
+	:host([contenteditable]) {
+		border-bottom: 1px solid #ddd;
+	}
 </style>
 <div class="container" title="click edit">
 	<slot></slot>
 </div>
-<reef-icon-button icon="clock"></reef-icon-button>
-<reef-icon-button icon="save"></reef-icon-button>
+<reef-icon-button icon="clock" no-border no-shadow></reef-icon-button>
+<reef-icon-button icon="save" no-border no-shadow></reef-icon-button>
 </template>
 <script>
 'use strict';
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 export default Backed(class TimeInput extends HTMLElement {
 	/**
 	 * Attributes to observer
@@ -158,7 +161,12 @@ export default Backed(class TimeInput extends HTMLElement {
 	_onSaveClick(event) {
 		event.preventDefault();
 		this.editing = false;
-		pubsub.publish('time.change', time);
+		let uid = this.dataUid;
+		PubSub.publish(`time[${uid}]change`, {
+			value: this.value,
+			key: this.key,
+			uid: uid
+		});
 	}
 
 	_onTimePickerAction(event) {
@@ -168,15 +176,14 @@ export default Backed(class TimeInput extends HTMLElement {
 		this.picker.style.height = '40px';
 		let detail = event.detail;
 		if (detail.action === 'ok') {
-			let key = this.key;
 			let uid = this.dataUid;
 			let hour = detail.time.hour;
 			let minutes = detail.time.minutes;
-			let value = `${hour}:${minutes}`;
-			this.value = value;
-			PubSub.publish(`time[${this.dataIndex}]change`, {
-				value: value,
-				key: key,
+			this.value = `${hour}:${minutes}`;
+
+			PubSub.publish(`time[${uid}]change`, {
+				value: this.value,
+				key: this.key,
 				uid: uid
 			});
 		}

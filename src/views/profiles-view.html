@@ -4,7 +4,6 @@
 <link rel="import" href="../ux/reef-profile-option-item.html">
 <link rel="import" href="../ux/reef-profile-option.html">
 <link rel="import" href="../ux/reef-list.html">
-<link rel="import" href="../mixins/database-offline-mixin.html">
 <link rel="import" href="../sources/profiles.html">
 
 <template id="profiles-view">
@@ -82,11 +81,8 @@
 			<reef-profile-item>
 					<h1>[[item.name]]</h1>
 					<reef-profile-option-item name="daylight">
-						<reef-profile-option>
-							<label>Start time</label>
-							<span class="flex"></span>
-							<time-input value="[[item.daylight.start]]" key="daylight.start" data-index="[[item.index]]" data-uid="[[item.uid]]"></time-input>
-						</reef-profile-option>
+						<span class="flex"></span>
+						<time-input value="[[item.daylight.start]]" key="daylight.start" data-index="[[item.index]]" data-uid="[[item.uid]]"></time-input>
 
 						<!-- <reef-profile-option option="end">
 							<label>End time</label>
@@ -95,7 +91,7 @@
 						</reef-profile-option> -->
 					</reef-profile-option-item>
 
-					<reef-profile-option-item name="clouds" disabled title="Future option, coming soon!">
+					<reef-profile-option-item name="clouds" disabled title="Future option, coming soon!" vertical>
 						<h3>intensity</h3>
 						<reef-profile-option class="desktop-view" option="intensity">
 							<reef-icon icon="sunny" disabled></reef-icon>
@@ -120,25 +116,25 @@
 </template>
 
 <script>
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 /**
  * @extends HTMLElement
  */
-export default Backed(class ProfilesView extends DatabaseOfflineMixin(HTMLElement) {
+export default Backed(class ProfilesView extends HTMLElement {
 	static get properties() {
 		return {
 			user: {
 				observer: '_onUserChange',
 				global: true
-			}
+			},
+      pouchReady: {
+        observer: 'pouchdbReady',
+				global: true
+      }
 		};
 	}
 	created() {
 		this._onClick = this._onClick.bind(this);
 		this._onProfileChange = this._onProfileChange.bind(this);
-		this._onUserChange = this._onUserChange.bind(this);
-
-		// pubsub.subscribe('user.login', this._onUserLogin);
 	}
 
 	/**
@@ -189,31 +185,31 @@ export default Backed(class ProfilesView extends DatabaseOfflineMixin(HTMLElemen
 	}
 	setUpPubSubs() {
 		for (let index of Object.keys(this.profiles)) {
-			PubSub.subscribe(`data[${index}]change`, this._onProfileChange);
+			PubSub.subscribe(`time[${index}]change`, this._onProfileChange);
 		}
 	}
-	_onProfileChange(newVal, oldVal) {
-		if (newVal !== oldVal) {
+	_onProfileChange(newVal) {
+		if (newVal !== this.oldVal) {
 			let profiles = this.profiles;
-			let index = newVal.dataIndex;
-			let change = newVal.data;
-			let parts = change.key.split('.');
-			profiles[index][parts[0]][parts[1]] = change.value;
+			let index = newVal.uid;
+			let parts = newVal.key.split('.');
+			profiles[index][parts[0]][parts[1]] = newVal.value;
 			if (this.pouch === undefined) {
 				this.pouch = new PouchDB('profiles');
 			}
 			this.pouch.get('profiles').then(doc => {
-				doc[change.uid][parts[0]][parts[1]] = change.value;
+				doc[index][parts[0]][parts[1]] = newVal.value;
 				this.pouch.put(doc, (error, result) => {
 					if (!error) {
 						let uid = firebase.auth().currentUser.uid;
-						firebase.database().ref(`users/${uid}/profiles/${change.uid}`).set(doc[change.uid]);
+						firebase.database().ref(`users/${uid}/profiles/${newVal.uid}`).set(doc[newVal.uid]);
 						firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
 					}
 					// update firebase
 				});
 			});
-			// this.profiles = profiles;
+			this.profiles = profiles;
+			this.oldVal = newVal;
 		}
 	}
 
@@ -225,7 +221,7 @@ export default Backed(class ProfilesView extends DatabaseOfflineMixin(HTMLElemen
 		return this._pouch || undefined;
 	}
 
-	_pouchdbReady(change) {
+	pouchdbReady(change) {
 		if (change.value) this.pouch = new PouchDB('profiles');
 	}
 

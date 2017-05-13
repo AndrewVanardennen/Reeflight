@@ -23,12 +23,7 @@
 
 <script>
 	'use strict';
-	import Backed from './../../node_modules/backed/dist/backed-es.js';
 	export default Backed(class CustomRipple extends HTMLElement {
-		created() {
-			this.root = this.attachShadow({mode: 'open'});
-			// @template
-		}
 
 		/**
 		 * Runs the ripple

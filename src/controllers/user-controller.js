@@ -1,8 +1,5 @@
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 import FirebaseController from './firebase-controller';
 import UserConnectionController from './user-connection-controller.js';
-// import PubSub from './../internals/pubsub.js';
-// window.pubsub = window.pubsub || new PubSub();
 /**
  * @extends FirebaseController
  */

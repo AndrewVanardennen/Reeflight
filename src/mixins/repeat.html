@@ -11,17 +11,10 @@
   }
 
   connected() {
-  //   this.shadowRoot.innerHTML = `<style>
-  //   :host {
-  //     transform: translateZ(0);
-  //     user-select: none;
-  //   }
-  //   .selected {
-  //     background-color: #EEE;
-  //   }
-  // </style>`;
     this._onScroll = this._onScroll.bind(this);
     this._onClick = this._onClick.bind(this);
+    // ensure the default styles are set
+    this.templateStyles = this.templateStyles;
 
     if (this.max && this.items && this.items.length > this.max) {
       this.style.overflowY = 'scroll';

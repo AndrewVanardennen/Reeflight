@@ -1,0 +1,71 @@
+<template id="custom-dialog">
+	<style>
+		:host {
+			display: block;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 100;
+			opacity: 0;
+			pointer-events: none;
+		}
+		.backdrop {
+			display: flex;
+			background: rgba(0, 0, 0, 0.5);
+			width: 100%;
+			height: 100%;
+			align-items: center;
+			justify-content: center;
+		}
+		:host(.opened) {
+			opacity: 1;
+			pointer-events: auto;
+		}
+		.dialog {
+			display: flex;
+			min-width: 240px;
+			max-width: 400px;
+			min-height: 240px;
+			background: #FFF;
+		}
+		::slotted(.dialog-content) {
+			padding: 8px 16px;
+		}
+	</style>
+	<div class="backdrop">
+		<div class="dialog">
+			<slot name="dialog-content"></slot>
+			<slot name="dialog-actions"></slot>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default Backed(class CustomDialog extends HTMLElement {
+		connected() {
+			this._onbackdropTap = this._onbackdropTap.bind(this);
+
+			this._backdrop.addEventListener('click', this._onbackdropTap);
+			this._backdrop.addEventListener('tap', this._onbackdropTap);
+		}
+		set opened(value) {
+			if (value) {
+				this.classList.add('opened');
+			} else {
+				this.classList.remove('opened');
+			}
+			this._opened = value;
+		}
+		get opened() {
+			return this._opened || false;
+		}
+		get _backdrop() {
+			return this.shadowRoot.querySelector('.backdrop');
+		}
+		_onbackdropTap() {
+			this.opened = false;
+		}
+	});
+</script>

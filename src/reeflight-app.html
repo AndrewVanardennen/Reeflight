@@ -7,12 +7,13 @@
 <link rel="import" href="ux/reef-selector.html">
 <link rel="import" href="ui/reef-pages.html">
 <link rel="import" href="views/home-view.html">
-<link rel="import" href="controllers/database-controller.html">
 <link rel="import" href="views/profiles-view.html">
 <link rel="import" href="views/devices-view.html">
 <link rel="import" href="views/settings-view.html">
 <link rel="import" href="internals/iconset-loader.html">
 <link rel="import" href="ui/reef-icon.html">
+<link rel="import" href="controllers/database-controller.html">
+<link rel="import" href="controllers/pouch-controller.html">
 
 
 
@@ -151,10 +152,10 @@
     .flex {
       flex: 1;
     }
-		/*reef-footer {
+		reef-footer {
 			display: none;
-		}*/
-    @media (min-width: 600px) {
+		}
+    @media (min-width: 960px) {
       reef-pages {
         flex: 1;
       }
@@ -204,6 +205,7 @@
   <user-controller></user-controller>
 	<database-controller database="profiles"></database-controller>
 	<database-controller database="devices"></database-controller>
+  <pouch-controller></pouch-controller>
 	<svg-iconset name="icons" size="24">
 	  <svg>
 	    <defs>
@@ -236,15 +238,10 @@
 
 <script>
 'use strict';
-// import PubSub from './internals/pubsub.js';
-import Backed from  './../node_modules/backed/dist/backed-es.js';
 import './controllers/user-controller';
 import './internals/request-idle-callback-shim';
 import './../node_modules/svg-iconset/dist/svg-iconset.js';
 import './../node_modules/web-time-picker/dist/time-picker.js';
-
-// <!-- <link rel="import" href="../node_modules/svg-iconset/svg-iconset.html"> -->
-// <!-- <link rel="import" href="../node_modules/reef-icon/reef-icon.html"> -->
 
 /**
  * ReeflightApp
@@ -482,12 +479,12 @@ export default Backed(class ReeflightApp extends HTMLElement {
 			setTimeout(() => {
 				this._onResize();
 			}, 10);
-		} else if (this._width < 960) {
+		} else if (this._width < 1200) {
 			this.classList.add('floating-drawer');
 			if (this.drawer.opened) {
 				this._closeDrawer();
 			}
-		} else if (this._width > 960) { /* 860 + 256(drawer width) */
+		} else if (this._width > 1200) { /* 860 + 256(drawer width) */
 			this.classList.remove('floating-drawer');
 			this._openDrawer();
 		}

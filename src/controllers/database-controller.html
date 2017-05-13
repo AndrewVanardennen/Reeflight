@@ -1,12 +1,9 @@
-<link rel="import" href="offline-database-controller.html">
-
 <script>
 'use strict';
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 /**
- * @extends OfflineDatabaseController
+ * @extends HTMLElement
  */
-export default Backed(class DatabaseController extends OfflineDatabaseController {
+export default Backed(class DatabaseController extends HTMLElement {
 	static get observedAttributes() {
 		return ['database'];
 	}
@@ -14,6 +11,10 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 		return {
 			userOnline: {
 				observer: '_onUserLogin',
+				global: true
+			},
+			pouchReady: {
+				observer: 'pouchdbReady',
 				global: true
 			}
 		};
@@ -23,12 +24,21 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 			this[this.toJsProp(name)] = newValue;
 		}
 	}
+  pouchdbReady(change, old) {
+		if (this.pouchReady !== change.value) {
+			this.pouchReady = change.value;
+		}
+    if (this.database && this.pouchReady) {
+      this.pouch = new PouchDB(this.database);
+      PubSub.publish(`database.${this.database}.ready`, true);
+    }
+  }
 	set database(value) {
-		super.database = value;
+		this._database = value;
 		this._setupPubSubs(value);
 	}
 	get database() {
-		return super.database;
+		return this._database;
 	}
 	set offline(value) {
 		this._offline = value;
@@ -49,8 +59,8 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 		this._handleData();
 	}
 	_onUserLogin(change, oldValue) {
-		console.log(change);
-		if (change.value !== oldValue && oldValue) {
+		if (change.value !== oldValue) {
+			this.userOnline = change.value;
 			this.getFirebaseData();
 		}
 		this._onDatabaseReady();
@@ -61,7 +71,6 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 		this._getFirebaseData(this.database, uid);
 	}
 	_getFirebaseData(databaseName) {
-		console.log(this.databaseLocation);
 		firebase.database().ref(this.databaseLocation).on('value', snap => {
 			let data = snap.val();
 			this.firebaseData = data;
@@ -81,7 +90,6 @@ export default Backed(class DatabaseController extends OfflineDatabaseController
 	_handleData() {
 		let name = this.database;
 		let data = this.firebaseData;
-		console.log(data, name);
 		if (this.pouch && data !== null && data._rev === null) {
 			this.pouch.put(data, (error, result) => {
 				if (!error) {

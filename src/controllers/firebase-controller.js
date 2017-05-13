@@ -1,7 +1,4 @@
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 import BaseController from './base-controller';
-// import PubSub from './../internals/pubsub.js';
-// window.pubsub = window.pubsub || new PubSub();
 
 /**
  * @extends BaseController

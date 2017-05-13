@@ -1,7 +1,4 @@
 'use strict';
-// import PubSub from './../internals/pubsub.js';
-// window.pubsub = window.pubsub || new PubSub();
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 export default Backed(class UserConnectionController extends HTMLElement {
 	static get properties() {
 		return {
@@ -29,6 +26,7 @@ export default Backed(class UserConnectionController extends HTMLElement {
 
 		connectedRef.on('value', snap => {
 			if (snap.val() === true) {
+				// TODO: Sync local data with firebase here
 				// We're connected (or reconnected)!
 				// Do anything here that should happen only if online (or on reconnect)
 

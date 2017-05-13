@@ -1,5 +1,4 @@
 'use strict';
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 import './../internals/request-idle-callback-shim';
 
 /**

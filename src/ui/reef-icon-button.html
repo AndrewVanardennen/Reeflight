@@ -37,13 +37,15 @@
 		:host([no-shadow]) {
 			box-shadow: none;
 		}
+		:host([no-border]) {
+			border-radius: none;
+		}
 	</style>
 	<reef-icon></reef-icon>
 	<custom-ripple></custom-ripple>
 </template>
 
 <script>
-	import Backed from './../../node_modules/backed/dist/backed-es.js';
 	/**
 	 * ReefIconButton
 	 * @extends ReefButton

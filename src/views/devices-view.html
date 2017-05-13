@@ -1,3 +1,5 @@
+<link rel="import" href="../ux/custom-dialog.html">
+
 <template id="devices-view">
   <style>
   :host {
@@ -6,34 +8,38 @@
     height: 100%;
     width: 100%;
     --reef-icon-button-color: #555;
+		--reef-icon-button-size: 56px;
+		--reef-icon-button-padding: 16px;
     background-color: var(--reef-primary-background-color);
     overflow-x: hidden;
   }
-  .toolbar {
-    height: 48px;
-    width: 100%;
-    background: rgba(0,151,167,0.29);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 16px;
-    box-sizing: border-box;
-  }
+
   reef-icon-button {
     color: #444;
-    --reef-icon-button-color: #444;
+    --reef-icon-button-color: #EEE;
+		background: #0097A7;
     box-shadow: var(--custom-shadow);
   }
-  .fixed {
+	.fab {
     position: fixed;
-    bottom: 94px;
-    right: 24px;
-    background: white;
-  }
+		right: 24px;
+		bottom: 24px;
+	}
+	@media (min-width: 960px) {
+		.fab {
+			right: 36px;
+			bottom: 42px;
+		}
+	}
+	@media (min-width: 1200px) {
+		.fab {
+			right: 48px;
+		}
+	}
 
   </style>
 
-  <reef-icon-button icon="add" class="fixed" no-shadow="false"></reef-icon-button>
+  <reef-icon-button icon="add" class="fab" no-shadow="false"></reef-icon-button>
   <reef-grid>
     <h1>Under construction</h1>
   </reef-grid>
@@ -42,6 +48,54 @@
 
 <script>
 'use strict';
-import Backed from './../../node_modules/backed/dist/backed-es.js';
-export default Backed(class DevicesView extends HTMLElement {});
+export default Backed(class DevicesView extends HTMLElement {
+	connected() {
+		this._onAdd = this._onAdd.bind(this);
+		this._constructDialog = this._constructDialog.bind(this);
+		this.fab.addEventListener('click', this._onAdd);
+		this.fab.addEventListener('tap', this._onAdd);
+		this.setupDialog();
+	}
+	get fab() {
+		return this.shadowRoot.querySelector('.fab');
+	}
+	get dialog() {
+		return this._dialog;
+	}
+	set dialog(value) {
+		this._dialog = value;
+	}
+	setupDialog() {
+		this._HTMLImport('templates/dialogs/devices-dialog.html')
+			.then(this._constructDialog);
+	}
+	_constructDialog(template) {
+		this.dialog = document.createElement('custom-dialog');
+		this.dialog.innerHTML = template;
+	}
+	_HTMLImport(href) {
+		return new Promise((resolve, reject) => {
+			let link = document.createElement('link');
+			link.rel = 'import';
+			link.href = href;
+			link.onload = event => {
+				resolve(event.path[0].import.querySelector('template').innerHTML);
+			};
+			link.onerror = error => {
+				reject(error);
+			};
+			document.body.appendChild(link);
+		});
+	}
+	_onAdd() {
+		// make an api request for the devices
+		fetch('192.168.100.1').then(result => {
+			return result.toJson();
+		}).then(result => {
+			console.log(result);
+		});
+		this.shadowRoot.appendChild(this.dialog);
+		this.dialog.opened = true;
+	}
+});
 </script>

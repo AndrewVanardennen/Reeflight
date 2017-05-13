@@ -1,5 +1,12 @@
 <template id="reef-profile-option-item">
 	<style>
+		:host {
+			display: flex;
+			flex-direction: row;
+		}
+		:host([vertical]) {
+			flex-direction: column;
+		}
 		.title {
 			text-transform: uppercase;
 		}
@@ -10,13 +17,12 @@
 		}
 	</style>
 
-	<h2 class="title">Lights</h2>
+	<h2 class="title"></h2>
 	<slot></slot>
 </template>
 
 <script>
 'use strict';
-import Backed from './../../node_modules/backed/dist/backed-es.js';
 export default Backed(class ReefProfileOptionItem extends HTMLElement {
 	static get properties() {
 		return {
