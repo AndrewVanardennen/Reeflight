@@ -34,10 +34,11 @@
   },
   "dependencies": {
     "array-repeat": "^0.0.0",
-    "backed": "^0.3.1",
+    "backed": "^0.3.4",
     "backed-splitter": "^1.4.0",
     "backed-utils": "^0.0.2",
     "express": "^4.14.0",
+    "mobile-detect": "^1.3.6",
     "opn": "^4.0.2",
     "rollup-plugin-html-bundler": "^1.4.2",
     "svg-icon": "vandeurenglenn/svg-icon",
@@ -52,10 +53,10 @@
         "dest": "dist/index.html",
         "moduleName": "reeflight",
         "format": "iife",
-				"external": [
-					"manifest.json",
-					"node_modules/backed/backed.html"
-				],
+        "external": [
+          "manifest.json",
+          "node_modules/backed/backed.html"
+        ],
         "plugins": {
           "html-bundler": {
             "exclude": [
@@ -89,10 +90,17 @@
       {
         "src": [
           "src/manifest.json",
-          "src/sources/{avatars,icons}/*"
+          "src/sources/{avatars,icons}/*",
+          "src/templates/dialogs/*.html"
         ],
         "dest": "dist/bundled"
-      }
+      },
+			{
+				"src": [
+					"node_modules/mobile-detect/mobile-detect.js"
+				],
+				"dest": "dist/bundled/node_modules"
+			}
     ],
     "watch": [
       {
