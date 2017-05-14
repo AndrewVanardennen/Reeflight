@@ -10,6 +10,9 @@
     :host(.swiped) {
       display: none;
     }
+    :host(.dragging) {
+      user-select: none;
+    }
   </style>
   <slot></slot>
 </template>
@@ -36,13 +39,13 @@
       this.screenX = 0;
       this.targetX = 0;
 
-      this.addEventListener('touchstart', this._onTouchStart);
-      this.addEventListener('touchmove', this._onTouchMove);
-      this.addEventListener('touchend', this._onTouchEnd);
+      this.addEventListener('touchstart', this._onTouchStart, {passive: true});
+      this.addEventListener('touchmove', this._onTouchMove, {passive: true});
+      this.addEventListener('touchend', this._onTouchEnd, {passive: true});
 
-      this.addEventListener('mousedown', this._onTouchStart);
-      this.addEventListener('mousemove', this._onTouchMove);
-      this.addEventListener('mouseup', this._onTouchEnd);
+      this.addEventListener('mousedown', this._onTouchStart, {passive: true});
+      this.addEventListener('mousemove', this._onTouchMove, {passive: true});
+      this.addEventListener('mouseup', this._onTouchEnd, {passive: true});
 
       requestAnimationFrame(this.render);
     }
@@ -122,13 +125,15 @@
           x += (this.x - x) / 2;
 
         const normalizedDistance = (Math.abs(x) / width);
-        const opacity = 1 - Math.pow(normalizedDistance, 4);
+        const opacity = 1 - Math.pow(normalizedDistance, 1.8);
 
         this.style.transform = `translateX(${x}px)`;
         this.style.opacity = opacity;
         this.screenX = x;
-        if (this.dragging) return;
-        const isNearlyInvisible = (opacity < 0.65);
+
+        if (this.dragging) return this.classList.add('dragging');
+
+        const isNearlyInvisible = (opacity < 0.36);
 
         if (isNearlyInvisible) {
           this.classList.add('swiped');
@@ -148,6 +153,7 @@
       this.currentX = 0;
       this.startX = 0;
       this.x = 0;
+      this.classList.remove('dragging');
     }
   });
 </script>
