@@ -75,14 +75,14 @@ export default Backed(class ReefIcon extends HTMLElement {
 	}
 
 	__iconChanged__(change) {
-		if (change.value && this.iconset) {
+		if (change.value && this.iconset && change.value !== null	) {
 			let parts = change.value.split('::');
 			if (parts.length === 1) {
 				this.iconset['icons'].host.applyIcon(this, change.value);
 			} else {
 				this.iconset[parts[0]].host.applyIcon(this, parts[1]);
 			}
-		} else if(!change.value && this.iconset) {
+		} else if(!change.value && this.iconset && this._icon) {
 			let parts = this._icon.split('::');
 			if (parts.length === 1) {
 				this.iconset['icons'].host.removeIcon(this);
