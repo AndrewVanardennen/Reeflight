@@ -30,11 +30,11 @@
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-inject-template": "^1.0.2",
     "rollup-plugin-json": "^2.1.0",
-    "sw-precache": "^4.2.1"
+    "sw-precache": "^5.1.1"
   },
   "dependencies": {
     "array-repeat": "^0.0.0",
-    "backed": "^0.3.4",
+    "backed": "^0.4.0",
     "backed-splitter": "^1.4.0",
     "backed-utils": "^0.0.2",
     "express": "^4.14.0",
@@ -95,12 +95,12 @@
         ],
         "dest": "dist/bundled"
       },
-			{
-				"src": [
-					"node_modules/mobile-detect/mobile-detect.js"
-				],
-				"dest": "dist/bundled/node_modules"
-			}
+      {
+        "src": [
+          "node_modules/mobile-detect/mobile-detect.js"
+        ],
+        "dest": "dist/bundled/node_modules"
+      }
     ],
     "watch": [
       {
