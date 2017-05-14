@@ -194,20 +194,22 @@ export default Backed(class ProfilesView extends HTMLElement {
 			let index = newVal.uid;
 			let parts = newVal.key.split('.');
 			profiles[index][parts[0]][parts[1]] = newVal.value;
-			if (this.pouch === undefined) {
-				this.pouch = new PouchDB('profiles');
-			}
-			this.pouch.get('profiles').then(doc => {
-				doc[index][parts[0]][parts[1]] = newVal.value;
-				this.pouch.put(doc, (error, result) => {
-					if (!error) {
-						let uid = firebase.auth().currentUser.uid;
-						firebase.database().ref(`users/${uid}/profiles/${newVal.uid}`).set(doc[newVal.uid]);
-						firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
-					}
-					// update firebase
-				});
-			});
+      let uid = firebase.auth().currentUser.uid;
+      firebase.database().ref(`users/${uid}/profiles/${newVal.uid}`).set(profiles[index]);
+			// if (this.pouch === undefined) {
+			// 	this.pouch = new PouchDB('profiles');
+			// }
+			// this.pouch.get('profiles').then(doc => {
+			// 	doc[index][parts[0]][parts[1]] = newVal.value;
+			// 	this.pouch.put(doc, (error, result) => {
+			// 		if (!error) {
+			// 			let uid = firebase.auth().currentUser.uid;
+			// 			firebase.database().ref(`users/${uid}/profiles/${newVal.uid}`).set(doc[newVal.uid]);
+			// 			firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
+			// 		}
+			// 		// update firebase
+			// 	});
+			// });
 			this.profiles = profiles;
 			this.oldVal = newVal;
 		}

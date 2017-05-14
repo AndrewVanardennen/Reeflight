@@ -90,51 +90,52 @@ export default Backed(class DatabaseController extends HTMLElement {
 	_handleData() {
 		let name = this.database;
 		let data = this.firebaseData;
-		if (this.pouch && data !== null && data._rev === null) {
-			this.pouch.put(data, (error, result) => {
-				if (!error) {
-					firebase.database().ref(`${this.databaseLocation}/_rev`)
-						.set(result.rev);
-					console.log(`Local ${name}-database created`);
-				} else {
-					console.warn(error);
-				}
-			});
-		} else if (this.pouch && data !== null) { // && pouchdata
-			this.pouch.get(name).then(doc => {
-				if (doc._rev === data._rev) {
-					console.log(`Local ${name}-database up to date`);
-					return;
-				} else if (this._splitRef(doc._rev) > this._splitRef(data._rev)) {
-					console.log(`Syncing firebase with local ${name}-database`);
-					firebase.database().ref(this.databaseLocation).set(doc);
-				} else if (this._splitRef(doc._rev) < this._splitRef(data._rev)) {
-					console.log(`Syncing local ${name}-database with firebase`);
-					this.pouch.put(data, (error, result) => {
-						if (!error) {
-							firebase.database().ref(`${this.databaseLocation}/_rev`)
-								.set(result.rev);
-							console.log(`Local ${name}-database created`);
-						} else {
-							console.warn(error);
-						}
-					});
-				}
-			}).catch(err => {
-				if (err.status === 404 && data !== null) {
-					data._id = `${name}`;
-					this.pouch.put(data, (error, result) => {
-						if (!error) {
-							firebase.database().ref(`${this.databaseLocation}/_rev`)
-								.set(result.rev);
-							console.log(`Local ${name}-database created`);
-						} else {
-							console.warn(error);
-						}
-					});
-				}
-			});
-		}
+		console.log(data, name);
+		// if (this.pouch && data !== null && data._rev === null) {
+		// 	this.pouch.put(data, (error, result) => {
+		// 		if (!error) {
+		// 			firebase.database().ref(`${this.databaseLocation}/_rev`)
+		// 				.set(result.rev);
+		// 			console.log(`Local ${name}-database created`);
+		// 		} else {
+		// 			console.warn(error);
+		// 		}
+		// 	});
+		// } else if (this.pouch && data !== null) { // && pouchdata
+		// 	this.pouch.get(name).then(doc => {
+		// 		if (doc._rev === data._rev) {
+		// 			console.log(`Local ${name}-database up to date`);
+		// 			return;
+		// 		} else if (this._splitRef(doc._rev) > this._splitRef(data._rev)) {
+		// 			console.log(`Syncing firebase with local ${name}-database`);
+		// 			firebase.database().ref(this.databaseLocation).set(doc);
+		// 		} else if (this._splitRef(doc._rev) < this._splitRef(data._rev)) {
+		// 			console.log(`Syncing local ${name}-database with firebase`);
+		// 			this.pouch.put(data, (error, result) => {
+		// 				if (!error) {
+		// 					firebase.database().ref(`${this.databaseLocation}/_rev`)
+		// 						.set(result.rev);
+		// 					console.log(`Local ${name}-database created`);
+		// 				} else {
+		// 					console.warn(error);
+		// 				}
+		// 			});
+		// 		}
+		// 	}).catch(err => {
+		// 		if (err.status === 404 && data !== null) {
+		// 			data._id = `${name}`;
+		// 			this.pouch.put(data, (error, result) => {
+		// 				if (!error) {
+		// 					firebase.database().ref(`${this.databaseLocation}/_rev`)
+		// 						.set(result.rev);
+		// 					console.log(`Local ${name}-database created`);
+		// 				} else {
+		// 					console.warn(error);
+		// 				}
+		// 			});
+		// 		}
+		// 	});
+		// }
 	}
 });
 
