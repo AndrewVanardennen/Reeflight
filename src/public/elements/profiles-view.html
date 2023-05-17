@@ -1,0 +1,34 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="reef-view.html">
+
+
+<dom-module id="profiles-view">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+    </style>
+
+    <reef-view class="container">
+        <span class="shadow">
+          Hello this is profile-view
+        </span>
+
+
+    </reef-view>
+  </template>
+  <script>
+    class ProfilesView extends Polymer.Element {
+      static get is() {
+        return 'profiles-view';
+      };
+      constructor() {
+        super();
+      }
+    }
+    customElements.define(ProfilesView.is, ProfilesView);
+  </script>
+</dom-module>
