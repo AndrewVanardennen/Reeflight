@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
 
@@ -12,18 +12,53 @@
     <!-- Chrome / Android -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#006064">
-    <!-- <link rel="icon" href="icon.png"> -->
+    <link rel="icon" href="icon.png">
 
     <!-- Safari / iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <!-- <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png"> -->
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
 
     <!-- Import manifest for serviceWorker, pushNotifications & addToHomeScreen support. -->
     <link rel="manifest" href="manifest.json">
-		<link rel="import" href="node_modules/backed/backed.html">
 
-		<link rel="stylesheet" href="styles/color.css">
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('service-worker.js');
+			}
+		</script>
+		<!-- Polyfills -->
+		<script>
+			const supportsShadowDOMV1 = !!HTMLElement.prototype.attachShadow;
+			const supportsCustomElementsV1 = 'customElements' in window;
+			const supportsImports = 'import' in document.createElement('link')
+
+			const loadScript = src => {
+			 return new Promise(function(resolve, reject) {
+			   const script = document.createElement('script');
+			   script.src = 'node_modules/@webcomponents/' + src;
+			   script.onload = resolve;
+			   script.onerror = reject;
+			   document.head.appendChild(script);
+			 });
+			}
+
+			if (!supportsShadowDOMV1) {
+				loadScript('shadydom/shadydom.min.js').then(() => {
+					loadScript('shadycss/custom-style-interface.min.js');
+				});
+			}
+			if (!supportsCustomElementsV1) {
+				loadScript('custom-elements/custom-elements.min.js');
+			}
+			if (!supportsImports) {
+				loadScript('html-imports/html-imports.min.js')
+			}
+		</script>
+
+		<script src="../node_modules/backed/dist/backed.js"></script>
+		<!-- <link rel="import" href="../node_modules/backed/backed.html"> -->
+		<link rel="stylesheet" href="styles/color.css" async>
 		<link rel="import" href="reeflight-app.html">
 
     <style>
@@ -36,6 +71,8 @@
     </style>
   </head>
   <body>
-    <reeflight-app></reeflight-app>
-  </body>
+    <reeflight-app>
+			When you see this message, its time to upgrade your browser...
+		</reeflight-app>
+</body>
 </html>

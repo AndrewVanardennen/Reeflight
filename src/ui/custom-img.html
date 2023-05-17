@@ -1,0 +1,17 @@
+<link rel="import" href="../mixins/img-mixin.html">
+
+<template id="custom-img">
+	<style>
+		img {
+			opacity: 0;
+		}
+
+		:host([src="*"]) img {
+			opacity: 1;
+		}
+	</style>
+	<img>
+</template>
+<script>
+	Backed(class CustomImg extends ImgMixin(HTMLElement) {});
+</script>

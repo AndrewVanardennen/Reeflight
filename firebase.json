@@ -3,7 +3,7 @@
     "public": "dist/bundled",
     "rewrites": [
       {
-        "source": "**",
+        "source": "**/*.@(jpg|jpeg|gif|png|html|css|js)",
         "destination": "/index.html"
       }
     ]

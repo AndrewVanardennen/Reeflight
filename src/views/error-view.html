@@ -1,0 +1,65 @@
+<template id="error-view">
+	<style>
+		:host {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			width: 100%;
+		}
+		.spinner {
+		    border: 8px solid #f3f3f3; /* Light grey */
+		    border-top: 8px solid #0097A7; /* Blue */
+		    border-radius: 50%;
+		    width: 48px;
+		    height: 48px;
+		    animation: spin 4s linear infinite;
+		}
+
+		@keyframes spin {
+	    0% { transform: rotate(0deg); }
+	    100% { transform: rotate(360deg); }
+		}
+
+		.grid-item {
+      width: calc(100% - 6px);
+			padding: 0;
+    }
+
+		iframe {
+			border: none;
+		}
+
+		.grid-item.info {
+			padding: 12px;
+			box-sizing: border-box;
+		}
+
+		h2 {
+			margin: 0;
+			padding-bottom: 12px;
+		}
+
+		/*reef-grid {
+			width: 100%;
+			height: 100%;
+		}*/
+	</style>
+
+	<reef-grid>
+		<div class="grid-item info">
+			<h2>Woopsie</h2>
+			<span>Some error occured, try again or press the spacebar and enjoy the T-rex game</span>
+		</div>
+		<div class="grid-item">
+			<iframe src="https://wayou.github.io/t-rex-runner/" width="100%" height="200px"></iframe>
+		</div>
+	</reef-grid>
+
+</template>
+
+<script>
+	Backed(class ErrorView extends HTMLElement {
+
+	})
+</script>

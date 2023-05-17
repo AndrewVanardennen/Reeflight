@@ -33,6 +33,10 @@
     "sw-precache": "^5.1.1"
   },
   "dependencies": {
+    "@webcomponents/custom-elements": "webcomponents/custom-elements",
+    "@webcomponents/html-imports": "webcomponents/html-imports",
+    "@webcomponents/shadycss": "webcomponents/shadycss",
+    "@webcomponents/shadydom": "webcomponents/shadydom",
     "array-repeat": "^0.0.0",
     "backed": "^0.4.0",
     "backed-splitter": "^1.4.0",
@@ -54,13 +58,13 @@
         "moduleName": "reeflight",
         "format": "iife",
         "external": [
-          "manifest.json",
-          "node_modules/backed/backed.html"
+          "manifest.json"
         ],
         "plugins": {
           "html-bundler": {
             "exclude": [
-              "reload/reload.js"
+							"*icon.png",
+              "/reload/reload.js"
             ]
           }
         }
@@ -90,14 +94,18 @@
       {
         "src": [
           "src/manifest.json",
-          "src/sources/{avatars,icons}/*",
-          "src/templates/dialogs/*.html"
+          "src/sources/**/*",
+          "src/mixins/*.html",
+          "src/templates/dialogs/*.html",
+          "src/views/*.html",
+          "src/ux/**.html"
         ],
         "dest": "dist/bundled"
       },
       {
         "src": [
-          "node_modules/mobile-detect/mobile-detect.js"
+          "node_modules/mobile-detect/mobile-detect.js",
+					"node_modules/@webcomponents/**/*.min.js"
         ],
         "dest": "dist/bundled/node_modules"
       }
@@ -108,10 +116,16 @@
         "src": [
           "src/**/*.{js,html}"
         ]
+      },
+      {
+        "task": "sources",
+        "src": [
+          "src/ux/*.html"
+        ]
       }
     ],
     "server": {
-      "demo": "dist/bundled"
+			"demo": "dist/bundled"
     }
   },
   "eslintConfig": {

@@ -1,6 +1,8 @@
 {
   "name": "Reef Light Remote Application",
-  "short_name": "Reef Light App",
+  "short_name": "Reef Light",
+	"theme_color": "#0097A7",
+	"background_color": "#26C6DA",
   "icons": [
       {
         "src": "launcher-icon-2x.png",

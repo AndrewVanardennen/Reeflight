@@ -49,7 +49,7 @@ export default Backed(class UserConnectionController extends HTMLElement {
 
 		requestIdleCallback(() => {
 			const script = document.createElement('script');
-			script.src = 'node_modules/mobile-detect/mobile-detect.js';
+			script.src = '/node_modules/mobile-detect/mobile-detect.js';
 			script.setAttribute('async', '');
 			script.onload = this.mobileDetectLoaded;
 
@@ -92,6 +92,7 @@ export default Backed(class UserConnectionController extends HTMLElement {
 						let cos = Math.cos(deviceLatitude * pi/180);
 						let maxLatitude = deviceLatitude + metersRatio * (180 / pi);
 						let maxLongitude = deviceLongitude + metersRatio * (180 / pi) / cos;
+						console.log(maxLatitude, maxLongitude);
 						inRangeRef.set(Boolean(position.coords.latitude < maxLatitude &&
 																		position.coords.longitude < maxLongitude));
 					});

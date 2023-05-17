@@ -2,6 +2,7 @@
 	<style>
 		:host {
 			min-height: 72px;
+			position: relative;
 		}
 		:host, .container {
 			display: flex;
@@ -23,101 +24,214 @@
 			font-weight: 500;
 			color: var(--paper-grey-700);
 		}
+
+		.user-menu {
+			display: flex;
+			flex-direction: column;
+			padding: 0 12px;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.login, .hello, .bye {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.login, .hello, .bye, .menu {
+			opacity: 0;
+			pointer-events: none;
+			user-select: none;
+			transition: opacity ease-out 700ms;
+		}
+
+		.active {
+			opacity: 1;
+			pointer-events: auto;
+			transition: opacity ease-in 500ms;
+		}
+
+		custom-container {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			align-items: center;
+		}
+
+		.user-toolbar {
+			display: flex;
+			align-items: center;
+		}
+
+		.flex {
+			flex: 1;
+		}
 	</style>
+
+
+	<custom-divider top></custom-divider>
+
+	<custom-container class="login">
+		<reef-button class="login-button">login</reef-button>
+	</custom-container>
+
+	<custom-container class="hello">
+		<span class="hello-user"></span>
+	</custom-container>
+
+	<custom-container class="bye">
+		<span>See you next time!</span>
+	</custom-container>
+
+	<custom-container class="menu">
+		<custom-avatar></custom-avatar>
+		<span class="user-menu">
+			<span class="user-toolbar">
+				<reef-icon-button icon="notifications" no-shadow disabled title="disabled until implemented"></reef-icon-button>
+				<span class="flex"></span>
+				<reef-icon-button icon="exit-to-app" no-shadow title="logout" class="logout-button"></reef-icon-button>
+			</span>
+		</span>
+	</custom-container>
 </template>
 
 <script>
 /**
 * @extends HTMLElement
 */
-export default Backed(class ReefDrawerFooter extends HTMLElement {
-/**
- * Attributes to observer
- * @return {Array} ['avatar', 'username']
- */
-static get observedAttributes() {
-	return ['avatar', 'username'];
-}
-
-/**
- * Stamps innerHTML
- */
-connected() {
-	this.container = document.createElement('span');
-	this.container.classList.add('container');
-
-	this.userInfoContainer = document.createElement('span');
-	this.userInfoContainer.style.display = 'flex';
-	this.userInfoContainer.style.flexDirection = 'row';
-	this.userInfoContainer.style.alignItems = 'center';
-	this.userInfoContainer.style.height = '48px';
-
-	this.avatarElement = document.createElement('img');
-	this.avatarElement.style.height = '48px';
-	this.avatarElement.style.width = '48px';
-	this.avatarElement.style.borderRadius = '50%';
-	this.avatarElement.style.outline = 'none';
-	this.avatarElement.userSelect = 'none';
-	this.avatarElement.pointerEvents = 'none';
-
-	this.nameElement = document.createElement('span');
-	this.nameElement.style.display = 'flex';
-	this.nameElement.style.flexDirection = 'column';
-	this.nameElement.style.paddingLeft = '12px';
-	this.nameElement.style.justifyContent = 'flex-end';
-	this.nameElement.style.height = '48px';
-
-	let border = document.createElement('span');
-	border.style.display = 'flex';
-	border.style.borderBottom = '1px solid rgba(0,0,0,0.12)';
-	border.style.marginTop = '-1px';
-	border.style.width = '100%';
-	border.style.height = '1px';
-
-	this.userInfoContainer.appendChild(this.avatarElement);
-	this.userInfoContainer.appendChild(this.nameElement);
-	this.container.appendChild(this.userInfoContainer);
-	this.shadowRoot.appendChild(border);
-	this.shadowRoot.appendChild(this.container);
-}
-
-/**
- * @param {String} value
- */
-set avatar(value) {
-	this.setAttribute('avatar', value);
-	if (value) {
-		this.avatarElement.src = value;
-	} else {
-		this.avatarElement.src = null;
+Backed(class ReefDrawerFooter extends HTMLElement {
+	static get properties() {
+		return {
+			user: {
+				observer: '_onUserChange',
+				value: null,
+				global: true
+			}
+		}
 	}
-}
 
-/**
- * @param {String} value
- */
-set username(value) {
-	this.setAttribute('username', value);
-	if (value) {
-		this.nameElement.innerHTML = `
-		<span class="greeting">Hello</span>
-		<span class="username">${value}</span>`;
-	} else {
-		this.nameElement.innerHTML = 'Welcome';
-	}
-}
+	/**
+	 * Stamps innerHTML
+	 */
+	connected() {
+		this.container = document.createElement('span');
+		this.container.classList.add('container');
 
-/**
- * Runs whenever attribute changes are detected
- * @param {string} name The name of the attribute that changed.
- * @param {string|object|array} oldValue
- * @param {string|object|array} newValue
- */
-attributeChangedCallback(name, oldValue, newValue) {
-	if (oldValue === null || oldValue !== newValue) {
-		this[name] = newValue;
+		this.onLoginClick = this.onLoginClick.bind(this);
+		this.onLogoutClick = this.onLogoutClick.bind(this);
+		this.showLogin = this.showLogin.bind(this);
 	}
-}
+
+	_onUserChange(change) {
+		this.user = change.value;
+		if (change.value) {
+			this.loginButton.removeEventListener('click', this.onLoginClick);
+			this.logoutButton.addEventListener('click', this.onLogoutClick);
+			this.onlineBefore = true;
+			this.username = change.value.username;
+			this.avatar = change.value.profile_picture;
+			this.loginEl.classList.remove('active');
+			this.helloEl.classList.add('active');
+			clearTimeout(this.showLogin);
+			setTimeout(() => {
+				this.helloEl.classList.remove('active');
+			}, 1000);
+			setTimeout(() => {
+				this.menuEl.classList.add('active');
+			}, 1500);
+		} else {
+			this.loginButton.addEventListener('click', this.onLoginClick);
+			this.logoutButton.removeEventListener('click', this.onLogoutClick);
+			this.menuEl.classList.remove('active');
+			if (this.onlineBefore) {
+				this.onlineBefore = false;
+				this.byeEl.classList.add('active');
+				setTimeout(() => {
+					this.byeEl.classList.remove('active');
+				}, 1000);
+				this.showLogin();
+			} else {
+				this.loginEl.classList.add('active');
+			}
+		}
+	}
+
+	showLogin() {
+		return setTimeout(() => {
+			this.loginEl.classList.add('active');
+		}, 1500);
+	}
+
+	get loginEl() {
+		return this.shadowRoot.querySelector('.login');
+	}
+
+	get helloEl() {
+		return this.shadowRoot.querySelector('.hello');
+	}
+
+	get byeEl() {
+		return this.shadowRoot.querySelector('.bye');
+	}
+
+	get menuEl() {
+		return this.shadowRoot.querySelector('.menu');
+	}
+
+	get avatarElement() {
+		return this.shadowRoot.querySelector('custom-avatar');
+	}
+
+	get helloUserEl() {
+		return this.shadowRoot.querySelector('.hello-user');
+	}
+
+	get loginButton() {
+		return this.shadowRoot.querySelector('.login-button');
+	}
+
+	get logoutButton() {
+		return this.shadowRoot.querySelector('.logout-button');
+	}
+	/**
+	 * @param {String} value
+	 */
+	set avatar(value) {
+		this.setAttribute('avatar', value);
+		if (value) {
+			this.avatarElement.src = value;
+		} else {
+			this.avatarElement.src = null;
+		}
+	}
+
+	/**
+	 * @param {String} value
+	 */
+	set username(value) {
+		if (value) {
+			this.helloUserEl.innerHTML = `hi, ${value} !`;
+		}
+	}
+
+	onLoginClick() {
+		const provider = new firebase.auth.GoogleAuthProvider();
+		provider.addScope('profile');
+		provider.addScope('email');
+		firebase.auth().signInWithPopup(provider);
+	}
+
+	onLogoutClick() {
+		firebase.auth().signOut().then(() => {
+			this.user = null;
+		}).catch(error => {
+			console.log(error);
+		  // An error happened.
+		});
+	}
 });
 
 </script>

@@ -1,0 +1,118 @@
+<link rel="import" href="../ui/custom-container.html">
+
+<template id="custom-notification">
+	<style>
+		:host {
+			display: flex;
+			flex-direction: column;
+			opacity: 0;
+			left: var(--custom-notification-left, 0);
+			position: fixed;
+			height: var(--custom-notification-height, 48px);
+			min-width: 160px;
+			z-index: 100;
+			bottom: var(--custom-notification-bottom, 0);
+			transform: translateY(100%);
+			background: #FFFFFF;
+			transition: transform ease-out 16ms, opacity ease-out 16ms;
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+									0 1px 5px 0 rgba(0, 0, 0, 0.12),
+									0 3px 1px -2px rgba(0, 0, 0, 0.2);
+
+			--custom-container-padding: 8px 12px;
+		}
+		.container {
+		}
+
+		custom-container {
+			flex: 1;
+			align-items: center;
+			background: var(--custom-notification-background, #FFFFFF);
+		}
+
+		:host([active]) {
+			opacity: 1;
+			transform: translateY(0);
+			transition: transform ease-in 16ms, opacity ease-in 16ms;
+		}
+
+		.ok {
+			padding-left: 8px;
+			color: orange;
+		}
+	</style>
+	<slot name="heading"></slot>
+	<custom-container>
+		<slot></slot>
+
+		<span class="ok">ok</span>
+	</custom-container>
+</template>
+
+<script>
+	Backed(class CustomNotification extends HTMLElement {
+		static get properties() {
+			return {
+
+				/**
+				 * some text to display
+				 * @default {string} null
+				 */
+				text: {
+					value: null,
+					observer: '__render__'
+				},
+
+				/**
+				 * When true, notification will be visible
+				 * @default {boolean} false
+				 */
+				active: {
+					value: false,
+					observer: '__render__'
+				},
+
+				/**
+				 * time to be shown
+				 * @default {number} 5000
+				 */
+				timeout: {
+					value: 5000
+				}
+			}
+		}
+
+		get container() {
+			return this.shadowRoot.querySelector('custom-container');
+		}
+
+		__render__(change) {
+			if (change.property === 'text') {
+				const span = document.createElement('span');
+				span.innerHTML = change.value;
+				this.container.insertBefore(span, this.shadowRoot.querySelector('.ok'));
+			} else if (change.property === 'active') {
+				if (change.value) {
+					this.setAttribute('active', '');
+					// hides after timeout
+					setTimeout(() => {
+						this.active = false;
+					}, this.timeout);
+				} else {
+					this.addEventListener('transitionend', this.transitionEnd.bind(this));
+					this.removeAttribute('active');
+				}
+			}
+		}
+
+		disconnect() {
+			this.removeEventListener('transitionend', this.transitionEnd.bind(this))
+		}
+
+		transitionEnd() {
+			if (this.parentNode) {
+				this.parentNode.removeChild(this)
+			}
+		}
+	});
+</script>

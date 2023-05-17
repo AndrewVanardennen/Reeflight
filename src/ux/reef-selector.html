@@ -79,7 +79,7 @@ Backed(class ReefSelector extends HTMLElement {
 		*/
 	 _updateSelected(selected) {
 		 if (typeof selected === 'object') {
-			 if (this.previousSelected !== undefined) {
+			 if (this.previousSelected) {
 				 this.previousSelected.classList.remove('reef-selected');
 			 }
 			 this.previousSelected = selected;

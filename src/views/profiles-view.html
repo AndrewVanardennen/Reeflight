@@ -6,6 +6,7 @@
 <link rel="import" href="../ux/reef-list.html">
 <link rel="import" href="../sources/profiles.html">
 
+
 <template id="profiles-view">
   <style>
     :host {
@@ -119,7 +120,7 @@
 /**
  * @extends HTMLElement
  */
-export default Backed(class ProfilesView extends HTMLElement {
+Backed(class ProfilesView extends HTMLElement {
 	static get properties() {
 		return {
 			user: {
@@ -132,16 +133,13 @@ export default Backed(class ProfilesView extends HTMLElement {
       }
 		};
 	}
-	created() {
-		this._onClick = this._onClick.bind(this);
-		this._onProfileChange = this._onProfileChange.bind(this);
-	}
 
 	/**
 	 * Stamps innerHTML
 	 */
 	ready() {
-		// @template
+		this._onClick = this._onClick.bind(this);
+		this._onProfileChange = this._onProfileChange.bind(this);
 		this.timePicker = document.createElement('time-picker');
 		this.timePicker.noClock = true;
 		this.shadowRoot.appendChild(this.timePicker);
@@ -152,6 +150,9 @@ export default Backed(class ProfilesView extends HTMLElement {
 			this.timePicker.time = {hour: el.hour};
 			this.timePicker.open();
 		}, {capture: true});
+		if (firebase && firebase.auth().currentUser) {
+			this.user = globals('user');
+		}
 	}
 	/**
 	 * @return {HTMLElement}
@@ -181,7 +182,6 @@ export default Backed(class ProfilesView extends HTMLElement {
 	 */
 	_onClick(event) {
 		this.selected = event.detail.data;
-		console.log(this.selected);
 	}
 	setUpPubSubs() {
 		for (let index of Object.keys(this.profiles)) {
@@ -196,35 +196,9 @@ export default Backed(class ProfilesView extends HTMLElement {
 			profiles[index][parts[0]][parts[1]] = newVal.value;
       let uid = firebase.auth().currentUser.uid;
       firebase.database().ref(`users/${uid}/profiles/${newVal.uid}`).set(profiles[index]);
-			// if (this.pouch === undefined) {
-			// 	this.pouch = new PouchDB('profiles');
-			// }
-			// this.pouch.get('profiles').then(doc => {
-			// 	doc[index][parts[0]][parts[1]] = newVal.value;
-			// 	this.pouch.put(doc, (error, result) => {
-			// 		if (!error) {
-			// 			let uid = firebase.auth().currentUser.uid;
-			// 			firebase.database().ref(`users/${uid}/profiles/${newVal.uid}`).set(doc[newVal.uid]);
-			// 			firebase.database().ref(`users/${uid}/profiles/_rev`).set(result.rev);
-			// 		}
-			// 		// update firebase
-			// 	});
-			// });
 			this.profiles = profiles;
 			this.oldVal = newVal;
 		}
-	}
-
-	set pouch(value) {
-		this._pouch = value;
-	}
-
-	get pouch() {
-		return this._pouch || undefined;
-	}
-
-	pouchdbReady(change) {
-		if (change.value) this.pouch = new PouchDB('profiles');
 	}
 
 	_onUserChange() {

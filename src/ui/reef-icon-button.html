@@ -40,6 +40,12 @@
 		:host([no-border]) {
 			border-radius: none;
 		}
+		:host([disabled]) {
+	    color: #9b9b9b;
+			--reef-icon-color: #9b9b9b;
+			pointer-events: none;
+			cursor: default;
+		}
 	</style>
 	<reef-icon></reef-icon>
 	<custom-ripple></custom-ripple>
@@ -50,7 +56,7 @@
 	 * ReefIconButton
 	 * @extends ReefButton
 	 */
-	export default Backed(class ReefIconButton extends ButtonMixin(HTMLElement) {
+	Backed(class ReefIconButton extends ButtonMixin(HTMLElement) {
 		/**
 		 * Attributes to observer
 		 * @return {Array} ['icon']

@@ -7,7 +7,7 @@
 			flex-direction: column;
 			width: 100%;
 			height: 128px;
-			background-color: #0097A7;
+			background-color: var(--main-color, #0097A7);
 			color: #fff;
 			position: relative;
 			--reef-icon-color: #fff;
@@ -111,7 +111,7 @@
 	/**
 	* ReeflightHeader
 	*/
-	export default Backed(class ReefHeader extends HTMLElement {
+	Backed(class ReefHeader extends HTMLElement {
 
 		/**
 		 * Runs when inserted into document

@@ -1,0 +1,17 @@
+<template id="custom-container">
+	<style>
+		:host {
+			display: flex;
+			padding: var(--custom-container-padding, 8px);
+			box-sizing: border-box;
+		}
+		:host([column]) {
+			flex-direction: column;
+		}
+	</style>
+	<slot></slot>
+</template>
+
+<script>
+	Backed(class CustomContainer extends HTMLElement {});
+</script>

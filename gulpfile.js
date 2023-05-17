@@ -10,6 +10,16 @@ const vulcanize = require('gulp-vulcanize');
 const swPrecache = require('sw-precache');
 const browserSync = require('browser-sync').create();
 const injectTemplate = require('gulp-inject-html-template');
+const _if = require('gulp-if');
+
+task('css', () => {
+	const postcss = require('gulp-postcss');
+	const sourcemaps = require('gulp-sourcemaps');
+	const autoprefixer = require('autoprefixer');
+});
+
+task('build', series('css'));
+
 const reload = () => {
   return browserSync.reload;
 };
@@ -254,7 +264,6 @@ task('default', series('clean', 'copy', 'inject', 'rollup'));
 
 task('build-dev', series('env', 'default'));
 
-task('build', series('build-dev', 'env:dist', 'default', 'precache'));
 
 task('serve', series('env', 'default', 'browser-sync'));
 

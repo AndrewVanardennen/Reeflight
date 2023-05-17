@@ -1,0 +1,33 @@
+<script>
+	window.ImgMixin = base => class ImgMixin extends base {
+		static get properties() {
+			return {
+				src: {
+					observer: '__render__'
+				},
+				alt: {
+					value: '404',
+					observer: '__render__'
+				}
+			}
+		}
+
+		get img() {
+			return this.shadowRoot.querySelector('img');
+		}
+
+		__render__(change) {
+			switch (change.property) {
+				case 'src':
+					this.img.onload = () => {
+						this.setAttribute('loaded', '');
+					}
+					this.img.src = change.value;
+					break;
+				case 'alt':
+					this.img.alt = change.value;
+					break;
+			}
+		}
+	}
+</script>
